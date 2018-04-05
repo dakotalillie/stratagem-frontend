@@ -1,18 +1,22 @@
 import React from 'react';
 import blankMap from '../../../../img/blankMap.png';
+import territoriesData from '../../../../utils/territories.json';
 import './boardMap.css';
 
 class BoardMap extends React.Component {
   state = {
-    hovered: ''
+    hovered: null
   };
 
   handleMouseOver = e => {
-    this.setState({ hovered: e.target.id });
+    const TERRITORY = territoriesData[e.target.id];
+    if (TERRITORY != null) {
+      this.setState({ hovered: TERRITORY });
+    }
   };
 
   handleMouseLeave = e => {
-    this.setState({ hovered: '' });
+    this.setState({ hovered: null });
   };
 
   render() {
@@ -492,7 +496,11 @@ class BoardMap extends React.Component {
             id="territory-description"
           >
             <tspan x="50" y="100">
-              {this.state.hovered}
+              {this.state.hovered !== null
+                ? `${this.state.hovered.name} (${
+                    this.state.hovered.abbreviation
+                  })`
+                : ''}
             </tspan>
           </text>
         </svg>
