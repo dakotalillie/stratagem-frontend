@@ -1,5 +1,6 @@
 import React from 'react';
 import blankMap from '../../../../img/blankMap.png';
+import './boardMap.css';
 
 const BoardMap = props => {
   return (
@@ -9,7 +10,7 @@ const BoardMap = props => {
         version="1.1"
         width="100%"
         height="100%"
-        // style="overflow: hidden; position: relative; left: -0.75px;"
+        className="board-svg"
         viewBox="0 0 3462.3999 2310.3999"
         preserveAspectRatio="xMinYMin"
       >

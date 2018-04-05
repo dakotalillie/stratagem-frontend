@@ -1,0 +1,10 @@
+.board-map {
+  .board-svg > path {
+    fill: transparent;
+    overflow: hidden;
+    position: relative;
+    &:hover {
+      fill: rgba(200, 200, 200, 0.5);
+    }
+  }
+}
