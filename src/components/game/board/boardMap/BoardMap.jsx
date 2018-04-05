@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Army from './army/Army';
+import Fleet from './fleet/Fleet';
 import blankMap from '../../../../img/blankMap.png';
 import territoriesData from '../../../../utils/territories.json';
 import countriesData from '../../../../utils/countries.json';
@@ -31,6 +33,32 @@ class BoardMap extends React.Component {
   };
 
   render() {
+    const UNITS = Object.keys(this.props.units).map(terr => {
+      const UNIT = this.props.units[terr];
+      const COORDS = territoriesData[terr].coordinates;
+      if (UNIT.type === 'army') {
+        return (
+          <Army
+            key={terr}
+            owner={UNIT.country}
+            x={COORDS.main.x}
+            y={COORDS.main.y}
+          />
+        );
+      } else if (UNIT.type === 'fleet') {
+        const COAST = UNIT.coast === null ? 'main' : UNIT.coast;
+        return (
+          <Fleet
+            key={terr}
+            owner={UNIT.country}
+            x={COORDS[COAST].x}
+            y={COORDS[COAST].y}
+          />
+        );
+      }
+      return null;
+    });
+
     return (
       <div className="board-map">
         <svg
@@ -51,6 +79,7 @@ class BoardMap extends React.Component {
             width="3462.3999"
             href={blankMap}
           />
+          {UNITS}
           <path
             d="m 1131.1258,1250.6396 19.7679,12.7318 1.3402,2.0103 11.0566,7.3711 33.1699,22.1133 11.7267,8.0411 21.1081,12.3969 24.7936,12.3968 11.0566,4.6907 14.4071,3.6855 9.7165,1.3402 5.0257,-0.3351 4.6907,-4.6906 4.6907,-2.6804 3.6855,-4.6907 1.0052,-3.0155 -0.6701,-8.7112 -8.0412,-13.402 -6.701,-10.0515 -6.3659,-14.4071 -2.6804,-11.0566 -3.0155,-15.4123 -3.0154,-9.3813 -10.3865,-11.3917 -8.3763,-5.0257 -12.0617,-5.6959 -11.7267,-5.6958 -14.4072,-6.701 -3.3504,-3.6855 -20.7731,2.6804 -21.1081,4.3556 -13.0669,4.3556 -12.3968,9.3814 -7.3711,11.0566 -11.3917,15.4123 z"
             id="Bel"
@@ -573,11 +602,13 @@ class BoardMap extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  territories: state.territories
+  territories: state.territories,
+  units: state.units
 });
 
 export default connect(mapStateToProps, null)(BoardMap);
 
 BoardMap.propTypes = {
-  territories: PropTypes.object
+  territories: PropTypes.object,
+  units: PropTypes.object
 };
