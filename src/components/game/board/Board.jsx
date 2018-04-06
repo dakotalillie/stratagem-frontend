@@ -5,7 +5,13 @@ import { connect } from 'react-redux';
 import { createOrder } from '../../../actions';
 import BoardMap from './boardMap/BoardMap';
 import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
-import { findPotentialMoves, determineCoast, mapUnits } from './boardUtils';
+import {
+  discernSelectionType,
+  findPotentialMoves,
+  determineCoast,
+  mapUnits
+} from './boardUtils';
+import * as selectionTypes from './selectionTypes';
 import territoriesData from '../../../utils/territories.json';
 import countriesData from '../../../utils/countries.json';
 import './board.css';
@@ -13,7 +19,8 @@ import './board.css';
 class Board extends React.Component {
   state = {
     hovered: null,
-    selected: null,
+    selectedUnit: null,
+    supportedUnit: null,
     potentialMoves: [],
     coastOptions: {},
     supportMode: false,
@@ -24,7 +31,8 @@ class Board extends React.Component {
 
   resetState = () => {
     this.setState({
-      selected: null,
+      selectedUnit: null,
+      supportedUnit: null,
       potentialMoves: [],
       coastOptions: {},
       supportMode: false,
@@ -47,67 +55,74 @@ class Board extends React.Component {
 
   handleClick = e => {
     const CLICKED_TERR = e.target.id;
-    // UNIT_IN_TERR will return the abbreviation if there is a unit there
     const UNIT_IN_TERR = this.props.units[CLICKED_TERR];
-    const SELECTED_UNIT = this.props.units[this.state.selected];
     const LAND_NEIGHBORS = territoriesData[CLICKED_TERR].landNeighbors;
     const SEA_NEIGHBORS = territoriesData[CLICKED_TERR].seaNeighbors;
+    const SELECTION_TYPE = discernSelectionType({
+      state: this.state,
+      units: this.props.units,
+      clickedTerr: CLICKED_TERR,
+      clickedUnit: UNIT_IN_TERR
+    });
 
-    if (UNIT_IN_TERR && this.state.selected === null) {
-      // Case 1: Territory has a unit in it and no unit is currently selected.
-      let { potentialMoves, coastOptions } = findPotentialMoves({
-        unit: UNIT_IN_TERR,
-        landNeighbors: LAND_NEIGHBORS,
-        seaNeighbors: SEA_NEIGHBORS,
-        unitsList: this.props.units
-      });
-      this.setState({
-        selected: CLICKED_TERR,
-        potentialMoves,
-        coastOptions
-      });
-    } else if (UNIT_IN_TERR && this.state.selected === CLICKED_TERR) {
-      // Case 2: Territory has a unit and is the same as the currently selected (HOLD)
-      this.props.createOrder({
-        fromTerr: CLICKED_TERR,
-        toTerr: CLICKED_TERR,
-        country: UNIT_IN_TERR.country,
-        orderType: 'Hold',
-        coast: UNIT_IN_TERR.coast
-      });
-      this.resetState();
-    } else if (
-      this.state.potentialMoves.includes(CLICKED_TERR) &&
-      this.state.selected !== null
-    ) {
-      // Case 3: A unit is selected and a potential move is pressed (MOVE)
-      let coast = determineCoast({
-        coastOps: this.state.coastOptions[CLICKED_TERR]
-      });
-      if (coast !== -1) {
-        this.props.createOrder({
-          fromTerr: this.state.selected,
-          toTerr: CLICKED_TERR,
-          country: SELECTED_UNIT.country,
-          orderType: 'Move',
-          coast
+    switch (SELECTION_TYPE) {
+      // select unit
+      case selectionTypes.SELECT_UNIT:
+        let { potentialMoves, coastOptions } = findPotentialMoves({
+          unit: UNIT_IN_TERR,
+          landNeighbors: LAND_NEIGHBORS,
+          seaNeighbors: SEA_NEIGHBORS,
+          unitsList: this.props.units
         });
-      } else {
-        // Save data into temporary storage and raise modal
         this.setState({
-          tmpMoveStorage: {
-            fromTerr: this.state.selected,
-            toTerr: CLICKED_TERR,
-            country: SELECTED_UNIT.country,
-            orderType: 'Move'
-          },
-          chooseCoastModal: true
+          selectedUnit: UNIT_IN_TERR,
+          potentialMoves,
+          coastOptions
         });
-        return;
-      }
-      this.resetState();
-    } else {
-      this.resetState();
+        break;
+      // hold unit
+      case selectionTypes.HOLD_UNIT:
+        this.props.createOrder({
+          fromTerr: CLICKED_TERR,
+          toTerr: CLICKED_TERR,
+          country: UNIT_IN_TERR.country,
+          orderType: 'Hold',
+          coast: UNIT_IN_TERR.coast
+        });
+        this.resetState();
+        break;
+      // move unit
+      case selectionTypes.MOVE_UNIT:
+        let coast = determineCoast({
+          coastOps: this.state.coastOptions[CLICKED_TERR]
+        });
+        if (coast !== -1) {
+          this.props.createOrder({
+            fromTerr: this.state.selectedUnit.territory,
+            toTerr: CLICKED_TERR,
+            country: this.state.selectedUnit.country,
+            orderType: 'Move',
+            coast
+          });
+        } else {
+          // Save data into temporary storage and raise modal
+          this.setState({
+            tmpMoveStorage: {
+              fromTerr: this.state.selectedUnit.territory,
+              toTerr: CLICKED_TERR,
+              country: this.state.selectedUnit.country,
+              orderType: 'Move'
+            },
+            chooseCoastModal: true
+          });
+          return;
+        }
+        this.resetState();
+        break;
+      // selected supporting unit
+
+      default:
+        this.resetState();
     }
   };
 

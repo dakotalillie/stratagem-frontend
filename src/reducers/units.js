@@ -10,6 +10,7 @@ const units = (state = {}, action) => {
           newState[unit.territory] = {
             country: country,
             type: unit.type,
+            territory: unit.territory,
             coast: unit.coast
           };
         }

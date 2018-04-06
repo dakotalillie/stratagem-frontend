@@ -1,6 +1,7 @@
 import React from 'react';
 import Army from './army/Army';
 import Fleet from './fleet/Fleet';
+import * as selectionTypes from './selectionTypes';
 
 export function findPotentialMoves({
   unit,
@@ -98,4 +99,54 @@ export function mapUnits({ units, territories }) {
     }
     return null;
   });
+}
+
+// This function determines the type of action that should occur when
+// a territory is clicked.
+export function discernSelectionType({
+  state,
+  units,
+  clickedTerr,
+  clickedUnit
+}) {
+  if (
+    clickedUnit !== undefined &&
+    state.selectedUnit === null &&
+    !state.supportMode
+  ) {
+    return selectionTypes.SELECT_UNIT;
+  } else if (
+    state.selectedUnit.territory === clickedTerr &&
+    !state.supportMode
+  ) {
+    return selectionTypes.HOLD_UNIT;
+  } else if (state.potentialMoves.includes(clickedTerr) && !state.supportMode) {
+    return selectionTypes.MOVE_UNIT;
+  } else if (
+    clickedUnit !== undefined &&
+    state.selectedUnit === null &&
+    state.supportMode
+  ) {
+    return selectionTypes.SELECT_SUPPORTING_UNIT;
+  } else if (
+    state.potentialMoves.includes(clickedTerr) &&
+    state.supportMode &&
+    state.supportedUnit === null
+  ) {
+    return selectionTypes.SELECT_SUPPORTED_UNIT;
+  } else if (
+    state.potentialMoves.includes(clickedTerr) &&
+    state.supportMode &&
+    state.supportedUnit !== null &&
+    state.supportedUnit.territory === clickedTerr
+  ) {
+    return selectionTypes.HOLD_SUPPORTED_UNIT;
+  } else if (
+    state.potentialMoves.includes(clickedTerr) &&
+    state.supportMode &&
+    state.supportedUnit !== null &&
+    state.supportedUnit.territory !== clickedTerr
+  ) {
+    return selectionTypes.MOVE_SUPPORTED_UNIT;
+  }
 }
