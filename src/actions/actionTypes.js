@@ -1,1 +1,2 @@
 export const INITIALIZE_GAME = 'INITIALIZE GAME';
+export const CREATE_ORDER = 'CREATE ORDER';

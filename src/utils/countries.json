@@ -63,7 +63,7 @@
       { "type": "army", "territory": "Mos", "coast": null },
       { "type": "army", "territory": "War", "coast": null },
       { "type": "fleet", "territory": "Stp", "coast": "SC" },
-      { "type": "fleet", "territory": "Sev", "coast": null }
+      { "type": "fleet", "territory": "BLA", "coast": null }
     ]
   },
   "Turkey": {

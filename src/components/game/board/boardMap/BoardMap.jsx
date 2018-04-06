@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { createOrder } from '../../../../actions';
 import Army from './army/Army';
 import Fleet from './fleet/Fleet';
+import { findPotentialMoves } from './boardMapUtils';
 import blankMap from '../../../../img/blankMap.png';
 import territoriesData from '../../../../utils/territories.json';
 import countriesData from '../../../../utils/countries.json';
@@ -12,7 +14,10 @@ class BoardMap extends React.Component {
   state = {
     hovered: null,
     selected: null,
-    potentialMoves: []
+    potentialMoves: [],
+    coastOptions: {},
+    supportMode: false,
+    convoyMode: false
   };
 
   handleMouseOver = e => {
@@ -30,32 +35,57 @@ class BoardMap extends React.Component {
     const ABBREVIATION = e.target.id;
     // UNIT_IN_TERR will return the abbreviation if there is a unit there
     const UNIT_IN_TERR = this.props.units[ABBREVIATION];
+    const SELECTED_UNIT = this.props.units[this.state.selected];
     const LAND_NEIGHBORS = territoriesData[ABBREVIATION].landNeighbors;
     const SEA_NEIGHBORS = territoriesData[ABBREVIATION].seaNeighbors;
 
-    // Make sure selected territory has a unit in it and that no unit
-    // is currently selected.
-    if (this.state.selected === null && UNIT_IN_TERR) {
-      let validNeighbors = [];
-      // Valid moves for armies include land neighbors and any sea territories
-      // with fleets [TODO]
-      if (UNIT_IN_TERR.type === 'army') {
-        validNeighbors = validNeighbors.concat(LAND_NEIGHBORS);
-        // Valid moves for fleets are dependent on their coast. Will need to
-        // handle cases for territories with multiple coasts [TODO]
-      } else if (UNIT_IN_TERR.type === 'fleet') {
-        if (UNIT_IN_TERR.coast) {
-          validNeighbors = validNeighbors.concat(
-            SEA_NEIGHBORS[UNIT_IN_TERR.coast]
-          );
-        } else {
-          validNeighbors = validNeighbors.concat(SEA_NEIGHBORS.all);
-        }
-      }
-      this.setState({ selected: ABBREVIATION, potentialMoves: validNeighbors });
+    if (UNIT_IN_TERR && this.state.selected === null) {
+      // Case 1: Territory has a unit in it and no unit is currently selected.
+      let { potentialMoves, coastOptions } = findPotentialMoves({
+        unit: UNIT_IN_TERR,
+        landNeighbors: LAND_NEIGHBORS,
+        seaNeighbors: SEA_NEIGHBORS,
+        unitsList: this.props.units
+      });
+      this.setState({
+        selected: ABBREVIATION,
+        potentialMoves,
+        coastOptions
+      });
+    } else if (UNIT_IN_TERR && this.state.selected === ABBREVIATION) {
+      // Case 2: Territory has a unit and is the same as the currently selected (HOLD)
+      this.props.createOrder({
+        fromTerr: ABBREVIATION,
+        toTerr: ABBREVIATION,
+        country: UNIT_IN_TERR.country,
+        orderType: 'Hold'
+      });
+      this.resetState();
+    } else if (
+      this.state.potentialMoves.includes(ABBREVIATION) &&
+      this.state.selected !== null
+    ) {
+      // Case 3: A unit is selected and a potential move is pressed (MOVE)
+      this.props.createOrder({
+        fromTerr: this.state.selected,
+        toTerr: ABBREVIATION,
+        country: SELECTED_UNIT.country,
+        orderType: 'Move'
+      });
+      this.resetState();
     } else {
-      this.setState({ selected: null, potentialMoves: [] });
+      this.resetState();
     }
+  };
+
+  resetState = () => {
+    this.setState({
+      selected: null,
+      potentialMoves: [],
+      coastOptions: {},
+      supportMode: false,
+      convoyMode: false
+    });
   };
 
   // Determines the className (and thus the coloring) of the territory <path>s
@@ -744,7 +774,7 @@ const mapStateToProps = state => ({
   units: state.units
 });
 
-export default connect(mapStateToProps, null)(BoardMap);
+export default connect(mapStateToProps, { createOrder })(BoardMap);
 
 BoardMap.propTypes = {
   territories: PropTypes.object,

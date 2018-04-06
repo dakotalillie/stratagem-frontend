@@ -1,1 +1,1 @@
-export { initializeGame } from './game';
+export { createOrder, initializeGame } from './game';
