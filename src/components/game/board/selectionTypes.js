@@ -1,4 +1,5 @@
 import territoryData from '../../../utils/territories.json';
+import { findAllNeighbors } from './boardUtils';
 
 // These are the kinds of selections that can occur:
 export const SELECT_UNIT = 'SELECT UNIT';
@@ -49,7 +50,10 @@ export function discernSelectionType({
   } else if (
     state.mode === 'support' &&
     state.supportedUnit !== null &&
-    state.supportedUnit.territory === clickedTerr
+    state.supportedUnit.territory === clickedTerr &&
+    findAllNeighbors(territoryData[clickedTerr]).includes(
+      state.selectedUnit.territory
+    )
   ) {
     return HOLD_SUPPORTED_UNIT;
   } else if (

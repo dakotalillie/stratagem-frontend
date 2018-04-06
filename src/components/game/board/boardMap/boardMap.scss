@@ -90,5 +90,12 @@
         fill-opacity: 0.7;
       }
     }
+    &.convoy {
+      fill: green;
+      fill-opacity: 0.5;
+      &:hover {
+        fill-opacity: 0.7;
+      }
+    }
   }
 }

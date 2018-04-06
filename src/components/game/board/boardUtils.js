@@ -173,7 +173,7 @@ function findSeaNeighbors({ unit, unitsList, occupied, occupiedType }) {
   return result;
 }
 
-function findAllNeighbors(territory) {
+export function findAllNeighbors(territory) {
   let neighbors = territory.landNeighbors;
   const SEA_NEIGHBORS = territory.seaNeighbors;
   if (SEA_NEIGHBORS !== null) {

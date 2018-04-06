@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Container } from 'reactstrap';
+import { Button, Container } from 'reactstrap';
 import { connect } from 'react-redux';
 import { createOrder } from '../../../actions';
 import BoardMap from './boardMap/BoardMap';
@@ -20,7 +20,7 @@ class Board extends React.Component {
     convoyeurs: new Set([]),
     potentialMoves: new Set([]),
     coastOptions: {},
-    mode: 'convoy',
+    mode: 'normal',
     tmpMoveStorage: {},
     chooseCoastModal: false
   };
@@ -151,7 +151,16 @@ class Board extends React.Component {
       // check if territory is potential move
       result += ' potential';
     }
+    for (let convoyeur of this.state.convoyeurs) {
+      if (convoyeur.territory === abbreviation) {
+        result += ' convoy';
+      }
+    }
     return result;
+  };
+
+  setMode = mode => {
+    this.setState({ mode });
   };
 
   render() {
@@ -183,6 +192,27 @@ class Board extends React.Component {
               })}
             </BoardMap>
           </div>
+          <Button
+            outline
+            active={this.state.mode === 'normal'}
+            onClick={() => this.setMode('normal')}
+          >
+            Normal
+          </Button>
+          <Button
+            outline
+            active={this.state.mode === 'support'}
+            onClick={() => this.setMode('support')}
+          >
+            Support
+          </Button>
+          <Button
+            outline
+            active={this.state.mode === 'convoy'}
+            onClick={() => this.setMode('convoy')}
+          >
+            Convoy
+          </Button>
         </Container>
       </div>
     );
