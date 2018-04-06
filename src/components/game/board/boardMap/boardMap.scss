@@ -70,6 +70,27 @@
           fill-opacity: 0.7;
         }
       }
+      &.selected {
+        fill: yellow;
+        fill-opacity: 0.5;
+        &:hover {
+          fill-opacity: 0.7;
+        }
+      }
+      &.targeted2 {
+        fill: blue;
+        fill-opacity: 0.5;
+        &:hover {
+          fill-opacity: 0.7;
+        }
+      }
+      &.potential {
+        fill: red;
+        fill-opacity: 0.5;
+        &:hover {
+          fill-opacity: 0.7;
+        }
+      }
     }
   }
 }
