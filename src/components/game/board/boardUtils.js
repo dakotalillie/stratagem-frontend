@@ -4,7 +4,7 @@ import Fleet from './fleet/Fleet';
 import * as selectionTypes from './selectionTypes';
 import territoriesData from '../../../utils/territories.json';
 
-export function findPotentialMoves({ unit, unitsList }) {
+export function findPotentialMoves({ unit }) {
   let potentialMoves = new Set([]);
   let coastOptions = {};
   const LAND_NEIGHBORS = territoriesData[unit.territory].landNeighbors;
@@ -86,15 +86,8 @@ export function findPotentialSupports({ unit, unitsList }) {
   // Then, make sure that every potentially supported unit's potential
   // moves overlaps with the clicked unit's potential moves
   for (let terr of OCCUPIED_SECOND_DEGREE) {
-    const UNIT_MOVES = findPotentialMoves({ unit, unitsList }).potentialMoves;
-    const SUPPORTED_UNIT_MOVES = findPotentialMoves({
-      unit: unitsList[terr],
-      unitsList
-    }).potentialMoves;
-    const UNION = [...UNIT_MOVES].filter(terr =>
-      SUPPORTED_UNIT_MOVES.has(terr)
-    );
-    if (UNION.length > 0) {
+    const SECOND_UNIT = unitsList[terr];
+    if (findCommonMoves({ unit1: unit, unit2: SECOND_UNIT }).size > 0) {
       potentialSupportedUnits.add(terr);
     }
   }
@@ -131,7 +124,16 @@ function findAllNeighbors(territory) {
   return neighbors;
 }
 
-function findCommonMoves({ unit1, unit2, unitsList }) {}
+export function findCommonMoves({ unit1, unit2 }) {
+  const UNIT_MOVES = findPotentialMoves({ unit: unit1 }).potentialMoves;
+  const SUPPORTED_UNIT_MOVES = findPotentialMoves({
+    unit: unit2
+  }).potentialMoves;
+  const UNION = new Set(
+    [...UNIT_MOVES].filter(terr => SUPPORTED_UNIT_MOVES.has(terr))
+  );
+  return UNION;
+}
 
 export function determineCoast({ coastOps }) {
   let coast = null;

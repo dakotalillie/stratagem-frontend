@@ -5,14 +5,9 @@ import { connect } from 'react-redux';
 import { createOrder } from '../../../actions';
 import BoardMap from './boardMap/BoardMap';
 import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
-import {
-  discernSelectionType,
-  findPotentialMoves,
-  findPotentialSupports,
-  determineCoast,
-  mapUnits
-} from './boardUtils';
+import { discernSelectionType, mapUnits } from './boardUtils';
 import * as selectionTypes from './selectionTypes';
+import * as selectionActions from './selectionActions';
 import territoriesData from '../../../utils/territories.json';
 import countriesData from '../../../utils/countries.json';
 import './board.css';
@@ -65,67 +60,28 @@ class Board extends React.Component {
     });
 
     switch (SELECTION_TYPE) {
-      // select unit
       case selectionTypes.SELECT_UNIT:
-        let { potentialMoves, coastOptions } = findPotentialMoves({
-          unit: CLICKED_UNIT,
-          unitsList: this.props.units
-        });
-        this.setState({
-          selectedUnit: CLICKED_UNIT,
-          potentialMoves,
-          coastOptions
+        selectionActions.selectUnit({
+          clickedUnit: CLICKED_UNIT,
+          context: this
         });
         break;
-      // hold unit
       case selectionTypes.HOLD_UNIT:
-        this.props.createOrder({
-          fromTerr: CLICKED_TERR,
-          toTerr: CLICKED_TERR,
-          country: CLICKED_UNIT.country,
-          orderType: 'Hold',
-          coast: CLICKED_UNIT.coast
-        });
-        this.resetState();
+        selectionActions.holdUnit({ clickedUnit: CLICKED_UNIT, context: this });
         break;
-      // move unit
       case selectionTypes.MOVE_UNIT:
-        let coast = determineCoast({
-          coastOps: this.state.coastOptions[CLICKED_TERR]
-        });
-        if (coast !== -1) {
-          this.props.createOrder({
-            fromTerr: this.state.selectedUnit.territory,
-            toTerr: CLICKED_TERR,
-            country: this.state.selectedUnit.country,
-            orderType: 'Move',
-            coast
-          });
-        } else {
-          // Save data into temporary storage and raise modal
-          this.setState({
-            tmpMoveStorage: {
-              fromTerr: this.state.selectedUnit.territory,
-              toTerr: CLICKED_TERR,
-              country: this.state.selectedUnit.country,
-              orderType: 'Move'
-            },
-            chooseCoastModal: true
-          });
-          return;
-        }
-        this.resetState();
+        selectionActions.moveUnit({ clickedTerr: CLICKED_TERR, context: this });
         break;
-      // selected supporting unit
       case selectionTypes.SELECT_SUPPORTING_UNIT:
-        // find potential supports
-        const POTENTIAL_SUPPORTS = findPotentialSupports({
-          unit: CLICKED_UNIT,
-          unitsList: this.props.units
+        selectionActions.selectSupportingUnit({
+          clickedUnit: CLICKED_UNIT,
+          context: this
         });
-        this.setState({
-          selectedUnit: CLICKED_UNIT,
-          potentialMoves: POTENTIAL_SUPPORTS
+        break;
+      case selectionTypes.SELECT_SUPPORTED_UNIT:
+        selectionActions.selectSupportedUnit({
+          clickedUnit: CLICKED_UNIT,
+          context: this
         });
         break;
       default:
@@ -155,8 +111,15 @@ class Board extends React.Component {
     ) {
       result += ' selected';
     }
-    // check if territory is potential move
+    // check if territory is supported
+    if (
+      this.state.supportedUnit !== null &&
+      abbreviation === this.state.supportedUnit.territory
+    ) {
+      result += ' supported';
+    }
     if (this.state.potentialMoves.has(abbreviation)) {
+      // check if territory is potential move
       result += ' potential';
     }
     return result;

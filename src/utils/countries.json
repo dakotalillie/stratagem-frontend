@@ -18,7 +18,7 @@
     "startingUnits": [
       { "type": "army", "territory": "Par", "coast": null },
       { "type": "army", "territory": "Mar", "coast": null },
-      { "type": "fleet", "territory": "MAO", "coast": null }
+      { "type": "fleet", "territory": "Bre", "coast": null }
     ]
   },
   "Germany": {
