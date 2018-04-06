@@ -105,7 +105,12 @@ export function findPotentialConvoys({ unit, unitsList }) {
   });
 }
 
-export function findPotentialConvoyPaths({ unit, unitsList, selectedUnit }) {
+export function findPotentialConvoyPaths({
+  unit,
+  unitsList,
+  selectedUnit,
+  convoyeurs
+}) {
   const OCCUPIED_SEA_NEIGHBORS = findSeaNeighbors({
     unit,
     unitsList,
@@ -119,6 +124,12 @@ export function findPotentialConvoyPaths({ unit, unitsList, selectedUnit }) {
   ]);
   // Make sure the selected unit's territory is not included as an option.
   POTENTIAL_CONVOY_PATHS.delete(selectedUnit.territory);
+  // Same with any previously selected convoys
+  for (let convoyeur of convoyeurs) {
+    if (POTENTIAL_CONVOY_PATHS.has(convoyeur.territory)) {
+      POTENTIAL_CONVOY_PATHS.delete(convoyeur.territory);
+    }
+  }
   return POTENTIAL_CONVOY_PATHS;
 }
 

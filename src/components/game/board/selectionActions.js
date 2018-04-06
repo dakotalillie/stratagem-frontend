@@ -118,9 +118,9 @@ export function selectConvoyPath({ clickedUnit, context }) {
   const POTENTIAL_PATHS = findPotentialConvoyPaths({
     unit: clickedUnit,
     unitsList: context.props.units,
-    selectedUnit: context.state.selectedUnit
+    selectedUnit: context.state.selectedUnit,
+    convoyeurs: context.state.convoyeurs
   });
-
   context.setState({
     potentialMoves: POTENTIAL_PATHS,
     convoyeurs: new Set([...context.state.convoyeurs, clickedUnit])
