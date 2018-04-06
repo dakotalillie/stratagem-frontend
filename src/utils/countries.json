@@ -40,7 +40,7 @@
     "startingUnits": [
       { "type": "army", "territory": "Rom", "coast": null },
       { "type": "army", "territory": "Ven", "coast": null },
-      { "type": "fleet", "territory": "TYS", "coast": null }
+      { "type": "fleet", "territory": "Nap", "coast": null }
     ]
   },
   "Austria": {

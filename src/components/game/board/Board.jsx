@@ -107,6 +107,12 @@ class Board extends React.Component {
           context: this
         });
         break;
+      case selectionTypes.SELECT_CONVOY_DESTINATION:
+        selectionActions.selectConvoyDestination({
+          clickedTerr: CLICKED_TERR,
+          context: this
+        });
+        break;
       default:
         this.resetState();
     }

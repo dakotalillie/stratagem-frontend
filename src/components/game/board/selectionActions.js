@@ -126,3 +126,26 @@ export function selectConvoyPath({ clickedUnit, context }) {
     convoyeurs: new Set([...context.state.convoyeurs, clickedUnit])
   });
 }
+
+export function selectConvoyDestination({ clickedTerr, context }) {
+  context.props.createOrder({
+    fromTerr: context.state.selectedUnit.territory,
+    toTerr: clickedTerr,
+    country: context.state.selectedUnit.country,
+    orderType: 'Move',
+    coast: null
+  });
+  for (let convoyer of context.state.convoyeurs) {
+    context.props.createOrder({
+      fromTerr: convoyer.territory,
+      country: convoyer.country,
+      orderType: 'Convoy',
+      coast: null,
+      auxFromTerr: context.state.selectedUnit.territory,
+      auxToTerr: clickedTerr,
+      auxCountry: context.state.selectedUnit.country,
+      auxOrderType: 'Move'
+    });
+  }
+  context.resetState();
+}
