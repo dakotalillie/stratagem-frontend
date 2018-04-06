@@ -4,9 +4,11 @@ import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
 import { createOrder } from '../../../actions';
 import BoardMap from './boardMap/BoardMap';
+import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
 import { findPotentialMoves, determineCoast, mapUnits } from './boardUtils';
 import territoriesData from '../../../utils/territories.json';
 import countriesData from '../../../utils/countries.json';
+import './board.css';
 
 class Board extends React.Component {
   state = {
@@ -91,7 +93,7 @@ class Board extends React.Component {
           coast
         });
       } else {
-        // Save data into temporary storage and raise modal TODO
+        // Save data into temporary storage and raise modal
         this.setState({
           tmpMoveStorage: {
             fromTerr: this.state.selected,
@@ -107,6 +109,14 @@ class Board extends React.Component {
     } else {
       this.resetState();
     }
+  };
+
+  selectCoast = coast => {
+    this.props.createOrder({
+      ...this.state.tmpMoveStorage,
+      coast
+    });
+    this.resetState();
   };
 
   // Determines the className (and thus the coloring) of the territory <path>s
@@ -128,21 +138,34 @@ class Board extends React.Component {
   };
 
   render() {
+    const COASTS_FOR_MODAL = this.state.coastOptions[
+      this.state.tmpMoveStorage.toTerr
+    ];
+
     return (
       <div className="board">
         <Container>
-          <BoardMap
-            determineTerrClass={this.determineTerrClass}
-            handleClick={this.handleClick}
-            handleMouseEnter={this.handleMouseEnter}
-            handleMouseLeave={this.handleMouseLeave}
-            hovered={this.state.hovered}
-          >
-            {mapUnits({
-              units: this.props.units,
-              territories: territoriesData
-            })}
-          </BoardMap>
+          <div className="board-map">
+            {this.state.chooseCoastModal ? (
+              <ChooseCoastModal
+                coasts={COASTS_FOR_MODAL}
+                selectCoast={this.selectCoast}
+              />
+            ) : null}
+            <BoardMap
+              chooseCoastModal={this.state.chooseCoastModal}
+              determineTerrClass={this.determineTerrClass}
+              handleClick={this.handleClick}
+              handleMouseEnter={this.handleMouseEnter}
+              handleMouseLeave={this.handleMouseLeave}
+              hovered={this.state.hovered}
+            >
+              {mapUnits({
+                units: this.props.units,
+                territories: territoriesData
+              })}
+            </BoardMap>
+          </div>
         </Container>
       </div>
     );

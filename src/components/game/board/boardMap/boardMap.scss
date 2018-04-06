@@ -1,95 +1,93 @@
 @import 'utils/colors.scss';
 
-.board-map {
-  .board-svg {
-    #territory-description {
-      font-style: normal;
-      font-weight: normal;
-      font-size: 80px;
-      line-height: 1.25;
-      font-family: sans-serif;
-      letter-spacing: 0px;
-      word-spacing: 0px;
-      fill: #000000;
-      fill-opacity: 1;
-      stroke: none;
+.board-svg {
+  #territory-description {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 80px;
+    line-height: 1.25;
+    font-family: sans-serif;
+    letter-spacing: 0px;
+    word-spacing: 0px;
+    fill: #000000;
+    fill-opacity: 1;
+    stroke: none;
+  }
+  & > path {
+    fill: transparent;
+    overflow: hidden;
+    position: relative;
+    &:hover {
+      fill: rgba(200, 200, 200, 0.5);
     }
-    & > path {
-      fill: transparent;
-      overflow: hidden;
-      position: relative;
+    &.British {
+      fill: $British;
+      fill-opacity: 0.5;
       &:hover {
-        fill: rgba(200, 200, 200, 0.5);
+        fill-opacity: 0.7;
       }
-      &.British {
-        fill: $British;
-        fill-opacity: 0.5;
-        &:hover {
-          fill-opacity: 0.7;
-        }
+    }
+    &.French {
+      fill: $French;
+      fill-opacity: 0.5;
+      &:hover {
+        fill-opacity: 0.7;
       }
-      &.French {
-        fill: $French;
-        fill-opacity: 0.5;
-        &:hover {
-          fill-opacity: 0.7;
-        }
+    }
+    &.German {
+      fill: $German;
+      fill-opacity: 0.5;
+      &:hover {
+        fill-opacity: 0.7;
       }
-      &.German {
-        fill: $German;
-        fill-opacity: 0.5;
-        &:hover {
-          fill-opacity: 0.7;
-        }
+    }
+    &.Italian {
+      fill: $Italian;
+      fill-opacity: 0.5;
+      &:hover {
+        fill-opacity: 0.7;
       }
-      &.Italian {
-        fill: $Italian;
-        fill-opacity: 0.5;
-        &:hover {
-          fill-opacity: 0.7;
-        }
+    }
+    &.Austrian {
+      fill: $Austrian;
+      fill-opacity: 0.5;
+      &:hover {
+        fill-opacity: 0.7;
       }
-      &.Austrian {
-        fill: $Austrian;
-        fill-opacity: 0.5;
-        &:hover {
-          fill-opacity: 0.7;
-        }
+    }
+    &.Russian {
+      fill: $Russian;
+      fill-opacity: 0.5;
+      &:hover {
+        fill-opacity: 0.7;
       }
-      &.Russian {
-        fill: $Russian;
-        fill-opacity: 0.5;
-        &:hover {
-          fill-opacity: 0.7;
-        }
+    }
+    &.Turkish {
+      fill: $Turkish;
+      fill-opacity: 0.5;
+      &:hover {
+        fill-opacity: 0.7;
       }
-      &.Turkish {
-        fill: $Turkish;
-        fill-opacity: 0.5;
-        &:hover {
-          fill-opacity: 0.7;
-        }
+    }
+    &.selected {
+      fill: yellow;
+      fill-opacity: 0.5;
+      &:hover {
+        fill-opacity: 0.7;
       }
-      &.selected {
-        fill: yellow;
-        fill-opacity: 0.5;
-        &:hover {
-          fill-opacity: 0.7;
-        }
+    }
+    &.targeted2 {
+      fill: blue;
+      fill-opacity: 0.5;
+      &:hover {
+        fill-opacity: 0.7;
       }
-      &.targeted2 {
-        fill: blue;
-        fill-opacity: 0.5;
-        &:hover {
-          fill-opacity: 0.7;
-        }
-      }
-      &.potential {
-        fill: red;
-        fill-opacity: 0.5;
-        &:hover {
-          fill-opacity: 0.7;
-        }
+    }
+    &.potential {
+      fill: red;
+      fill-opacity: 0.5;
+      &:hover {
+        fill-opacity: 0.7;
       }
     }
   }
