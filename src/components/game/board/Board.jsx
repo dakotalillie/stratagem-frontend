@@ -67,7 +67,7 @@ class Board extends React.Component {
         });
         break;
       case selectionTypes.HOLD_UNIT:
-        selectionActions.holdUnit({ clickedUnit: CLICKED_UNIT, context: this });
+        selectionActions.holdUnit({ context: this });
         break;
       case selectionTypes.MOVE_UNIT:
         selectionActions.moveUnit({ clickedTerr: CLICKED_TERR, context: this });
@@ -81,6 +81,11 @@ class Board extends React.Component {
       case selectionTypes.SELECT_SUPPORTED_UNIT:
         selectionActions.selectSupportedUnit({
           clickedUnit: CLICKED_UNIT,
+          context: this
+        });
+        break;
+      case selectionTypes.HOLD_SUPPORTED_UNIT:
+        selectionActions.holdSupportedUnit({
           context: this
         });
         break;

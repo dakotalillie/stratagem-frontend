@@ -218,17 +218,15 @@ export function discernSelectionType({
   ) {
     return selectionTypes.SELECT_SUPPORTED_UNIT;
   } else if (
-    state.potentialMoves.has(clickedTerr) &&
     state.supportMode &&
     state.supportedUnit !== null &&
     state.supportedUnit.territory === clickedTerr
   ) {
     return selectionTypes.HOLD_SUPPORTED_UNIT;
   } else if (
-    state.potentialMoves.has(clickedTerr) &&
     state.supportMode &&
     state.supportedUnit !== null &&
-    state.supportedUnit.territory !== clickedTerr
+    state.potentialMoves.has(clickedTerr)
   ) {
     return selectionTypes.MOVE_SUPPORTED_UNIT;
   }

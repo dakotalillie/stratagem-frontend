@@ -16,13 +16,12 @@ export function selectUnit({ clickedUnit, context }) {
   });
 }
 
-export function holdUnit({ clickedUnit, context }) {
+export function holdUnit({ context }) {
   context.props.createOrder({
-    fromTerr: clickedUnit.territory,
-    toTerr: clickedUnit.territory,
-    country: clickedUnit.country,
+    fromTerr: context.state.selectedUnit.territory,
+    country: context.state.selectedUnit.country,
     orderType: 'Hold',
-    coast: clickedUnit.coast
+    coast: context.state.selectedUnit.coast
   });
   context.resetState();
 }
@@ -73,4 +72,18 @@ export function selectSupportedUnit({ clickedUnit, context }) {
     unit2: context.state.selectedUnit
   });
   context.setState({ supportedUnit: clickedUnit, potentialMoves: COMMON });
+}
+
+export function holdSupportedUnit({ context }) {
+  context.props.createOrder({
+    fromTerr: context.state.selectedUnit.territory,
+    country: context.state.selectedUnit.country,
+    orderType: 'Support',
+    coast: context.state.selectedUnit.coast,
+    auxFromTerr: context.state.supportedUnit.territory,
+    auxCountry: context.state.supportedUnit.country,
+    auxOrderType: 'Hold'
+  });
+  debugger;
+  context.resetState();
 }
