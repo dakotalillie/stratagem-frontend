@@ -8,6 +8,7 @@ const orders = (state = {}, action) => {
         toTerr: action.toTerr,
         country: action.country,
         orderType: action.orderType,
+        coast: action.coast,
         auxFromTerr: action.auxFromTerr,
         auxToTerr: action.auxToTerr,
         auxCountry: action.auxCountry,

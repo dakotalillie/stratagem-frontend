@@ -1,3 +1,7 @@
+import React from 'react';
+import Army from './army/Army';
+import Fleet from './fleet/Fleet';
+
 export function findPotentialMoves({
   unit,
   landNeighbors,
@@ -46,4 +50,52 @@ export function findPotentialMoves({
     return terr;
   });
   return { potentialMoves, coastOptions };
+}
+
+export function determineCoast({ coastOps }) {
+  let coast = null;
+  if (
+    // There is only one coast option
+    coastOps !== undefined &&
+    coastOps.length === 1
+  ) {
+    coast = coastOps[0];
+  } else if (
+    // There is more than one coast option
+    coastOps !== undefined &&
+    coastOps.length > 1
+  ) {
+    // This denotes the need for a prompt
+    return -1;
+  }
+  return coast;
+}
+
+// This function creates a list of components for all the units in state
+export function mapUnits({ units, territories }) {
+  return Object.keys(units).map(terr => {
+    const UNIT = units[terr];
+    const COORDS = territories[terr].coordinates;
+    if (UNIT.type === 'army') {
+      return (
+        <Army
+          key={terr}
+          owner={UNIT.country}
+          x={COORDS.main.x}
+          y={COORDS.main.y}
+        />
+      );
+    } else if (UNIT.type === 'fleet') {
+      const COAST = UNIT.coast === null ? 'main' : UNIT.coast;
+      return (
+        <Fleet
+          key={terr}
+          owner={UNIT.country}
+          x={COORDS[COAST].x}
+          y={COORDS[COAST].y}
+        />
+      );
+    }
+    return null;
+  });
 }
