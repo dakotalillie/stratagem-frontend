@@ -89,6 +89,11 @@ class Board extends React.Component {
           context: this
         });
         break;
+      case selectionTypes.MOVE_SUPPORTED_UNIT:
+        selectionActions.moveSupportedUnit({
+          clickedTerr: CLICKED_TERR,
+          context: this
+        });
       default:
         this.resetState();
     }

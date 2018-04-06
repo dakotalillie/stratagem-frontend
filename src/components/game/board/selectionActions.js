@@ -84,6 +84,19 @@ export function holdSupportedUnit({ context }) {
     auxCountry: context.state.supportedUnit.country,
     auxOrderType: 'Hold'
   });
-  debugger;
+  context.resetState();
+}
+
+export function moveSupportedUnit({ clickedTerr, context }) {
+  context.props.createOrder({
+    fromTerr: context.state.selectedUnit.territory,
+    country: context.state.selectedUnit.country,
+    orderType: 'Support',
+    coast: context.state.selectedUnit.coast,
+    auxFromTerr: context.state.supportedUnit.territory,
+    auxToTerr: clickedTerr,
+    auxCountry: context.state.supportedUnit.country,
+    auxOrderType: 'Move'
+  });
   context.resetState();
 }
