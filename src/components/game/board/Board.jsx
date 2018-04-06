@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { createOrder } from '../../../actions';
 import BoardMap from './boardMap/BoardMap';
 import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
-import { discernSelectionType, mapUnits } from './boardUtils';
+import { mapUnits } from './boardUtils';
 import * as selectionTypes from './selectionTypes';
 import * as selectionActions from './selectionActions';
 import territoriesData from '../../../utils/territories.json';
@@ -17,10 +17,10 @@ class Board extends React.Component {
     hovered: null,
     selectedUnit: null,
     supportedUnit: null,
+    convoyeurs: new Set([]),
     potentialMoves: new Set([]),
     coastOptions: {},
-    supportMode: true,
-    convoyMode: false,
+    mode: 'convoy',
     tmpMoveStorage: {},
     chooseCoastModal: false
   };
@@ -29,10 +29,10 @@ class Board extends React.Component {
     this.setState({
       selectedUnit: null,
       supportedUnit: null,
+      convoyeurs: new Set([]),
       potentialMoves: new Set([]),
       coastOptions: {},
-      supportMode: false,
-      convoyMode: false,
+      mode: 'normal',
       tmpMoveStorage: {},
       chooseCoastModal: false
     });
@@ -52,7 +52,7 @@ class Board extends React.Component {
   handleClick = e => {
     const CLICKED_TERR = e.target.id;
     const CLICKED_UNIT = this.props.units[CLICKED_TERR];
-    const SELECTION_TYPE = discernSelectionType({
+    const SELECTION_TYPE = selectionTypes.discernSelectionType({
       state: this.state,
       units: this.props.units,
       clickedTerr: CLICKED_TERR,
@@ -94,6 +94,19 @@ class Board extends React.Component {
           clickedTerr: CLICKED_TERR,
           context: this
         });
+        break;
+      case selectionTypes.SELECT_CONVOYED_UNIT:
+        selectionActions.selectConvoyedUnit({
+          clickedUnit: CLICKED_UNIT,
+          context: this
+        });
+        break;
+      case selectionTypes.SELECT_CONVOY_PATH:
+        selectionActions.selectConvoyPath({
+          clickedUnit: CLICKED_UNIT,
+          context: this
+        });
+        break;
       default:
         this.resetState();
     }

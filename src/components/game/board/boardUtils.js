@@ -1,7 +1,6 @@
 import React from 'react';
 import Army from './army/Army';
 import Fleet from './fleet/Fleet';
-import * as selectionTypes from './selectionTypes';
 import territoriesData from '../../../utils/territories.json';
 
 export function findPotentialMoves({ unit }) {
@@ -83,6 +82,8 @@ export function findPotentialSupports({ unit, unitsList }) {
     return unitsList[terr] !== undefined;
   });
 
+  // Also expand the list to include units that can travel via convoy. TODO
+
   // Then, make sure that every potentially supported unit's potential
   // moves overlaps with the clicked unit's potential moves
   for (let terr of OCCUPIED_SECOND_DEGREE) {
@@ -96,14 +97,69 @@ export function findPotentialSupports({ unit, unitsList }) {
 }
 
 export function findPotentialConvoys({ unit, unitsList }) {
-  const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
-  let potentialMoves = [];
+  return findSeaNeighbors({
+    unit,
+    unitsList,
+    occupied: true,
+    occupiedType: 'fleet'
+  });
+}
 
-  for (let key of Object.keys(SEA_NEIGHBORS)) {
-    potentialMoves = potentialMoves.concat(
-      SEA_NEIGHBORS[key].filter(terr => unitsList[terr] !== undefined)
-    );
+export function findPotentialConvoyPaths({ unit, unitsList, selectedUnit }) {
+  const OCCUPIED_SEA_NEIGHBORS = findSeaNeighbors({
+    unit,
+    unitsList,
+    occupied: true,
+    occupiedType: 'fleet'
+  });
+  const LAND_NEIGHBORS = findLandNeighbors({ unit, unitsList });
+  const POTENTIAL_CONVOY_PATHS = new Set([
+    ...OCCUPIED_SEA_NEIGHBORS,
+    ...LAND_NEIGHBORS
+  ]);
+  // Make sure the selected unit's territory is not included as an option.
+  POTENTIAL_CONVOY_PATHS.delete(selectedUnit.territory);
+  return POTENTIAL_CONVOY_PATHS;
+}
+
+function findLandNeighbors({ unit, unitsList, occupied }) {
+  const LAND_NEIGHBORS = territoriesData[unit.territory].landNeighbors;
+  let result = new Set([]);
+
+  for (let terr of LAND_NEIGHBORS) {
+    if (occupied) {
+      if (unitsList[terr] !== undefined) {
+        result.add(terr);
+      }
+    } else {
+      result.add(terr);
+    }
   }
+  return result;
+}
+
+function findSeaNeighbors({ unit, unitsList, occupied, occupiedType }) {
+  const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
+  let result = new Set([]);
+  for (let key of Object.keys(SEA_NEIGHBORS)) {
+    for (let terr of SEA_NEIGHBORS[key]) {
+      if (occupied && occupiedType) {
+        if (
+          unitsList[terr] !== undefined &&
+          unitsList[terr].type === occupiedType
+        ) {
+          result.add(terr);
+        }
+      } else if (occupied && !occupiedType) {
+        if (unitsList[terr] !== undefined) {
+          result.add(terr);
+        }
+      } else {
+        result.add(terr);
+      }
+    }
+  }
+  return result;
 }
 
 function findAllNeighbors(territory) {
@@ -181,53 +237,4 @@ export function mapUnits({ units, territories }) {
     }
     return null;
   });
-}
-
-// This function determines the type of action that should occur when
-// a territory is clicked.
-export function discernSelectionType({
-  state,
-  units,
-  clickedTerr,
-  clickedUnit
-}) {
-  if (
-    clickedUnit !== undefined &&
-    state.selectedUnit === null &&
-    !state.supportMode
-  ) {
-    return selectionTypes.SELECT_UNIT;
-  } else if (
-    state.selectedUnit !== null &&
-    state.selectedUnit.territory === clickedTerr &&
-    !state.supportMode
-  ) {
-    return selectionTypes.HOLD_UNIT;
-  } else if (state.potentialMoves.has(clickedTerr) && !state.supportMode) {
-    return selectionTypes.MOVE_UNIT;
-  } else if (
-    clickedUnit !== undefined &&
-    state.selectedUnit === null &&
-    state.supportMode
-  ) {
-    return selectionTypes.SELECT_SUPPORTING_UNIT;
-  } else if (
-    state.potentialMoves.has(clickedTerr) &&
-    state.supportMode &&
-    state.supportedUnit === null
-  ) {
-    return selectionTypes.SELECT_SUPPORTED_UNIT;
-  } else if (
-    state.supportMode &&
-    state.supportedUnit !== null &&
-    state.supportedUnit.territory === clickedTerr
-  ) {
-    return selectionTypes.HOLD_SUPPORTED_UNIT;
-  } else if (
-    state.supportMode &&
-    state.supportedUnit !== null &&
-    state.potentialMoves.has(clickedTerr)
-  ) {
-    return selectionTypes.MOVE_SUPPORTED_UNIT;
-  }
 }

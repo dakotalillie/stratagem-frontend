@@ -1,8 +1,10 @@
 import {
   determineCoast,
   findCommonMoves,
+  findPotentialConvoys,
   findPotentialMoves,
-  findPotentialSupports
+  findPotentialSupports,
+  findPotentialConvoyPaths
 } from './boardUtils';
 
 export function selectUnit({ clickedUnit, context }) {
@@ -99,4 +101,28 @@ export function moveSupportedUnit({ clickedTerr, context }) {
     auxOrderType: 'Move'
   });
   context.resetState();
+}
+
+export function selectConvoyedUnit({ clickedUnit, context }) {
+  const POTENTIAL_CONVOYS = findPotentialConvoys({
+    unit: clickedUnit,
+    unitsList: context.props.units
+  });
+  context.setState({
+    selectedUnit: clickedUnit,
+    potentialMoves: POTENTIAL_CONVOYS
+  });
+}
+
+export function selectConvoyPath({ clickedUnit, context }) {
+  const POTENTIAL_PATHS = findPotentialConvoyPaths({
+    unit: clickedUnit,
+    unitsList: context.props.units,
+    selectedUnit: context.state.selectedUnit
+  });
+
+  context.setState({
+    potentialMoves: POTENTIAL_PATHS,
+    convoyeurs: new Set([...context.state.convoyeurs, clickedUnit])
+  });
 }
