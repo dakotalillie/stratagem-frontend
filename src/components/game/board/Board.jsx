@@ -8,6 +8,7 @@ import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
 import {
   discernSelectionType,
   findPotentialMoves,
+  findPotentialSupports,
   determineCoast,
   mapUnits
 } from './boardUtils';
@@ -21,9 +22,9 @@ class Board extends React.Component {
     hovered: null,
     selectedUnit: null,
     supportedUnit: null,
-    potentialMoves: [],
+    potentialMoves: new Set([]),
     coastOptions: {},
-    supportMode: false,
+    supportMode: true,
     convoyMode: false,
     tmpMoveStorage: {},
     chooseCoastModal: false
@@ -33,7 +34,7 @@ class Board extends React.Component {
     this.setState({
       selectedUnit: null,
       supportedUnit: null,
-      potentialMoves: [],
+      potentialMoves: new Set([]),
       coastOptions: {},
       supportMode: false,
       convoyMode: false,
@@ -55,27 +56,23 @@ class Board extends React.Component {
 
   handleClick = e => {
     const CLICKED_TERR = e.target.id;
-    const UNIT_IN_TERR = this.props.units[CLICKED_TERR];
-    const LAND_NEIGHBORS = territoriesData[CLICKED_TERR].landNeighbors;
-    const SEA_NEIGHBORS = territoriesData[CLICKED_TERR].seaNeighbors;
+    const CLICKED_UNIT = this.props.units[CLICKED_TERR];
     const SELECTION_TYPE = discernSelectionType({
       state: this.state,
       units: this.props.units,
       clickedTerr: CLICKED_TERR,
-      clickedUnit: UNIT_IN_TERR
+      clickedUnit: CLICKED_UNIT
     });
 
     switch (SELECTION_TYPE) {
       // select unit
       case selectionTypes.SELECT_UNIT:
         let { potentialMoves, coastOptions } = findPotentialMoves({
-          unit: UNIT_IN_TERR,
-          landNeighbors: LAND_NEIGHBORS,
-          seaNeighbors: SEA_NEIGHBORS,
+          unit: CLICKED_UNIT,
           unitsList: this.props.units
         });
         this.setState({
-          selectedUnit: UNIT_IN_TERR,
+          selectedUnit: CLICKED_UNIT,
           potentialMoves,
           coastOptions
         });
@@ -85,9 +82,9 @@ class Board extends React.Component {
         this.props.createOrder({
           fromTerr: CLICKED_TERR,
           toTerr: CLICKED_TERR,
-          country: UNIT_IN_TERR.country,
+          country: CLICKED_UNIT.country,
           orderType: 'Hold',
-          coast: UNIT_IN_TERR.coast
+          coast: CLICKED_UNIT.coast
         });
         this.resetState();
         break;
@@ -120,7 +117,17 @@ class Board extends React.Component {
         this.resetState();
         break;
       // selected supporting unit
-
+      case selectionTypes.SELECT_SUPPORTING_UNIT:
+        // find potential supports
+        const POTENTIAL_SUPPORTS = findPotentialSupports({
+          unit: CLICKED_UNIT,
+          unitsList: this.props.units
+        });
+        this.setState({
+          selectedUnit: CLICKED_UNIT,
+          potentialMoves: POTENTIAL_SUPPORTS
+        });
+        break;
       default:
         this.resetState();
     }
@@ -142,11 +149,14 @@ class Board extends React.Component {
       result += countriesData[this.props.territories[abbreviation]].posessive;
     }
     // check if territory is selected
-    if (abbreviation === this.state.selected) {
+    if (
+      this.state.selectedUnit !== null &&
+      abbreviation === this.state.selectedUnit.territory
+    ) {
       result += ' selected';
     }
     // check if territory is potential move
-    if (this.state.potentialMoves.includes(abbreviation)) {
+    if (this.state.potentialMoves.has(abbreviation)) {
       result += ' potential';
     }
     return result;
