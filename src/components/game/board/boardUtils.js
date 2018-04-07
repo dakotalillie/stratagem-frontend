@@ -97,7 +97,7 @@ export function findPotentialSupports({ unit, unitsList }) {
 
   let potentialSupportedUnits = new Set([]);
 
-  const IMMEDIATE_NEIGHBORS = findAllNeighbors(territoriesData[unit.territory]);
+  const IMMEDIATE_NEIGHBORS = findNeighbors({ sourceTerr: unit.territory });
   for (let terr of IMMEDIATE_NEIGHBORS) {
     if (unitsList[terr] !== undefined) {
       potentialSupportedUnits.add(terr);
@@ -108,7 +108,7 @@ export function findPotentialSupports({ unit, unitsList }) {
   // filter for duplicates).
   const SECOND_DEGREE_NEIGHBORS = new Set([]);
   for (let neighbor of IMMEDIATE_NEIGHBORS) {
-    const NEIGHBOR_NEIGHBORS = findAllNeighbors(territoriesData[neighbor]);
+    const NEIGHBOR_NEIGHBORS = findNeighbors({ sourceTerr: neighbor });
     for (let nn of NEIGHBOR_NEIGHBORS) {
       if (nn !== unit.territory) {
         SECOND_DEGREE_NEIGHBORS.add(nn);
@@ -137,8 +137,8 @@ export function findPotentialSupports({ unit, unitsList }) {
   // Then, find occupied water territories next to those landing zones.
   const POTENTIAL_CONVOY_PATH = new Set([]);
   for (let landingZone of LANDING_ZONES) {
-    const OCCUPIED_SEA_NEIGHBORS = findSeaNeighborsFromTerr({
-      terr: landingZone,
+    const OCCUPIED_SEA_NEIGHBORS = findNeighbors({
+      sourceTerr: landingZone,
       unitsList,
       occupied: true,
       occupiedType: 'fleet',
@@ -159,8 +159,8 @@ export function findPotentialSupports({ unit, unitsList }) {
   const CONVOY_CHECK_QUEUE = [...POTENTIAL_CONVOY_PATH];
   while (CONVOY_CHECK_QUEUE.length > 0) {
     const TERR = CONVOY_CHECK_QUEUE.shift();
-    const OCCUPIED_WATER_NEIGHBORS = findSeaNeighborsFromTerr({
-      terr: TERR,
+    const OCCUPIED_WATER_NEIGHBORS = findNeighbors({
+      sourceTerr: TERR,
       unitsList,
       occupied: true,
       occupiedType: 'fleet',
@@ -172,8 +172,8 @@ export function findPotentialSupports({ unit, unitsList }) {
       }
       POTENTIAL_CONVOY_PATH.add(terr);
     }
-    const OCCUPIED_COASTAL_NEIGHBORS = findSeaNeighborsFromTerr({
-      terr: TERR,
+    const OCCUPIED_COASTAL_NEIGHBORS = findNeighbors({
+      sourceTerr: TERR,
       unitsList,
       occupied: true,
       occupiedType: 'army',
@@ -192,8 +192,8 @@ export function findPotentialSupports({ unit, unitsList }) {
 }
 
 export function findPotentialConvoys({ unit, unitsList }) {
-  return findSeaNeighbors({
-    unit,
+  return findNeighbors({
+    sourceTerr: unit.territory,
     unitsList,
     occupied: true,
     occupiedType: 'fleet'
@@ -206,13 +206,16 @@ export function findPotentialConvoyPaths({
   selectedUnit,
   convoyeurs
 }) {
-  const OCCUPIED_SEA_NEIGHBORS = findSeaNeighbors({
-    unit,
+  const OCCUPIED_SEA_NEIGHBORS = findNeighbors({
+    sourceTerr: unit.territory,
     unitsList,
     occupied: true,
     occupiedType: 'fleet'
   });
-  const LAND_NEIGHBORS = findLandNeighbors({ unit, unitsList });
+  const LAND_NEIGHBORS = findNeighbors({
+    sourceTerr: unit.territory,
+    unitsList
+  });
   const POTENTIAL_CONVOY_PATHS = new Set([
     ...OCCUPIED_SEA_NEIGHBORS,
     ...LAND_NEIGHBORS
@@ -228,88 +231,51 @@ export function findPotentialConvoyPaths({
   return POTENTIAL_CONVOY_PATHS;
 }
 
-function findLandNeighbors({ unit, unitsList, occupied }) {
-  const LAND_NEIGHBORS = territoriesData[unit.territory].landNeighbors;
-  let result = new Set([]);
-
-  for (let terr of LAND_NEIGHBORS) {
-    if (occupied) {
-      if (unitsList[terr] !== undefined) {
-        result.add(terr);
-      }
-    } else {
-      result.add(terr);
-    }
-  }
-  return result;
-}
-
-function findSeaNeighbors({ unit, unitsList, occupied, occupiedType }) {
-  const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
-  let result = new Set([]);
-  if (SEA_NEIGHBORS !== null) {
-    for (let key of Object.keys(SEA_NEIGHBORS)) {
-      for (let terr of SEA_NEIGHBORS[key]) {
-        if (occupied && occupiedType) {
-          if (
-            unitsList[terr] !== undefined &&
-            unitsList[terr].type === occupiedType
-          ) {
-            result.add(terr);
-          }
-        } else if (occupied && !occupiedType) {
-          if (unitsList[terr] !== undefined) {
-            result.add(terr);
-          }
-        } else {
-          result.add(terr);
-        }
-      }
-    }
-  }
-
-  return result;
-}
-
-function findSeaNeighborsFromTerr({
-  terr,
-  unitsList,
-  occupied,
-  occupiedType,
-  terrType
+export function findNeighbors({
+  sourceTerr, // the territory whose neighbors you seek
+  coast, // get sea neighbors for a specific coast?
+  returnCoastData, // do you want to return coast data separately?
+  unitsList, // list of units currently on the board
+  neighborType, // specify land neighbors or sea neighbors? defaults to all
+  occupied, // does the neighbor need to be occupied?
+  occupiedType, // if the neighbor is occupied, should the unit be a specific type?
+  terrType // should the neighbor be water, coastal, or inland?
 }) {
-  const SEA_NEIGHBORS = territoriesData[terr].seaNeighbors;
-  let result = new Set([]);
-  if (SEA_NEIGHBORS !== null) {
-    for (let key of Object.keys(SEA_NEIGHBORS)) {
-      for (let terr of SEA_NEIGHBORS[key]) {
-        if (occupied && unitsList[terr] === undefined) continue;
-        if (occupiedType && unitsList[terr].type !== occupiedType) continue;
-        if (terrType && territoriesData[terr].type !== terrType) continue;
-        result.add(terr);
+  const NEIGHBORS = new Set([]);
+  if (neighborType === undefined || neighborType === 'land') {
+    const LAND_NEIGHBORS = territoriesData[sourceTerr].landNeighbors;
+    for (let terr of LAND_NEIGHBORS) {
+      if (occupied && unitsList[terr] === undefined) continue;
+      if (occupiedType && unitsList[terr].type !== occupiedType) continue;
+      if (terrType && territoriesData[terr].type !== terrType) continue;
+      NEIGHBORS.add(terr);
+    }
+  }
+  if (neighborType === undefined || neighborType === 'sea') {
+    const SEA_NEIGHBORS = territoriesData[sourceTerr].seaNeighbors;
+    if (SEA_NEIGHBORS !== null) {
+      for (let key of Object.keys(SEA_NEIGHBORS)) {
+        if (coast !== undefined || (coast && coast === key)) {
+          for (let terr of SEA_NEIGHBORS[key]) {
+            let terrName = terr;
+            if (
+              terrName.endsWith('SC') ||
+              terrName.endsWith('EC') ||
+              terrName.endsWith('NC')
+            ) {
+              const SPLIT = terr.split('_');
+              terrName = SPLIT[0];
+            }
+            if (occupied && unitsList[terr] === undefined) continue;
+            if (occupiedType && unitsList[terr].type !== occupiedType) continue;
+            if (terrType && territoriesData[terr].type !== terrType) continue;
+            NEIGHBORS.add(terrName);
+          }
+        }
       }
     }
   }
-
-  return result;
-}
-
-export function findAllNeighbors(territory) {
-  let neighbors = territory.landNeighbors;
-  const SEA_NEIGHBORS = territory.seaNeighbors;
-  if (SEA_NEIGHBORS !== null) {
-    for (let key of Object.keys(SEA_NEIGHBORS)) {
-      const NEIGHBORS_NO_COAST_INFO = SEA_NEIGHBORS[key].map(terr => {
-        if (terr.endsWith('SC') || terr.endsWith('EC') || terr.endsWith('NC')) {
-          const SPLIT = terr.split('_');
-          return SPLIT[0];
-        }
-        return terr;
-      });
-      neighbors = neighbors.concat(NEIGHBORS_NO_COAST_INFO);
-    }
-  }
-  return neighbors;
+  return NEIGHBORS;
 }
 
 export function findCommonMoves({ unit1, unit2 }) {
