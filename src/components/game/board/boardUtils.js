@@ -50,6 +50,46 @@ export function findPotentialMoves({ unit }) {
   return { potentialMoves, coastOptions };
 }
 
+export function findPotentialLandingZones({ unit }) {
+  // If an army, this consists of finding potential moves that are coastal
+  // If a fleet, this consists of finding potential moves that are coastal
+  let potentialMoves = new Set([]);
+  const LAND_NEIGHBORS = territoriesData[unit.territory].landNeighbors;
+  const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
+
+  if (unit.type === 'army') {
+    for (let neighbor of LAND_NEIGHBORS) {
+      potentialMoves.add(neighbor);
+    }
+  } else if (unit.type === 'fleet') {
+    // Valid moves for fleets are dependent on their coast. Will need to
+    // handle cases for territories with multiple coasts.
+    if (unit.coast) {
+      for (let neighbor of SEA_NEIGHBORS[unit.coast]) {
+        potentialMoves.add(neighbor);
+      }
+    } else {
+      for (let neighbor of SEA_NEIGHBORS.all) {
+        potentialMoves.add(neighbor);
+      }
+    }
+  }
+
+  // remove coast data, then filter to make sure they're coastal.
+  potentialMoves = new Set(
+    [...potentialMoves]
+      .map(terr => {
+        if (terr.endsWith('SC') || terr.endsWith('EC') || terr.endsWith('NC')) {
+          const SPLIT = terr.split('_');
+          return SPLIT[0];
+        }
+        return terr;
+      })
+      .filter(terr => territoriesData[terr].type === 'coastal')
+  );
+  return potentialMoves;
+}
+
 export function findPotentialSupports({ unit, unitsList }) {
   // First, generate a list of all neighboring territories, making sure to
   // filter out any coast information. Any immediate neighbors with units
@@ -82,8 +122,6 @@ export function findPotentialSupports({ unit, unitsList }) {
     return unitsList[terr] !== undefined;
   });
 
-  // Also expand the list to include units that can travel via convoy. TODO
-
   // Then, make sure that every potentially supported unit's potential
   // moves overlaps with the clicked unit's potential moves
   for (let terr of OCCUPIED_SECOND_DEGREE) {
@@ -92,6 +130,63 @@ export function findPotentialSupports({ unit, unitsList }) {
       potentialSupportedUnits.add(terr);
     }
   }
+
+  // We also need to find any distant units we could support when they're
+  // convoyed to an adjacent territory. First, identify the landing zones.
+  const LANDING_ZONES = findPotentialLandingZones({ unit });
+  // Then, find occupied water territories next to those landing zones.
+  const POTENTIAL_CONVOY_PATH = new Set([]);
+  for (let landingZone of LANDING_ZONES) {
+    const OCCUPIED_SEA_NEIGHBORS = findSeaNeighborsFromTerr({
+      terr: landingZone,
+      unitsList,
+      occupied: true,
+      occupiedType: 'fleet',
+      terrType: 'water'
+    });
+    for (let terr of OCCUPIED_SEA_NEIGHBORS) {
+      POTENTIAL_CONVOY_PATH.add(terr);
+    }
+  }
+  /*
+  Then, start a queue from POTENTIAL_CONVOY_PATH. For each element in the
+  queue, identify any neighboring occupied water territories, adding those 
+  both to the potential convoy path and the queue. Then, identify any 
+  neighboring occupied coastal territories, making sure they don't match
+  the supporting unit before adding them to potentialSupportedUnits. Then
+  remove the element from the queue
+  */
+  const CONVOY_CHECK_QUEUE = [...POTENTIAL_CONVOY_PATH];
+  while (CONVOY_CHECK_QUEUE.length > 0) {
+    const TERR = CONVOY_CHECK_QUEUE.shift();
+    const OCCUPIED_WATER_NEIGHBORS = findSeaNeighborsFromTerr({
+      terr: TERR,
+      unitsList,
+      occupied: true,
+      occupiedType: 'fleet',
+      terrType: 'water'
+    });
+    for (let terr of OCCUPIED_WATER_NEIGHBORS) {
+      if (!POTENTIAL_CONVOY_PATH.has(terr)) {
+        CONVOY_CHECK_QUEUE.push(terr);
+      }
+      POTENTIAL_CONVOY_PATH.add(terr);
+    }
+    const OCCUPIED_COASTAL_NEIGHBORS = findSeaNeighborsFromTerr({
+      terr: TERR,
+      unitsList,
+      occupied: true,
+      occupiedType: 'army',
+      terrType: 'coastal'
+    });
+    for (let terr of OCCUPIED_COASTAL_NEIGHBORS) {
+      if (terr !== unit.territory) {
+        potentialSupportedUnits.add(terr);
+      }
+    }
+  }
+
+  // debugger;
 
   return potentialSupportedUnits;
 }
@@ -152,24 +247,50 @@ function findLandNeighbors({ unit, unitsList, occupied }) {
 function findSeaNeighbors({ unit, unitsList, occupied, occupiedType }) {
   const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
   let result = new Set([]);
-  for (let key of Object.keys(SEA_NEIGHBORS)) {
-    for (let terr of SEA_NEIGHBORS[key]) {
-      if (occupied && occupiedType) {
-        if (
-          unitsList[terr] !== undefined &&
-          unitsList[terr].type === occupiedType
-        ) {
+  if (SEA_NEIGHBORS !== null) {
+    for (let key of Object.keys(SEA_NEIGHBORS)) {
+      for (let terr of SEA_NEIGHBORS[key]) {
+        if (occupied && occupiedType) {
+          if (
+            unitsList[terr] !== undefined &&
+            unitsList[terr].type === occupiedType
+          ) {
+            result.add(terr);
+          }
+        } else if (occupied && !occupiedType) {
+          if (unitsList[terr] !== undefined) {
+            result.add(terr);
+          }
+        } else {
           result.add(terr);
         }
-      } else if (occupied && !occupiedType) {
-        if (unitsList[terr] !== undefined) {
-          result.add(terr);
-        }
-      } else {
+      }
+    }
+  }
+
+  return result;
+}
+
+function findSeaNeighborsFromTerr({
+  terr,
+  unitsList,
+  occupied,
+  occupiedType,
+  terrType
+}) {
+  const SEA_NEIGHBORS = territoriesData[terr].seaNeighbors;
+  let result = new Set([]);
+  if (SEA_NEIGHBORS !== null) {
+    for (let key of Object.keys(SEA_NEIGHBORS)) {
+      for (let terr of SEA_NEIGHBORS[key]) {
+        if (occupied && unitsList[terr] === undefined) continue;
+        if (occupiedType && unitsList[terr].type !== occupiedType) continue;
+        if (terrType && territoriesData[terr].type !== terrType) continue;
         result.add(terr);
       }
     }
   }
+
   return result;
 }
 

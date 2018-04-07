@@ -108,10 +108,14 @@ export function selectConvoyedUnit({ clickedUnit, context }) {
     unit: clickedUnit,
     unitsList: context.props.units
   });
-  context.setState({
-    selectedUnit: clickedUnit,
-    potentialMoves: POTENTIAL_CONVOYS
-  });
+  if (POTENTIAL_CONVOYS.size > 0) {
+    context.setState({
+      selectedUnit: clickedUnit,
+      potentialMoves: POTENTIAL_CONVOYS
+    });
+  } else {
+    context.resetState();
+  }
 }
 
 export function selectConvoyPath({ clickedUnit, context }) {

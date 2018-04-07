@@ -118,6 +118,39 @@ class Board extends React.Component {
     }
   };
 
+  setMode = mode => {
+    const SELECTED_UNIT = this.state.selectedUnit;
+    if (mode !== this.state.mode && SELECTED_UNIT !== null) {
+      switch (mode) {
+        case 'normal':
+          selectionActions.selectUnit({
+            clickedUnit: SELECTED_UNIT,
+            context: this
+          });
+          break;
+        case 'support':
+          selectionActions.selectSupportingUnit({
+            clickedUnit: SELECTED_UNIT,
+            context: this
+          });
+          break;
+        case 'convoy':
+          if (SELECTED_UNIT.type === 'army') {
+            selectionActions.selectConvoyedUnit({
+              clickedUnit: SELECTED_UNIT,
+              context: this
+            });
+          } else {
+            this.resetState();
+          }
+          break;
+        default:
+          this.resetState();
+      }
+    }
+    this.setState({ mode });
+  };
+
   selectCoast = coast => {
     this.props.createOrder({
       ...this.state.tmpMoveStorage,
@@ -157,10 +190,6 @@ class Board extends React.Component {
       }
     }
     return result;
-  };
-
-  setMode = mode => {
-    this.setState({ mode });
   };
 
   render() {
