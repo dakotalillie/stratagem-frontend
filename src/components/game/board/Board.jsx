@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, Container } from 'reactstrap';
+import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
 import { createOrder } from '../../../actions';
+import BoardHeader from './boardHeader/BoardHeader';
 import BoardMap from './boardMap/BoardMap';
+import BoardFooter from './boardFooter/BoardFooter';
 import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
 import { mapUnits } from './boardUtils';
 import * as selectionTypes from './selectionTypes';
@@ -22,7 +24,8 @@ class Board extends React.Component {
     coastOptions: {},
     mode: 'normal',
     tmpMoveStorage: {},
-    chooseCoastModal: false
+    chooseCoastModal: false,
+    infoText: 'Select a unit to give orders.'
   };
 
   resetState = () => {
@@ -34,7 +37,8 @@ class Board extends React.Component {
       coastOptions: {},
       mode: 'normal',
       tmpMoveStorage: {},
-      chooseCoastModal: false
+      chooseCoastModal: false,
+      infoText: 'Select a unit to give orders.'
     });
   };
 
@@ -166,14 +170,12 @@ class Board extends React.Component {
     if (this.props.territories[abbreviation] !== undefined) {
       result += countriesData[this.props.territories[abbreviation]].posessive;
     }
-    // check if territory is selected
     if (
       this.state.selectedUnit !== null &&
       abbreviation === this.state.selectedUnit.territory
     ) {
       result += ' selected';
     }
-    // check if territory is supported
     if (
       this.state.supportedUnit !== null &&
       abbreviation === this.state.supportedUnit.territory
@@ -181,7 +183,6 @@ class Board extends React.Component {
       result += ' supported';
     }
     if (this.state.potentialMoves.has(abbreviation)) {
-      // check if territory is potential move
       result += ' potential';
     }
     for (let convoyeur of this.state.convoyeurs) {
@@ -200,6 +201,7 @@ class Board extends React.Component {
     return (
       <div className="board">
         <Container>
+          <BoardHeader mode={this.state.mode} setMode={this.setMode} />
           <div className="board-map">
             {this.state.chooseCoastModal ? (
               <ChooseCoastModal
@@ -221,27 +223,7 @@ class Board extends React.Component {
               })}
             </BoardMap>
           </div>
-          <Button
-            outline
-            active={this.state.mode === 'normal'}
-            onClick={() => this.setMode('normal')}
-          >
-            Normal
-          </Button>
-          <Button
-            outline
-            active={this.state.mode === 'support'}
-            onClick={() => this.setMode('support')}
-          >
-            Support
-          </Button>
-          <Button
-            outline
-            active={this.state.mode === 'convoy'}
-            onClick={() => this.setMode('convoy')}
-          >
-            Convoy
-          </Button>
+          <BoardFooter infoText={this.state.infoText} />
         </Container>
       </div>
     );

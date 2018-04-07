@@ -7,9 +7,7 @@
     "startingUnits": [
       { "type": "army", "territory": "Lvp", "coast": null },
       { "type": "fleet", "territory": "Lon", "coast": null },
-      { "type": "fleet", "territory": "Edi", "coast": null },
-      { "type": "fleet", "territory": "IRI", "coast": null },
-      { "type": "fleet", "territory": "MAO", "coast": null }
+      { "type": "fleet", "territory": "Edi", "coast": null }
     ]
   },
   "France": {

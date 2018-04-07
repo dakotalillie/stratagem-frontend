@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { initializeGame } from '../../actions';
 import Board from './board/Board';
+import OrderAlert from './orderAlert/OrderAlert';
 import './game.css';
 
 class Game extends React.Component {
@@ -13,6 +14,7 @@ class Game extends React.Component {
   render() {
     return (
       <div className="game">
+        <OrderAlert />
         <Board />
       </div>
     );
@@ -23,4 +25,8 @@ Game.propTypes = {
   initializeGame: PropTypes.func
 };
 
-export default connect(null, { initializeGame })(Game);
+const connectStateToProps = state => ({
+  orders: state.orders
+});
+
+export default connect(connectStateToProps, { initializeGame })(Game);

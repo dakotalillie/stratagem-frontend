@@ -1,0 +1,25 @@
+.board-header {
+  width: 100%;
+  background-color: lightgrey;
+  .row {
+    padding-bottom: 10px;
+    padding-top: 10px;
+    .col-left {
+      text-align: left;
+      .date {
+        margin-bottom: 0px;
+        margin-top: 6px;
+      }
+    }
+    .col-middle {
+      text-align: middle;
+      .phase {
+        margin-bottom: 0px;
+        margin-top: 2px;
+      }
+    }
+    .col-right {
+      text-align: right;
+    }
+  }
+}

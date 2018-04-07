@@ -14,7 +14,8 @@ export function selectUnit({ clickedUnit, context }) {
   context.setState({
     selectedUnit: clickedUnit,
     potentialMoves,
-    coastOptions
+    coastOptions,
+    infoText: 'Select where you want to move the unit.'
   });
 }
 
@@ -63,7 +64,8 @@ export function selectSupportingUnit({ clickedUnit, context }) {
   });
   context.setState({
     selectedUnit: clickedUnit,
-    potentialMoves: POTENTIAL_SUPPORTS
+    potentialMoves: POTENTIAL_SUPPORTS,
+    infoText: 'Select which unit to give support to.'
   });
 }
 
@@ -74,7 +76,11 @@ export function selectSupportedUnit({ clickedUnit, context }) {
     supportedUnit: clickedUnit,
     unitsList: context.props.units
   });
-  context.setState({ supportedUnit: clickedUnit, potentialMoves: COMMON });
+  context.setState({
+    supportedUnit: clickedUnit,
+    potentialMoves: COMMON,
+    infoText: 'Select where the supported unit will move.'
+  });
 }
 
 export function holdSupportedUnit({ context }) {
@@ -112,7 +118,8 @@ export function selectConvoyedUnit({ clickedUnit, context }) {
   if (POTENTIAL_CONVOYS.size > 0) {
     context.setState({
       selectedUnit: clickedUnit,
-      potentialMoves: POTENTIAL_CONVOYS
+      potentialMoves: POTENTIAL_CONVOYS,
+      infoText: 'Select which fleet will begin the convoy.'
     });
   } else {
     context.resetState();
@@ -128,7 +135,9 @@ export function selectConvoyPath({ clickedUnit, context }) {
   });
   context.setState({
     potentialMoves: POTENTIAL_PATHS,
-    convoyeurs: new Set([...context.state.convoyeurs, clickedUnit])
+    convoyeurs: new Set([...context.state.convoyeurs, clickedUnit]),
+    infoText:
+      'Select another fleet to continue the convoy or a valid coastal territory for the destination.'
   });
 }
 
