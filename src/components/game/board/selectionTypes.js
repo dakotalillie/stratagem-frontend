@@ -51,7 +51,7 @@ export function discernSelectionType({
     state.mode === 'support' &&
     state.supportedUnit !== null &&
     state.supportedUnit.territory === clickedTerr &&
-    findNeighbors(clickedTerr).has(state.selectedUnit.territory)
+    findNeighbors({ sourceTerr: clickedTerr }).has(state.selectedUnit.territory)
   ) {
     return HOLD_SUPPORTED_UNIT;
   } else if (

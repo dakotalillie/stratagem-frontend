@@ -1,9 +1,9 @@
 import {
   determineCoast,
-  findCommonMoves,
   findPotentialConvoys,
   findPotentialMoves,
   findPotentialSupports,
+  findPotentialSupportedMoves,
   findPotentialConvoyPaths
 } from './boardUtils';
 
@@ -69,9 +69,10 @@ export function selectSupportingUnit({ clickedUnit, context }) {
 
 export function selectSupportedUnit({ clickedUnit, context }) {
   // find moves they have in common
-  const COMMON = findCommonMoves({
-    unit1: clickedUnit,
-    unit2: context.state.selectedUnit
+  const COMMON = findPotentialSupportedMoves({
+    selectedUnit: context.state.selectedUnit,
+    supportedUnit: clickedUnit,
+    unitsList: context.props.units
   });
   context.setState({ supportedUnit: clickedUnit, potentialMoves: COMMON });
 }
