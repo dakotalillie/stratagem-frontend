@@ -8,13 +8,13 @@ const BoardHeader = props => {
     <div className="board-header">
       <Container>
         <Row>
-          <Col sm="4" className="col-left">
+          <Col md="4" className="col-left">
             <h5 className="date">Spring 1901</h5>
           </Col>
-          <Col sm="4" className="col-middle">
-            <h3 className="phase">Diplomatic Phase</h3>
+          <Col md="4" className="col-middle">
+            <h4 className="phase">Diplomatic Phase</h4>
           </Col>
-          <Col sm="4" className="col-right">
+          <Col md="4" className="col-right">
             <ButtonGroup>
               <Button
                 outline

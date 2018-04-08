@@ -8,18 +8,110 @@
       text-align: left;
       .date {
         margin-bottom: 0px;
-        margin-top: 6px;
+        margin-top: 3px;
       }
     }
     .col-middle {
       text-align: middle;
       .phase {
         margin-bottom: 0px;
-        margin-top: 2px;
+        margin-top: 0px;
       }
     }
     .col-right {
       text-align: right;
+      .btn {
+        font-size: 0.5rem;
+      }
+    }
+  }
+}
+
+@media (min-width: 1200px) {
+  .board-header .row {
+    .col-left .date {
+      margin-top: 6px;
+    }
+    .col-middle .phase {
+      margin-top: 4px;
+    }
+    .col-right .btn {
+      font-size: 1rem;
+    }
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .board-header .row {
+    .col-left .date {
+      margin-top: 6px;
+    }
+    .col-middle .phase {
+      margin-top: 3px;
+    }
+    .col-right .btn {
+      font-size: 0.9rem;
+    }
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .board-header .row {
+    .col-left .date {
+      font-size: 1rem;
+      margin-top: 4px;
+    }
+    .col-middle .phase {
+      font-size: 1.3rem;
+      margin-top: 2px;
+    }
+    .col-right .btn {
+      font-size: 0.7rem;
+    }
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .board-header .row {
+    .col-left {
+      text-align: center;
+      .date {
+        font-size: 0.9rem;
+        margin-bottom: 2px;
+      }
+    }
+    .col-middle .phase {
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    .col-right {
+      text-align: center;
+      .btn {
+        font-size: 0.5rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 575px) {
+  .board-header .row {
+    .col-left {
+      text-align: center;
+      .date {
+        font-size: 0.9rem;
+        margin-top: 0;
+        margin-bottom: 2px;
+      }
+    }
+    .col-middle .phase {
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    .col-right {
+      text-align: center;
+      .btn {
+        font-size: 0.5rem;
+      }
     }
   }
 }
