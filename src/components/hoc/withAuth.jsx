@@ -6,7 +6,9 @@ import { Redirect } from 'react-router-dom';
 function withAuth(WrappedComponent, reversed) {
   class authorizedComponent extends React.Component {
     render() {
-      if (
+      if (this.props.loading) {
+        return <div />;
+      } else if (
         (!reversed && this.props.isLoggedIn) ||
         (reversed && !this.props.isLoggedIn)
       ) {
@@ -18,7 +20,10 @@ function withAuth(WrappedComponent, reversed) {
   }
 
   function mapStateToProps(state) {
-    return { isLoggedIn: state.isLoggedIn };
+    return {
+      loading: state.currentUser.loading,
+      isLoggedIn: state.isLoggedIn
+    };
   }
 
   return connect(mapStateToProps, {})(authorizedComponent);

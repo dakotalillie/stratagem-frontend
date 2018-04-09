@@ -76,7 +76,7 @@ export function login(username, password) {
       })
       .then(json => {
         dispatch(receiveToken(json.token));
-        window.location.href = '/';
+        window.location.href = '/games';
       })
       .catch(error => {
         dispatch(authenticationError(error.message));
@@ -113,7 +113,7 @@ export const signup = params => {
       })
       .then(json => {
         dispatch(receiveToken(json.token));
-        window.location.href = '/';
+        window.location.href = '/games';
       })
       .catch(error => {
         dispatch(authenticationError(error.message));

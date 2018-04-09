@@ -48,6 +48,11 @@ class SiteHeader extends React.Component {
     let loggedInContent = (
       <Nav className="ml-auto" navbar>
         <NavItem>
+          <Link className="nav-link" to="/games">
+            Games
+          </Link>
+        </NavItem>
+        <NavItem>
           <NavLink onClick={this.logout}>Logout</NavLink>
         </NavItem>
       </Nav>
