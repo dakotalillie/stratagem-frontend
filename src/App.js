@@ -22,8 +22,28 @@ class App extends Component {
     return (
       <div className="App">
         <Route exact path="/" component={Welcome} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/signup" component={Signup} />
+        <Route
+          exact
+          path="/login"
+          render={() => {
+            if (this.props.isLoggedIn) {
+              return <Login />;
+            } else {
+              return <Redirect to="/" />;
+            }
+          }}
+        />
+        <Route
+          exact
+          path="/signup"
+          render={() => {
+            if (this.props.isLoggedIn) {
+              return <Signup />;
+            } else {
+              return <Redirect to="/" />;
+            }
+          }}
+        />
         <Route
           exact
           path="/game"
@@ -31,7 +51,7 @@ class App extends Component {
             if (this.props.isLoggedIn) {
               return <Game />;
             } else {
-              return <Redirect to="/welcome" />;
+              return <Redirect to="/" />;
             }
           }}
         />
