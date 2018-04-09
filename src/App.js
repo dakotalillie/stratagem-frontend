@@ -26,7 +26,7 @@ class App extends Component {
           exact
           path="/login"
           render={() => {
-            if (this.props.isLoggedIn) {
+            if (!this.props.isLoggedIn) {
               return <Login />;
             } else {
               return <Redirect to="/" />;
@@ -37,7 +37,7 @@ class App extends Component {
           exact
           path="/signup"
           render={() => {
-            if (this.props.isLoggedIn) {
+            if (!this.props.isLoggedIn) {
               return <Signup />;
             } else {
               return <Redirect to="/" />;
