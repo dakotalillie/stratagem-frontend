@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { initializeGame } from '../../actions';
 import Board from './board/Board';
-import OrderAlert from './orderAlert/OrderAlert';
+// import OrderAlert from './orderAlert/OrderAlert';
 import './game.css';
 
 class Game extends React.Component {

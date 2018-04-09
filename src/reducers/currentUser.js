@@ -3,7 +3,7 @@ import {
   RECEIVE_TOKEN,
   REQUEST_CURRENT_USER,
   RECEIVE_CURRENT_USER,
-  LOGIN_ERROR,
+  AUTHENTICATION_ERROR,
   NO_TOKEN
 } from '../actions/actionTypes';
 
@@ -20,7 +20,7 @@ const currentUser = (state = { loading: true }, action) => {
     case RECEIVE_CURRENT_USER:
       let { id, first_name, last_name, email } = action.payload.user_data;
       return { loading: false, id, first_name, last_name, email };
-    case LOGIN_ERROR:
+    case AUTHENTICATION_ERROR:
       return { loading: false, error: action.payload.error };
     default:
       return state;
