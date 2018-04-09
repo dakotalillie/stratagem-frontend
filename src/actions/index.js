@@ -1,2 +1,2 @@
 export { createOrder, initializeGame } from './game';
-export { login } from './auth';
+export { login, noToken, fetchCurrentUser } from './auth';

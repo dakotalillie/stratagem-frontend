@@ -9,6 +9,15 @@ import Signup from './components/signup/Signup';
 import './App.css';
 
 class App extends Component {
+  componentDidMount() {
+    let token = localStorage.getItem('token');
+    if (token) {
+      this.props.fetchCurrentUser();
+    } else {
+      this.props.noToken();
+    }
+  }
+
   render() {
     return (
       <div className="App">
@@ -35,4 +44,6 @@ const mapStateToProps = state => ({
   isLoggedIn: state.isLoggedIn
 });
 
-export default withRouter(connect(mapStateToProps, {})(App));
+export default withRouter(
+  connect(mapStateToProps, { noToken, fetchCurrentUser })(App)
+);
