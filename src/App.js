@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Redirect, Route, withRouter } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import { noToken, fetchCurrentUser } from './actions/';
+import withAuth from './components/hoc/withAuth';
 import Welcome from './components/welcome/Welcome';
+import GamesList from './components/gamesList/GamesList';
 import Game from './components/game/Game';
 import Login from './components/login/Login';
 import Signup from './components/signup/Signup';
@@ -22,48 +24,13 @@ class App extends Component {
     return (
       <div className="App">
         <Route exact path="/" component={Welcome} />
-        <Route
-          exact
-          path="/login"
-          render={() => {
-            if (!this.props.isLoggedIn) {
-              return <Login />;
-            } else {
-              return <Redirect to="/" />;
-            }
-          }}
-        />
-        <Route
-          exact
-          path="/signup"
-          render={() => {
-            if (!this.props.isLoggedIn) {
-              return <Signup />;
-            } else {
-              return <Redirect to="/" />;
-            }
-          }}
-        />
-        <Route
-          exact
-          path="/game"
-          render={() => {
-            if (this.props.isLoggedIn) {
-              return <Game />;
-            } else {
-              return <Redirect to="/" />;
-            }
-          }}
-        />
+        <Route exact path="/login" component={withAuth(Login, true)} />
+        <Route exact path="/signup" component={withAuth(Signup, true)} />
+        <Route exact path="/games" component={withAuth(GamesList)} />
+        <Route exact path="/game" component={withAuth(Game)} />
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({
-  isLoggedIn: state.isLoggedIn
-});
-
-export default withRouter(
-  connect(mapStateToProps, { noToken, fetchCurrentUser })(App)
-);
+export default withRouter(connect(null, { noToken, fetchCurrentUser })(App));
