@@ -21,8 +21,8 @@ export function selectUnit({ clickedUnit, context }) {
 
 export function holdUnit({ context }) {
   context.props.createOrder({
+    unit_id: context.state.selectedUnit.id,
     fromTerr: context.state.selectedUnit.territory,
-    country: context.state.selectedUnit.country,
     orderType: 'Hold',
     coast: context.state.selectedUnit.coast
   });
@@ -35,9 +35,9 @@ export function moveUnit({ clickedTerr, context }) {
   });
   if (coast !== -1) {
     context.props.createOrder({
+      unit_id: context.state.selectedUnit.id,
       fromTerr: context.state.selectedUnit.territory,
       toTerr: clickedTerr,
-      country: context.state.selectedUnit.country,
       orderType: 'Move',
       coast
     });
@@ -47,7 +47,6 @@ export function moveUnit({ clickedTerr, context }) {
       tmpMoveStorage: {
         fromTerr: context.state.selectedUnit.territory,
         toTerr: clickedTerr,
-        country: context.state.selectedUnit.country,
         orderType: 'Move'
       },
       chooseCoastModal: true
@@ -85,12 +84,11 @@ export function selectSupportedUnit({ clickedUnit, context }) {
 
 export function holdSupportedUnit({ context }) {
   context.props.createOrder({
+    unit_id: context.state.selectedUnit.id,
     fromTerr: context.state.selectedUnit.territory,
-    country: context.state.selectedUnit.country,
     orderType: 'Support',
     coast: context.state.selectedUnit.coast,
     auxFromTerr: context.state.supportedUnit.territory,
-    auxCountry: context.state.supportedUnit.country,
     auxOrderType: 'Hold'
   });
   context.resetState();
@@ -98,13 +96,12 @@ export function holdSupportedUnit({ context }) {
 
 export function moveSupportedUnit({ clickedTerr, context }) {
   context.props.createOrder({
+    unit_id: context.state.selectedUnit.id,
     fromTerr: context.state.selectedUnit.territory,
-    country: context.state.selectedUnit.country,
     orderType: 'Support',
     coast: context.state.selectedUnit.coast,
     auxFromTerr: context.state.supportedUnit.territory,
     auxToTerr: clickedTerr,
-    auxCountry: context.state.supportedUnit.country,
     auxOrderType: 'Move'
   });
   context.resetState();
@@ -143,21 +140,21 @@ export function selectConvoyPath({ clickedUnit, context }) {
 
 export function selectConvoyDestination({ clickedTerr, context }) {
   context.props.createOrder({
+    unit_id: context.state.selectedUnit.id,
     fromTerr: context.state.selectedUnit.territory,
     toTerr: clickedTerr,
     country: context.state.selectedUnit.country,
     orderType: 'Move',
-    coast: null
+    coast: ''
   });
   for (let convoyer of context.state.convoyeurs) {
     context.props.createOrder({
+      unit_id: convoyer.id,
       fromTerr: convoyer.territory,
-      country: convoyer.country,
       orderType: 'Convoy',
-      coast: null,
+      coast: '',
       auxFromTerr: context.state.selectedUnit.territory,
       auxToTerr: clickedTerr,
-      auxCountry: context.state.selectedUnit.country,
       auxOrderType: 'Move'
     });
   }

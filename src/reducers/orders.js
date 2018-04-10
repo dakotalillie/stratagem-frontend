@@ -5,13 +5,12 @@ const orders = (state = {}, action) => {
     case CREATE_ORDER:
       let newState = { ...state };
       newState[action.fromTerr] = {
+        unit_id: action.unit_id,
         toTerr: action.toTerr,
-        country: action.country,
         orderType: action.orderType,
         coast: action.coast,
         auxFromTerr: action.auxFromTerr,
         auxToTerr: action.auxToTerr,
-        auxCountry: action.auxCountry,
         auxOrderType: action.auxOrderType
       };
       return newState;

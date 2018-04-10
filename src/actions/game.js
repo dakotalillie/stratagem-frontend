@@ -1,18 +1,13 @@
 import {
-  INITIALIZE_GAME,
   CREATE_ORDER,
   REQUEST_GAME_DATA,
   RECEIVE_GAME_DATA,
-  GAME_DATA_ERROR
+  GAME_DATA_ERROR,
+  SUBMITTING_ORDERS,
+  ORDER_SUBMIT_ERROR
 } from './actionTypes';
 import { API_ROOT, HEADERS } from '../utils/constants';
 import { normalize, schema } from 'normalizr';
-
-export const initializeGame = () => {
-  return {
-    type: INITIALIZE_GAME
-  };
-};
 
 export const createOrder = args => {
   return {
@@ -47,6 +42,21 @@ function gameDataError(error_message) {
   };
 }
 
+function orderSubmitError(error_message) {
+  return {
+    type: ORDER_SUBMIT_ERROR,
+    payload: {
+      error_message
+    }
+  };
+}
+
+function submittingOrders() {
+  return {
+    type: SUBMITTING_ORDERS
+  };
+}
+
 // Thunks
 
 export function fetchGameData(game_id) {
@@ -67,6 +77,31 @@ export function fetchGameData(game_id) {
       })
       .catch(error => {
         dispatch(gameDataError(error.message));
+      });
+  };
+}
+
+export function submitOrders({ game_id, orders }) {
+  debugger;
+  return dispatch => {
+    dispatch(submittingOrders());
+    return fetch(`${API_ROOT}/games/${game_id}/orders`, {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify(orders)
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Error submitting orders');
+        } else {
+          return res.json();
+        }
+      })
+      .then(json => {
+        dispatch(receiveGameData(json));
+      })
+      .catch(error => {
+        dispatch(orderSubmitError(error.message));
       });
   };
 }
