@@ -1,5 +1,5 @@
 import territoryData from '../../../utils/territories.json';
-import { findNeighbors } from './boardUtils';
+import { findPotentialMoves } from './boardUtils';
 
 // These are the kinds of selections that can occur:
 export const SELECT_UNIT = 'SELECT UNIT';
@@ -51,7 +51,9 @@ export function discernSelectionType({
     state.mode === 'support' &&
     state.supportedUnit !== null &&
     state.supportedUnit.territory === clickedTerr &&
-    findNeighbors({ sourceTerr: clickedTerr }).has(state.selectedUnit.territory)
+    findPotentialMoves({ unit: state.selectedUnit }).potentialMoves.has(
+      clickedTerr
+    )
   ) {
     return HOLD_SUPPORTED_UNIT;
   } else if (

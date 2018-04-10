@@ -9,11 +9,11 @@ export function findPotentialMoves({ unit }) {
   const LAND_NEIGHBORS = territoriesData[unit.territory].landNeighbors;
   const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
 
-  if (unit.type === 'army') {
+  if (unit.unit_type === 'army') {
     for (let neighbor of LAND_NEIGHBORS) {
       potentialMoves.add(neighbor);
     }
-  } else if (unit.type === 'fleet') {
+  } else if (unit.unit_type === 'fleet') {
     // Valid moves for fleets are dependent on their coast. Will need to
     // handle cases for territories with multiple coasts.
     if (unit.coast) {
@@ -164,11 +164,11 @@ export function findPotentialLandingZones({ unit }) {
   const LAND_NEIGHBORS = territoriesData[unit.territory].landNeighbors;
   const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
 
-  if (unit.type === 'army') {
+  if (unit.unit_type === 'army') {
     for (let neighbor of LAND_NEIGHBORS) {
       potentialMoves.add(neighbor);
     }
-  } else if (unit.type === 'fleet') {
+  } else if (unit.unit_type === 'fleet') {
     // Valid moves for fleets are dependent on their coast. Will need to
     // handle cases for territories with multiple coasts.
     if (unit.coast) {
@@ -289,7 +289,7 @@ function terrMatchesCriteria({
   terrType
 }) {
   if (occupied && unitsList[terr] === undefined) return false;
-  if (occupiedType && unitsList[terr].type !== occupiedType) return false;
+  if (occupiedType && unitsList[terr].unit_type !== occupiedType) return false;
   if (terrType && territoriesData[terr].type !== terrType) return false;
   return true;
 }
@@ -365,7 +365,7 @@ function findCommonMoves({ unit1, unit2 }) {
 }
 
 export function determineCoast({ coastOps }) {
-  let coast = null;
+  let coast = '';
   if (
     // There is only one coast option
     coastOps !== undefined &&
