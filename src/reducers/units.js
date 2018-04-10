@@ -1,4 +1,4 @@
-import { INITIALIZE_GAME } from '../actions/actionTypes';
+import { INITIALIZE_GAME, RECEIVE_GAME_DATA } from '../actions/actionTypes';
 import countryData from '../utils/countries.json';
 
 const units = (state = {}, action) => {
@@ -16,6 +16,8 @@ const units = (state = {}, action) => {
         }
       }
       return newState;
+    case RECEIVE_GAME_DATA:
+      return action.payload.game_data.units;
     default:
       return state;
   }

@@ -1,7 +1,7 @@
 {
-  "Britain": {
-    "name": "Britain",
-    "posessive": "British",
+  "England": {
+    "name": "England",
+    "posessive": "English",
     "homeSupplyCenters": ["Lon", "Lvp", "Edi"],
     "startingTerritories": ["Lon", "Lvp", "Edi", "Wal", "Yor", "Cly"],
     "startingUnits": [

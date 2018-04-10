@@ -168,7 +168,8 @@ class Board extends React.Component {
     let result = '';
     // check if territory is owned
     if (this.props.territories[abbreviation] !== undefined) {
-      result += countriesData[this.props.territories[abbreviation]].posessive;
+      result +=
+        countriesData[this.props.territories[abbreviation].owner].posessive;
     }
     if (
       this.state.selectedUnit !== null &&
@@ -197,7 +198,6 @@ class Board extends React.Component {
     const COASTS_FOR_MODAL = this.state.coastOptions[
       this.state.tmpMoveStorage.toTerr
     ];
-
     return (
       <div className="board">
         <Container>

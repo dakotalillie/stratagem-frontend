@@ -388,7 +388,7 @@ export function mapUnits({ units, territories }) {
   return Object.keys(units).map(terr => {
     const UNIT = units[terr];
     const COORDS = territories[terr].coordinates;
-    if (UNIT.type === 'army') {
+    if (UNIT.unit_type === 'army') {
       return (
         <Army
           key={terr}
@@ -397,8 +397,8 @@ export function mapUnits({ units, territories }) {
           y={COORDS.main.y}
         />
       );
-    } else if (UNIT.type === 'fleet') {
-      const COAST = UNIT.coast === null ? 'main' : UNIT.coast;
+    } else if (UNIT.unit_type === 'fleet') {
+      const COAST = UNIT.coast === '' ? 'main' : UNIT.coast;
       return (
         <Fleet
           key={terr}
