@@ -12,7 +12,7 @@ function withAuth(WrappedComponent, reversed) {
         (!reversed && this.props.isLoggedIn) ||
         (reversed && !this.props.isLoggedIn)
       ) {
-        return <WrappedComponent />;
+        return <WrappedComponent {...this.props} />;
       } else {
         return <Redirect to="/" />;
       }
