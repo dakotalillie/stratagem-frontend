@@ -6,6 +6,7 @@ import {
   GAME_DATA_ERROR
 } from './actionTypes';
 import { API_ROOT, HEADERS } from '../utils/constants';
+import { normalize, schema } from 'normalizr';
 
 export const initializeGame = () => {
   return {
@@ -27,6 +28,10 @@ function requestGameData() {
 }
 
 function receiveGameData(game_data) {
+  const normalized_data = normalizeGameData(game_data);
+
+  debugger;
+
   return {
     type: RECEIVE_GAME_DATA,
     payload: {
@@ -60,11 +65,44 @@ export function fetchGameData(game_id) {
         }
       })
       .then(json => {
-        debugger;
         dispatch(receiveGameData(json));
       })
       .catch(error => {
         dispatch(gameDataError(error.message));
       });
   };
+}
+
+// Helpers
+
+function normalizeGameData(game_data) {
+  const units = new schema.Entity(
+    'units',
+    {},
+    {
+      idAttribute: 'territory'
+    }
+  );
+  const territories = new schema.Entity(
+    'territories',
+    {},
+    {
+      idAttribute: 'abbreviation'
+    }
+  );
+  const countries = new schema.Entity(
+    'countries',
+    {
+      units: [units],
+      territories: [territories]
+    },
+    {
+      idAttribute: 'name'
+    }
+  );
+  const game = new schema.Entity('game', {
+    countries: [countries]
+  });
+
+  return normalize(game_data, game);
 }
