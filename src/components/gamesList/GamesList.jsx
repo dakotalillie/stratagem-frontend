@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, Container, ListGroup, ListGroupItem } from 'reactstrap';
+import { createSandbox } from '../../actions';
 import SiteHeader from '../shared/siteHeader/SiteHeader';
 
 class GamesList extends React.Component {
@@ -12,6 +13,7 @@ class GamesList extends React.Component {
     //   return memo;
     // }, {});
     // will make call to createGame method here.
+    this.props.createSandbox();
   };
 
   render() {
@@ -44,4 +46,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(GamesList);
+export default connect(mapStateToProps, { createSandbox })(GamesList);

@@ -3,8 +3,10 @@ import {
   REQUEST_GAME_DATA,
   RECEIVE_GAME_DATA,
   GAME_DATA_ERROR,
-  SUBMITTING_ORDERS,
-  ORDER_SUBMIT_ERROR
+  REQUEST_ORDERS_SUBMISSION,
+  ORDERS_SUBMISSION_ERROR,
+  REQUEST_GAME_CREATION,
+  GAME_CREATION_ERROR
 } from './actionTypes';
 import { API_ROOT, HEADERS } from '../utils/constants';
 import { normalize, schema } from 'normalizr';
@@ -42,22 +44,60 @@ function gameDataError(error_message) {
   };
 }
 
-function orderSubmitError(error_message) {
+function requestOrdersSubmission() {
   return {
-    type: ORDER_SUBMIT_ERROR,
+    type: REQUEST_ORDERS_SUBMISSION
+  };
+}
+
+function ordersSubmissionError(error_message) {
+  return {
+    type: ORDERS_SUBMISSION_ERROR,
     payload: {
       error_message
     }
   };
 }
 
-function submittingOrders() {
+function requestGameCreation() {
   return {
-    type: SUBMITTING_ORDERS
+    type: REQUEST_GAME_CREATION
+  };
+}
+
+function gameCreationError(error_message) {
+  return {
+    type: GAME_CREATION_ERROR,
+    payload: {
+      error_message
+    }
   };
 }
 
 // Thunks
+
+export function createSandbox() {
+  return dispatch => {
+    dispatch(requestGameCreation());
+    return fetch(`${API_ROOT}/games/sandbox/`, {
+      method: 'POST',
+      headers: HEADERS
+    })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Error creating sandbox game');
+        } else {
+          return res.json();
+        }
+      })
+      .then(json => {
+        window.location.href = `/games/${json.game_id}`;
+      })
+      .catch(error => {
+        dispatch(gameCreationError(error.message));
+      });
+  };
+}
 
 export function fetchGameData(game_id) {
   return dispatch => {
@@ -84,7 +124,7 @@ export function fetchGameData(game_id) {
 export function submitOrders({ game_id, orders }) {
   debugger;
   return dispatch => {
-    dispatch(submittingOrders());
+    dispatch(requestOrdersSubmission());
     return fetch(`${API_ROOT}/games/${game_id}/orders`, {
       method: 'POST',
       headers: HEADERS,
@@ -101,7 +141,7 @@ export function submitOrders({ game_id, orders }) {
         dispatch(receiveGameData(json));
       })
       .catch(error => {
-        dispatch(orderSubmitError(error.message));
+        dispatch(ordersSubmissionError(error.message));
       });
   };
 }
