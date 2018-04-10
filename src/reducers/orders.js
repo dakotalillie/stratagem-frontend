@@ -4,14 +4,15 @@ const orders = (state = {}, action) => {
   switch (action.type) {
     case CREATE_ORDER:
       let newState = { ...state };
-      newState[action.fromTerr] = {
+      newState[action.unit_id] = {
         unit_id: action.unit_id,
-        toTerr: action.toTerr,
-        orderType: action.orderType,
+        origin: action.origin,
+        destination: action.destination,
+        order_type: action.order_type,
         coast: action.coast,
-        auxFromTerr: action.auxFromTerr,
-        auxToTerr: action.auxToTerr,
-        auxOrderType: action.auxOrderType
+        aux_origin: action.aux_origin,
+        aux_destination: action.aux_destination,
+        aux_order_type: action.aux_order_type
       };
       return newState;
     default:
