@@ -10,6 +10,7 @@ const orders = (state = {}, action) => {
         destination: action.destination,
         order_type: action.order_type,
         coast: action.coast,
+        aux_unit_id: action.aux_unit_id,
         aux_origin: action.aux_origin,
         aux_destination: action.aux_destination,
         aux_order_type: action.aux_order_type

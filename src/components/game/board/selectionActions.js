@@ -23,7 +23,8 @@ export function holdUnit({ context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
     origin: context.state.selectedUnit.territory,
-    order_type: 'Hold',
+    destination: context.state.selectedUnit.territory,
+    order_type: 'hold',
     coast: context.state.selectedUnit.coast
   });
   context.resetState();
@@ -38,7 +39,7 @@ export function moveUnit({ clickedTerr, context }) {
       unit_id: context.state.selectedUnit.id,
       origin: context.state.selectedUnit.territory,
       destination: clickedTerr,
-      order_type: 'Move',
+      order_type: 'move',
       coast
     });
   } else {
@@ -47,7 +48,7 @@ export function moveUnit({ clickedTerr, context }) {
       tmpMoveStorage: {
         origin: context.state.selectedUnit.territory,
         destination: clickedTerr,
-        order_type: 'Move'
+        order_type: 'move'
       },
       chooseCoastModal: true
     });
@@ -86,10 +87,13 @@ export function holdSupportedUnit({ context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
     origin: context.state.selectedUnit.territory,
-    order_type: 'Support',
+    destination: context.state.selectedUnit.territory,
+    order_type: 'support',
     coast: context.state.selectedUnit.coast,
+    aux_unit_id: context.state.supportedUnit.id,
     aux_origin: context.state.supportedUnit.territory,
-    aux_order_type: 'Hold'
+    aux_destination: context.state.supportedUnit.territory,
+    aux_order_type: 'hold'
   });
   context.resetState();
 }
@@ -98,11 +102,13 @@ export function moveSupportedUnit({ clickedTerr, context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
     origin: context.state.selectedUnit.territory,
-    order_type: 'Support',
+    destination: context.state.selectedUnit.territory,
+    order_type: 'support',
     coast: context.state.selectedUnit.coast,
+    aux_unit_id: context.state.supportedUnit.id,
     aux_origin: context.state.supportedUnit.territory,
     aux_destination: clickedTerr,
-    aux_order_type: 'Move'
+    aux_order_type: 'move'
   });
   context.resetState();
 }
@@ -143,19 +149,20 @@ export function selectConvoyDestination({ clickedTerr, context }) {
     unit_id: context.state.selectedUnit.id,
     origin: context.state.selectedUnit.territory,
     destination: clickedTerr,
-    country: context.state.selectedUnit.country,
-    order_type: 'Move',
+    order_type: 'move',
     coast: ''
   });
   for (let convoyer of context.state.convoyeurs) {
     context.props.createOrder({
       unit_id: convoyer.id,
       origin: convoyer.territory,
-      order_type: 'Convoy',
+      destination: convoyer.territory,
+      order_type: 'convoy',
       coast: '',
+      aux_unit_id: context.state.selectedUnit.id,
       aux_origin: context.state.selectedUnit.territory,
       aux_destination: clickedTerr,
-      aux_order_type: 'Move'
+      aux_order_type: 'move'
     });
   }
   context.resetState();
