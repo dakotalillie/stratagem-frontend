@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
-import { createOrder } from '../../../actions';
+import { createOrder, createConvoyRoute } from '../../../actions';
 import BoardHeader from './boardHeader/BoardHeader';
 import BoardMap from './boardMap/BoardMap';
 import BoardFooter from './boardFooter/BoardFooter';
@@ -235,7 +235,9 @@ const mapStateToProps = state => ({
   units: state.units
 });
 
-export default connect(mapStateToProps, { createOrder })(Board);
+export default connect(mapStateToProps, { createOrder, createConvoyRoute })(
+  Board
+);
 
 BoardMap.propTypes = {
   territories: PropTypes.object,

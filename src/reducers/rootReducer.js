@@ -6,6 +6,7 @@ import territories from './territories';
 import units from './units';
 import orders from './orders';
 import showOrderAlert from './showOrderAlert';
+import convoyRoutes from './convoyRoutes';
 
 const rootReducer = combineReducers({
   isLoggedIn,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   territories,
   units,
   orders,
+  convoyRoutes,
   showOrderAlert
 });
 

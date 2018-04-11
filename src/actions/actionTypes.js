@@ -1,4 +1,5 @@
 export const CREATE_ORDER = 'CREATE ORDER';
+export const CREATE_CONVOY_ROUTE = 'CREATE CONVOY ROUTE';
 export const SHOW_ORDER_ALERT = 'SHOW ORDER ALERT';
 export const HIDE_ORDER_ALERT = 'HIDE ORDER ALERT';
 // Auth

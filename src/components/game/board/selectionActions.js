@@ -165,5 +165,11 @@ export function selectConvoyDestination({ clickedTerr, context }) {
       aux_order_type: 'move'
     });
   }
+  context.props.createConvoyRoute({
+    unit_id: context.state.selectedUnit.id,
+    origin: context.state.selectedUnit.territory,
+    destination: clickedTerr,
+    route: context.state.convoyeurs
+  });
   context.resetState();
 }

@@ -1,5 +1,6 @@
 export {
   createOrder,
+  createConvoyRoute,
   initializeGame,
   fetchGameData,
   submitOrders,

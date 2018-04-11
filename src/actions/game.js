@@ -1,5 +1,6 @@
 import {
   CREATE_ORDER,
+  CREATE_CONVOY_ROUTE,
   REQUEST_GAME_DATA,
   RECEIVE_GAME_DATA,
   GAME_DATA_ERROR,
@@ -11,12 +12,23 @@ import {
 import { API_ROOT, HEADERS } from '../utils/constants';
 import { normalize, schema } from 'normalizr';
 
-export const createOrder = args => {
+export function createOrder(args) {
   return {
-    ...args,
-    type: CREATE_ORDER
+    type: CREATE_ORDER,
+    payload: {
+      ...args
+    }
   };
-};
+}
+
+export function createConvoyRoute(args) {
+  return {
+    type: CREATE_CONVOY_ROUTE,
+    payload: {
+      ...args
+    }
+  };
+}
 
 function requestGameData() {
   return {
