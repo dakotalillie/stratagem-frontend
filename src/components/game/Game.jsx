@@ -16,7 +16,8 @@ class Game extends React.Component {
   handleSubmitOrders = () => {
     const game_id = this.props.match.params.game_id;
     const orders = this.props.orders;
-    this.props.submitOrders({ game_id, orders });
+    const convoy_routes = this.props.convoy_routes;
+    this.props.submitOrders({ game_id, orders, convoy_routes });
   };
 
   render() {
@@ -37,7 +38,8 @@ Game.propTypes = {
 };
 
 const connectStateToProps = state => ({
-  orders: state.orders
+  orders: state.orders,
+  convoy_routes: state.convoyRoutes
 });
 
 export default connect(connectStateToProps, { fetchGameData, submitOrders })(

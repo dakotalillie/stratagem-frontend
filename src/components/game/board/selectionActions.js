@@ -169,7 +169,7 @@ export function selectConvoyDestination({ clickedTerr, context }) {
     unit_id: context.state.selectedUnit.id,
     origin: context.state.selectedUnit.territory,
     destination: clickedTerr,
-    route: context.state.convoyeurs
+    route: [...context.state.convoyeurs]
   });
   context.resetState();
 }

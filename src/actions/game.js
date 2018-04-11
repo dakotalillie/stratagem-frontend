@@ -133,14 +133,13 @@ export function fetchGameData(game_id) {
   };
 }
 
-export function submitOrders({ game_id, orders }) {
-  debugger;
+export function submitOrders({ game_id, orders, convoy_routes }) {
   return dispatch => {
     dispatch(requestOrdersSubmission());
     return fetch(`${API_ROOT}/games/${game_id}/orders`, {
       method: 'POST',
       headers: HEADERS,
-      body: JSON.stringify(orders)
+      body: JSON.stringify({ orders, convoy_routes })
     })
       .then(res => {
         if (!res.ok) {

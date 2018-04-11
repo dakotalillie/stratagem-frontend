@@ -8,6 +8,7 @@ const convoyRoutes = (state = [], action) => {
       newState.push(action.payload);
       return newState;
     case CREATE_ORDER:
+      newState = [];
       for (let convoy_route of state) {
         let valid = true;
         for (let convoyeur of convoy_route.route) {

@@ -65,7 +65,7 @@ export function discernSelectionType({
   } else if (
     state.mode === 'convoy' &&
     clickedUnit !== undefined &&
-    clickedUnit.type === 'army' &&
+    clickedUnit.unit_type === 'army' &&
     state.selectedUnit === null
   ) {
     return SELECT_CONVOYED_UNIT;
