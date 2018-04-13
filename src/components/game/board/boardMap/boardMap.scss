@@ -13,6 +13,30 @@
     fill-opacity: 1;
     stroke: none;
   }
+  & > g.army,
+  & > g.fleet {
+    &.England {
+      fill: $EnglishUnit;
+    }
+    &.France {
+      fill: $FrenchUnit;
+    }
+    &.Germany {
+      fill: $FrenchUnit;
+    }
+    &.Italy {
+      fill: $ItalianUnit;
+    }
+    &.Austria {
+      fill: $AustrianUnit;
+    }
+    &.Russia {
+      fill: $RussianUnit;
+    }
+    &.Turkey {
+      fill: $TurkishUnit;
+    }
+  }
   & > path {
     fill: transparent;
     overflow: hidden;
