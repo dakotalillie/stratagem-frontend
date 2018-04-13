@@ -312,41 +312,43 @@ export function findPotentialSupportedMoves({
     unit2: supportedUnit
   });
   const POTENTIAL_CONVOY_SUPPORTS = new Set([]);
-  const SELECTED_UNIT_POTENTIAL_MOVES = findPotentialMoves({
-    unit: selectedUnit
-  }).potentialMoves;
-  // step 1: find occupied water territories next to supported unit
-  const POTENTIAL_CONVOY_PATH = findNeighbors({
-    sourceTerr: supportedUnit.territory,
-    unitsList,
-    occupied: true,
-    occupiedType: 'fleet',
-    terrType: 'water'
-  });
-  const CONVOY_CHECK_QUEUE = [...POTENTIAL_CONVOY_PATH];
-  while (CONVOY_CHECK_QUEUE.length > 0) {
-    const TERR = CONVOY_CHECK_QUEUE.shift();
-    const OCCUPIED_WATER_NEIGHBORS = findNeighbors({
-      sourceTerr: TERR,
+  if (supportedUnit.unit_type === 'army') {
+    const SELECTED_UNIT_POTENTIAL_MOVES = findPotentialMoves({
+      unit: selectedUnit
+    }).potentialMoves;
+    // step 1: find occupied water territories next to supported unit
+    const POTENTIAL_CONVOY_PATH = findNeighbors({
+      sourceTerr: supportedUnit.territory,
       unitsList,
       occupied: true,
       occupiedType: 'fleet',
       terrType: 'water'
     });
-    for (let terr of OCCUPIED_WATER_NEIGHBORS) {
-      if (!POTENTIAL_CONVOY_PATH.has(terr)) {
-        CONVOY_CHECK_QUEUE.push(terr);
+    const CONVOY_CHECK_QUEUE = [...POTENTIAL_CONVOY_PATH];
+    while (CONVOY_CHECK_QUEUE.length > 0) {
+      const TERR = CONVOY_CHECK_QUEUE.shift();
+      const OCCUPIED_WATER_NEIGHBORS = findNeighbors({
+        sourceTerr: TERR,
+        unitsList,
+        occupied: true,
+        occupiedType: 'fleet',
+        terrType: 'water'
+      });
+      for (let terr of OCCUPIED_WATER_NEIGHBORS) {
+        if (!POTENTIAL_CONVOY_PATH.has(terr)) {
+          CONVOY_CHECK_QUEUE.push(terr);
+        }
+        POTENTIAL_CONVOY_PATH.add(terr);
       }
-      POTENTIAL_CONVOY_PATH.add(terr);
-    }
-    const COASTAL_NEIGHBORS = findNeighbors({
-      sourceTerr: TERR,
-      unitsList,
-      terrType: 'coastal'
-    });
-    for (let terr of COASTAL_NEIGHBORS) {
-      if (SELECTED_UNIT_POTENTIAL_MOVES.has(terr)) {
-        POTENTIAL_CONVOY_SUPPORTS.add(terr);
+      const COASTAL_NEIGHBORS = findNeighbors({
+        sourceTerr: TERR,
+        unitsList,
+        terrType: 'coastal'
+      });
+      for (let terr of COASTAL_NEIGHBORS) {
+        if (SELECTED_UNIT_POTENTIAL_MOVES.has(terr)) {
+          POTENTIAL_CONVOY_SUPPORTS.add(terr);
+        }
       }
     }
   }

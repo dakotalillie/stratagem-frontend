@@ -150,7 +150,8 @@ export function selectConvoyDestination({ clickedTerr, context }) {
     origin: context.state.selectedUnit.territory,
     destination: clickedTerr,
     order_type: 'move',
-    coast: ''
+    coast: '',
+    via_convoy: true
   });
   for (let convoyer of context.state.convoyeurs) {
     context.props.createOrder({
