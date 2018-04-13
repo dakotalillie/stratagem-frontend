@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Button, ButtonGroup, Col, Container, Row } from 'reactstrap';
+import { title } from '../boardUtils';
 import './boardHeader.css';
 
 const BoardHeader = props => {
@@ -9,10 +11,12 @@ const BoardHeader = props => {
       <Container>
         <Row>
           <Col md="4" className="col-left">
-            <h5 className="date">Spring 1901</h5>
+            <h5 className="date">
+              {title(props.season)} {props.year}
+            </h5>
           </Col>
           <Col md="4" className="col-middle">
-            <h4 className="phase">Diplomatic Phase</h4>
+            <h4 className="phase">{title(props.phase)} Phase</h4>
           </Col>
           <Col md="4" className="col-right">
             <ButtonGroup>
@@ -45,9 +49,20 @@ const BoardHeader = props => {
   );
 };
 
-export default BoardHeader;
+function mapStateToProps(state) {
+  return {
+    phase: state.currentTurn.phase,
+    season: state.currentTurn.season,
+    year: state.currentTurn.year
+  };
+}
+
+export default connect(mapStateToProps, null)(BoardHeader);
 
 BoardHeader.propTypes = {
   mode: PropTypes.string.isRequired,
-  setMode: PropTypes.func.isRequired
+  setMode: PropTypes.func.isRequired,
+  phase: PropTypes.oneOf(['diplomatic', 'retreat', 'reinforcement']),
+  season: PropTypes.oneOf(['spring', 'fall']),
+  year: PropTypes.number
 };

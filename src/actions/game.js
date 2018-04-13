@@ -38,7 +38,6 @@ function requestGameData() {
 
 function receiveGameData(game_data) {
   const normalized_data = normalizeGameData(game_data);
-
   return {
     type: RECEIVE_GAME_DATA,
     payload: {

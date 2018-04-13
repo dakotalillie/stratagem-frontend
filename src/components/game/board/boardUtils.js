@@ -419,3 +419,12 @@ export function mapUnits({ units, territories }) {
     return null;
   });
 }
+
+export function title(str) {
+  if (str !== undefined) {
+    const strArr = str.split('');
+    strArr[0] = strArr[0].toUpperCase();
+    return strArr.join('');
+  }
+  return '';
+}
