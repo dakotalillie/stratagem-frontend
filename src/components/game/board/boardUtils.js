@@ -324,6 +324,9 @@ export function findPotentialSupportedMoves({
       occupiedType: 'fleet',
       terrType: 'water'
     });
+    // Make sure not to include potential convoys that include the supporting
+    // unit.
+    POTENTIAL_CONVOY_PATH.delete(selectedUnit.territory);
     const CONVOY_CHECK_QUEUE = [...POTENTIAL_CONVOY_PATH];
     while (CONVOY_CHECK_QUEUE.length > 0) {
       const TERR = CONVOY_CHECK_QUEUE.shift();
@@ -346,7 +349,10 @@ export function findPotentialSupportedMoves({
         terrType: 'coastal'
       });
       for (let terr of COASTAL_NEIGHBORS) {
-        if (SELECTED_UNIT_POTENTIAL_MOVES.has(terr)) {
+        if (
+          terr !== supportedUnit.territory &&
+          SELECTED_UNIT_POTENTIAL_MOVES.has(terr)
+        ) {
           POTENTIAL_CONVOY_SUPPORTS.add(terr);
         }
       }
