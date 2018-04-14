@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
-import { createOrder, createConvoyRoute } from '../../../actions';
+import { createOrder, createConvoyRoute, createUnit } from '../../../actions';
 import BoardHeader from './boardHeader/BoardHeader';
 import BoardMap from './boardMap/BoardMap';
 import BoardFooter from './boardFooter/BoardFooter';
@@ -25,7 +25,52 @@ class Board extends React.Component {
     mode: 'normal',
     tmpMoveStorage: {},
     chooseCoastModal: false,
+    addUnitModal: false,
+    potentialAdditions: [],
+    potentialDeletions: [],
     infoText: 'Select a unit to give orders.'
+  };
+
+  static getDerivedStateFromProps = (nextProps, prevState) => {
+    if (nextProps.currentTurn.phase === 'retreat') {
+      // TODO
+    } else if (nextProps.currentTurn.phase === 'reinforcement') {
+      const potentialAdditions = [];
+      const potentialDeletions = [];
+      for (let country_name of Object.keys(nextProps.countries)) {
+        const COUNTRY = nextProps.countries[country_name];
+        if (COUNTRY.user === nextProps.currentUser.id) {
+          // calculate difference between # of units and # of territories with
+          // supply centers
+          let supplyCenterCount = 0;
+          for (let terr of COUNTRY.territories) {
+            if (territoriesData[terr].supplyCenter) {
+              supplyCenterCount++;
+            }
+          }
+          let number_of_units = COUNTRY.units.length;
+          if (supplyCenterCount > number_of_units) {
+            // For each of country's home supply centers, check both if it is
+            // occupied and that it still belongs to the player. If valid, add
+            // it to potentialAdditions.
+            for (let terr of countriesData[country_name].homeSupplyCenters) {
+              const OCCUPIED = nextProps.units[terr] !== undefined;
+              const OWNED = nextProps.territories[terr].owner === country_name;
+              if (!OCCUPIED && OWNED) {
+                potentialAdditions.push(terr);
+              }
+            }
+          } else if (supplyCenterCount < number_of_units) {
+            // Add all of the country's units to potentialDeletions
+            for (let unit_loc of COUNTRY.units) {
+              potentialDeletions.push(unit_loc);
+            }
+          }
+        }
+      }
+      return { potentialAdditions, potentialDeletions };
+    }
+    return null;
   };
 
   resetState = () => {
@@ -38,6 +83,7 @@ class Board extends React.Component {
       mode: 'normal',
       tmpMoveStorage: {},
       chooseCoastModal: false,
+      createUnitModal: false,
       infoText: 'Select a unit to give orders.'
     });
   };
@@ -60,7 +106,8 @@ class Board extends React.Component {
       state: this.state,
       units: this.props.units,
       clickedTerr: CLICKED_TERR,
-      clickedUnit: CLICKED_UNIT
+      clickedUnit: CLICKED_UNIT,
+      phase: this.props.currentTurn.phase
     });
 
     switch (SELECTION_TYPE) {
@@ -113,6 +160,12 @@ class Board extends React.Component {
         break;
       case selectionTypes.SELECT_CONVOY_DESTINATION:
         selectionActions.selectConvoyDestination({
+          clickedTerr: CLICKED_TERR,
+          context: this
+        });
+        break;
+      case selectionTypes.ADD_UNIT:
+        selectionActions.addUnit({
           clickedTerr: CLICKED_TERR,
           context: this
         });
@@ -191,6 +244,12 @@ class Board extends React.Component {
         result += ' convoy';
       }
     }
+    if (this.state.potentialAdditions.includes(abbreviation)) {
+      result += ' addition';
+    }
+    if (this.state.potentialDeletions.includes(abbreviation)) {
+      result += ' deletion';
+    }
     return result;
   };
 
@@ -231,15 +290,23 @@ class Board extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  currentUser: state.currentUser,
+  countries: state.countries,
   territories: state.territories,
-  units: state.units
+  units: state.units,
+  currentTurn: state.currentTurn
 });
 
-export default connect(mapStateToProps, { createOrder, createConvoyRoute })(
-  Board
-);
+export default connect(mapStateToProps, {
+  createOrder,
+  createConvoyRoute,
+  createUnit
+})(Board);
 
 BoardMap.propTypes = {
+  currentUser: PropTypes.object,
+  countries: PropTypes.object,
   territories: PropTypes.object,
-  units: PropTypes.object
+  units: PropTypes.object,
+  currentTurn: PropTypes.object
 };

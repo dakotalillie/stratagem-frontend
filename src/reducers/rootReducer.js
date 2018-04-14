@@ -3,6 +3,7 @@ import isLoggedIn from './isLoggedIn';
 import currentUser from './currentUser';
 import games from './games';
 import currentTurn from './currentTurn';
+import countries from './countries';
 import territories from './territories';
 import units from './units';
 import orders from './orders';
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   currentUser,
   games,
   currentTurn,
+  countries,
   territories,
   units,
   orders,

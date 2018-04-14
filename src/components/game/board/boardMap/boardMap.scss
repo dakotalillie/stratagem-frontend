@@ -108,14 +108,16 @@
         fill-opacity: 0.7;
       }
     }
-    &.potential {
+    &.potential,
+    &.deletion {
       fill: red;
       fill-opacity: 0.5;
       &:hover {
         fill-opacity: 0.7;
       }
     }
-    &.convoy {
+    &.convoy,
+    &.addition {
       fill: green;
       fill-opacity: 0.5;
       &:hover {

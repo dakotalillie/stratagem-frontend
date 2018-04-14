@@ -12,6 +12,8 @@ export const MOVE_SUPPORTED_UNIT = 'MOVE SUPPORTED UNIT';
 export const SELECT_CONVOYED_UNIT = 'SELECT CONVOYED UNIT';
 export const SELECT_CONVOY_PATH = 'SELECT CONVOY PATH';
 export const SELECT_CONVOY_DESTINATION = 'SELECT CONVOY DESTINATION';
+export const ADD_UNIT = 'ADD UNIT';
+export const DELETE_UNIT = 'DELETE UNIT';
 
 // This function determines the type of action that should occur when
 // a territory is clicked.
@@ -19,67 +21,81 @@ export function discernSelectionType({
   state,
   units,
   clickedTerr,
-  clickedUnit
+  clickedUnit,
+  phase
 }) {
-  if (
-    state.mode === 'normal' &&
-    clickedUnit !== undefined &&
-    state.selectedUnit === null
-  ) {
-    return SELECT_UNIT;
-  } else if (
-    state.mode === 'normal' &&
-    state.selectedUnit !== null &&
-    state.selectedUnit.territory === clickedTerr
-  ) {
-    return HOLD_UNIT;
-  } else if (state.mode === 'normal' && state.potentialMoves.has(clickedTerr)) {
-    return MOVE_UNIT;
-  } else if (
-    state.mode === 'support' &&
-    clickedUnit !== undefined &&
-    state.selectedUnit === null
-  ) {
-    return SELECT_SUPPORTING_UNIT;
-  } else if (
-    state.mode === 'support' &&
-    state.potentialMoves.has(clickedTerr) &&
-    state.supportedUnit === null
-  ) {
-    return SELECT_SUPPORTED_UNIT;
-  } else if (
-    state.mode === 'support' &&
-    state.supportedUnit !== null &&
-    state.supportedUnit.territory === clickedTerr &&
-    findPotentialMoves({ unit: state.selectedUnit }).potentialMoves.has(
-      clickedTerr
-    )
-  ) {
-    return HOLD_SUPPORTED_UNIT;
-  } else if (
-    state.mode === 'support' &&
-    state.supportedUnit !== null &&
-    state.potentialMoves.has(clickedTerr)
-  ) {
-    return MOVE_SUPPORTED_UNIT;
-  } else if (
-    state.mode === 'convoy' &&
-    clickedUnit !== undefined &&
-    clickedUnit.unit_type === 'army' &&
-    state.selectedUnit === null
-  ) {
-    return SELECT_CONVOYED_UNIT;
-  } else if (
-    state.mode === 'convoy' &&
-    state.potentialMoves.has(clickedTerr) &&
-    territoryData[clickedTerr].type === 'water'
-  ) {
-    return SELECT_CONVOY_PATH;
-  } else if (
-    state.mode === 'convoy' &&
-    state.potentialMoves.has(clickedTerr) &&
-    territoryData[clickedTerr].type !== 'water'
-  ) {
-    return SELECT_CONVOY_DESTINATION;
+  if (phase === 'diplomatic') {
+    if (
+      state.mode === 'normal' &&
+      clickedUnit !== undefined &&
+      state.selectedUnit === null
+    ) {
+      return SELECT_UNIT;
+    } else if (
+      state.mode === 'normal' &&
+      state.selectedUnit !== null &&
+      state.selectedUnit.territory === clickedTerr
+    ) {
+      return HOLD_UNIT;
+    } else if (
+      state.mode === 'normal' &&
+      state.potentialMoves.has(clickedTerr)
+    ) {
+      return MOVE_UNIT;
+    } else if (
+      state.mode === 'support' &&
+      clickedUnit !== undefined &&
+      state.selectedUnit === null
+    ) {
+      return SELECT_SUPPORTING_UNIT;
+    } else if (
+      state.mode === 'support' &&
+      state.potentialMoves.has(clickedTerr) &&
+      state.supportedUnit === null
+    ) {
+      return SELECT_SUPPORTED_UNIT;
+    } else if (
+      state.mode === 'support' &&
+      state.supportedUnit !== null &&
+      state.supportedUnit.territory === clickedTerr &&
+      findPotentialMoves({ unit: state.selectedUnit }).potentialMoves.has(
+        clickedTerr
+      )
+    ) {
+      return HOLD_SUPPORTED_UNIT;
+    } else if (
+      state.mode === 'support' &&
+      state.supportedUnit !== null &&
+      state.potentialMoves.has(clickedTerr)
+    ) {
+      return MOVE_SUPPORTED_UNIT;
+    } else if (
+      state.mode === 'convoy' &&
+      clickedUnit !== undefined &&
+      clickedUnit.unit_type === 'army' &&
+      state.selectedUnit === null
+    ) {
+      return SELECT_CONVOYED_UNIT;
+    } else if (
+      state.mode === 'convoy' &&
+      state.potentialMoves.has(clickedTerr) &&
+      territoryData[clickedTerr].type === 'water'
+    ) {
+      return SELECT_CONVOY_PATH;
+    } else if (
+      state.mode === 'convoy' &&
+      state.potentialMoves.has(clickedTerr) &&
+      territoryData[clickedTerr].type !== 'water'
+    ) {
+      return SELECT_CONVOY_DESTINATION;
+    }
+  } else if (phase === 'retreat') {
+    // ...
+  } else if (phase === 'reinforcement') {
+    if (state.potentialAdditions.includes(clickedTerr)) {
+      return ADD_UNIT;
+    } else if (state.potentialDeletions.includes(clickedTerr)) {
+      return DELETE_UNIT;
+    }
   }
 }

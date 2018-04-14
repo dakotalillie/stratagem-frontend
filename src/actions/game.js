@@ -7,7 +7,8 @@ import {
   REQUEST_ORDERS_SUBMISSION,
   ORDERS_SUBMISSION_ERROR,
   REQUEST_GAME_CREATION,
-  GAME_CREATION_ERROR
+  GAME_CREATION_ERROR,
+  CREATE_UNIT
 } from './actionTypes';
 import { API_ROOT, HEADERS } from '../utils/constants';
 import { normalize, schema } from 'normalizr';
@@ -81,6 +82,15 @@ function gameCreationError(error_message) {
     type: GAME_CREATION_ERROR,
     payload: {
       error_message
+    }
+  };
+}
+
+export function createUnit(unit_data) {
+  return {
+    type: CREATE_UNIT,
+    payload: {
+      unit_data
     }
   };
 }

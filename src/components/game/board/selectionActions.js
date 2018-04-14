@@ -6,6 +6,7 @@ import {
   findPotentialSupportedMoves,
   findPotentialConvoyPaths
 } from './boardUtils';
+import territoriesData from '../../../utils/territories.json';
 
 export function selectUnit({ clickedUnit, context }) {
   let { potentialMoves, coastOptions } = findPotentialMoves({
@@ -173,4 +174,28 @@ export function selectConvoyDestination({ clickedTerr, context }) {
     route: [...context.state.convoyeurs]
   });
   context.resetState();
+}
+
+export function addUnit({ clickedTerr, context }) {
+  if (territoriesData[clickedTerr].type === 'coastal') {
+    context.setState({
+      tmpMoveStorage: {
+        order_type: 'create',
+        country: context.props.territories[clickedTerr].owner,
+        origin: clickedTerr,
+        destination: clickedTerr
+      },
+      createUnitModal: true
+    });
+    return;
+  } else {
+    context.props.createUnit({
+      order_type: 'create',
+      unit_type: 'army',
+      country: context.props.territories[clickedTerr].owner,
+      origin: clickedTerr,
+      destination: clickedTerr,
+      coast: ''
+    });
+  }
 }

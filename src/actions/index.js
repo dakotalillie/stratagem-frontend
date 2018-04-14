@@ -4,6 +4,7 @@ export {
   initializeGame,
   fetchGameData,
   submitOrders,
-  createSandbox
+  createSandbox,
+  createUnit
 } from './game';
 export { login, noToken, fetchCurrentUser, signup } from './auth';
