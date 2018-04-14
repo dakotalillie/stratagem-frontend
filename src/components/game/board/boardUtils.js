@@ -392,10 +392,10 @@ export function determineCoast({ coastOps }) {
 }
 
 // This function creates a list of components for all the units in state
-export function mapUnits({ units, territories }) {
+export function mapUnits(units) {
   return Object.keys(units).map(terr => {
     const UNIT = units[terr];
-    const COORDS = territories[terr].coordinates;
+    const COORDS = territoriesData[terr].coordinates;
     if (UNIT.unit_type === 'army') {
       return (
         <Army
@@ -413,6 +413,34 @@ export function mapUnits({ units, territories }) {
           owner={UNIT.country}
           x={COORDS[COAST].x}
           y={COORDS[COAST].y}
+        />
+      );
+    }
+    return null;
+  });
+}
+
+export function mapRetreatingUnits(units) {
+  return Object.keys(units).map(terr => {
+    const UNIT = units[terr];
+    const COORDS = territoriesData[terr].coordinates;
+    if (UNIT.unit_type === 'army') {
+      return (
+        <Army
+          key={terr}
+          owner={UNIT.country}
+          x={COORDS.main.x + 30}
+          y={COORDS.main.y - 50}
+        />
+      );
+    } else if (UNIT.unit_type === 'fleet') {
+      const COAST = UNIT.coast === '' ? 'main' : UNIT.coast;
+      return (
+        <Fleet
+          key={terr}
+          owner={UNIT.country}
+          x={COORDS[COAST].x + 30}
+          y={COORDS[COAST].y - 50}
         />
       );
     }

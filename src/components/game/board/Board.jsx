@@ -13,7 +13,7 @@ import BoardMap from './boardMap/BoardMap';
 import BoardFooter from './boardFooter/BoardFooter';
 import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
 import CreateUnitModal from './createUnitModal/CreateUnitModal';
-import { mapUnits } from './boardUtils';
+import { mapUnits, mapRetreatingUnits } from './boardUtils';
 import * as selectionTypes from './selectionTypes';
 import * as selectionActions from './selectionActions';
 import territoriesData from '../../../utils/territories.json';
@@ -305,10 +305,8 @@ class Board extends React.Component {
               handleMouseLeave={this.handleMouseLeave}
               hovered={this.state.hovered}
             >
-              {mapUnits({
-                units: this.props.units,
-                territories: territoriesData
-              })}
+              {mapUnits(this.props.units)}
+              {mapRetreatingUnits(this.props.retreatingUnits)}
             </BoardMap>
           </div>
           <BoardFooter infoText={this.state.infoText} />
@@ -323,6 +321,7 @@ const mapStateToProps = state => ({
   countries: state.countries,
   territories: state.territories,
   units: state.units,
+  retreatingUnits: state.retreatingUnits,
   currentTurn: state.currentTurn
 });
 
@@ -338,5 +337,6 @@ BoardMap.propTypes = {
   countries: PropTypes.object,
   territories: PropTypes.object,
   units: PropTypes.object,
+  retreatingUnits: PropTypes.object,
   currentTurn: PropTypes.object
 };
