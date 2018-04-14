@@ -7,6 +7,7 @@ import BoardHeader from './boardHeader/BoardHeader';
 import BoardMap from './boardMap/BoardMap';
 import BoardFooter from './boardFooter/BoardFooter';
 import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
+import CreateUnitModal from './createUnitModal/CreateUnitModal';
 import { mapUnits } from './boardUtils';
 import * as selectionTypes from './selectionTypes';
 import * as selectionActions from './selectionActions';
@@ -216,6 +217,15 @@ class Board extends React.Component {
     this.resetState();
   };
 
+  selectUnitType = (unit_type, coast) => {
+    this.props.createUnit({
+      ...this.state.tmpMoveStorage,
+      unit_type,
+      coast
+    });
+    this.resetState();
+  };
+
   // Determines the className (and thus the coloring) of the territory <path>s
   determineTerrClass = abbreviation => {
     let result = '';
@@ -266,6 +276,12 @@ class Board extends React.Component {
               <ChooseCoastModal
                 coasts={COASTS_FOR_MODAL}
                 selectCoast={this.selectCoast}
+              />
+            ) : null}
+            {this.state.createUnitModal ? (
+              <CreateUnitModal
+                selectUnitType={this.selectUnitType}
+                multiCoast={this.state.tmpMoveStorage.origin === 'Stp'}
               />
             ) : null}
             <BoardMap
