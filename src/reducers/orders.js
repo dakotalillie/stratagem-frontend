@@ -1,9 +1,15 @@
-import { CREATE_ORDER, CREATE_UNIT } from '../actions/actionTypes';
+import {
+  CREATE_ORDER,
+  CREATE_UNIT,
+  RECEIVE_GAME_DATA
+} from '../actions/actionTypes';
 import { DELETE_UNIT } from '../components/game/board/selectionTypes';
 
 const orders = (state = {}, action) => {
   let newState;
   switch (action.type) {
+    case RECEIVE_GAME_DATA:
+      return {};
     case CREATE_ORDER:
       newState = { ...state };
       newState[action.payload.unit_id] = action.payload;

@@ -186,6 +186,13 @@ function normalizeGameData(game_data) {
       idAttribute: 'territory'
     }
   );
+  const retreating_units = new schema.Entity(
+    'retreating_units',
+    {},
+    {
+      idAttribute: 'retreating_from'
+    }
+  );
   const territories = new schema.Entity(
     'territories',
     {},
@@ -197,6 +204,7 @@ function normalizeGameData(game_data) {
     'countries',
     {
       units: [units],
+      retreating_units: [retreating_units],
       territories: [territories]
     },
     {

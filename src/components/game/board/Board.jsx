@@ -38,7 +38,9 @@ class Board extends React.Component {
   };
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
-    if (nextProps.currentTurn.phase === 'retreat') {
+    if (nextProps.currentTurn.phase === 'diplomatic') {
+      return { potentialAdditions: [], potentialDeletions: [] };
+    } else if (nextProps.currentTurn.phase === 'retreat') {
       // TODO
     } else if (nextProps.currentTurn.phase === 'reinforcement') {
       const potentialAdditions = [];

@@ -6,6 +6,7 @@ import currentTurn from './currentTurn';
 import countries from './countries';
 import territories from './territories';
 import units from './units';
+import retreatingUnits from './retreatingUnits';
 import orders from './orders';
 import showOrderAlert from './showOrderAlert';
 import convoyRoutes from './convoyRoutes';
@@ -18,6 +19,7 @@ const rootReducer = combineReducers({
   countries,
   territories,
   units,
+  retreatingUnits,
   orders,
   convoyRoutes,
   showOrderAlert
