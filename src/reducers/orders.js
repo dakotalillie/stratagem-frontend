@@ -1,4 +1,5 @@
 import { CREATE_ORDER, CREATE_UNIT } from '../actions/actionTypes';
+import { DELETE_UNIT } from '../components/game/board/selectionTypes';
 
 const orders = (state = {}, action) => {
   let newState;
@@ -9,7 +10,11 @@ const orders = (state = {}, action) => {
       return newState;
     case CREATE_UNIT:
       newState = { ...state };
-      newState[action.payload.unit_data.origin] = action.payload.unit_data;
+      newState[action.payload.unit_data.territory] = action.payload.unit_data;
+      return newState;
+    case DELETE_UNIT:
+      newState = { ...state };
+      newState[action.payload.unit_data.territory] = action.payload.unit_data;
       return newState;
     default:
       return state;

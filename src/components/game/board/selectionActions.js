@@ -182,8 +182,7 @@ export function addUnit({ clickedTerr, context }) {
       tmpMoveStorage: {
         order_type: 'create',
         country: context.props.territories[clickedTerr].owner,
-        origin: clickedTerr,
-        destination: clickedTerr
+        territory: clickedTerr
       },
       createUnitModal: true
     });
@@ -193,9 +192,17 @@ export function addUnit({ clickedTerr, context }) {
       order_type: 'create',
       unit_type: 'army',
       country: context.props.territories[clickedTerr].owner,
-      origin: clickedTerr,
-      destination: clickedTerr,
+      territory: clickedTerr,
       coast: ''
     });
   }
+}
+
+export function deleteUnit({ clickedUnit, context }) {
+  context.props.deleteUnit({
+    order_type: 'delete',
+    unit_id: clickedUnit.id,
+    country: clickedUnit.country,
+    territory: clickedUnit.territory
+  });
 }

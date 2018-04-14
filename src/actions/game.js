@@ -12,6 +12,7 @@ import {
 } from './actionTypes';
 import { API_ROOT, HEADERS } from '../utils/constants';
 import { normalize, schema } from 'normalizr';
+import { DELETE_UNIT } from '../components/game/board/selectionTypes';
 
 export function createOrder(args) {
   return {
@@ -89,6 +90,15 @@ function gameCreationError(error_message) {
 export function createUnit(unit_data) {
   return {
     type: CREATE_UNIT,
+    payload: {
+      unit_data
+    }
+  };
+}
+
+export function deleteUnit(unit_data) {
+  return {
+    type: DELETE_UNIT,
     payload: {
       unit_data
     }

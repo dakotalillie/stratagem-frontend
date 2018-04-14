@@ -2,7 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
-import { createOrder, createConvoyRoute, createUnit } from '../../../actions';
+import {
+  createOrder,
+  createConvoyRoute,
+  createUnit,
+  deleteUnit
+} from '../../../actions';
 import BoardHeader from './boardHeader/BoardHeader';
 import BoardMap from './boardMap/BoardMap';
 import BoardFooter from './boardFooter/BoardFooter';
@@ -171,6 +176,12 @@ class Board extends React.Component {
           context: this
         });
         break;
+      case selectionTypes.DELETE_UNIT:
+        selectionActions.deleteUnit({
+          clickedUnit: CLICKED_UNIT,
+          context: this
+        });
+        break;
       default:
         this.resetState();
     }
@@ -281,7 +292,7 @@ class Board extends React.Component {
             {this.state.createUnitModal ? (
               <CreateUnitModal
                 selectUnitType={this.selectUnitType}
-                multiCoast={this.state.tmpMoveStorage.origin === 'Stp'}
+                multiCoast={this.state.tmpMoveStorage.territory === 'Stp'}
               />
             ) : null}
             <BoardMap
@@ -316,7 +327,8 @@ const mapStateToProps = state => ({
 export default connect(mapStateToProps, {
   createOrder,
   createConvoyRoute,
-  createUnit
+  createUnit,
+  deleteUnit
 })(Board);
 
 BoardMap.propTypes = {

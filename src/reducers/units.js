@@ -1,12 +1,21 @@
-import { RECEIVE_GAME_DATA, CREATE_UNIT } from '../actions/actionTypes';
+import {
+  RECEIVE_GAME_DATA,
+  CREATE_UNIT,
+  DELETE_UNIT
+} from '../actions/actionTypes';
 
 const units = (state = {}, action) => {
+  let newState;
   switch (action.type) {
     case RECEIVE_GAME_DATA:
       return action.payload.game_data.units;
     case CREATE_UNIT:
-      let newState = { ...state };
-      newState[action.payload.unit_data.origin] = action.payload.unit_data;
+      newState = { ...state };
+      newState[action.payload.unit_data.territory] = action.payload.unit_data;
+      return newState;
+    case DELETE_UNIT:
+      newState = { ...state };
+      delete newState[action.payload.unit_data.territory];
       return newState;
     default:
       return state;
