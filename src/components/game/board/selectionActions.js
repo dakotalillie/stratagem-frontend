@@ -256,3 +256,14 @@ export function moveDisplacedUnit({ clickedTerr, context }) {
   }
   context.resetState();
 }
+
+export function deleteDisplacedUnit({ clickedUnit, context }) {
+  context.props.deleteUnit({
+    order_type: 'delete',
+    unit_id: clickedUnit.id,
+    country: clickedUnit.country,
+    territory: clickedUnit.retreating_from,
+    displaced: true
+  });
+  context.resetState();
+}

@@ -28,7 +28,12 @@ const countries = (state = {}, action) => {
       return newState;
     case DELETE_UNIT:
       newState = { ...state };
-      const units = newState[action.payload.unit_data.country].units;
+      let units;
+      if (!action.payload.unit_data.displaced) {
+        units = newState[action.payload.unit_data.country].units;
+      } else {
+        units = newState[action.payload.unit_data.country].retreating_units;
+      }
       index = units.indexOf(action.payload.unit_data.territory);
       if (index > -1) {
         units.splice(index, 1);

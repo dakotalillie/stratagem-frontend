@@ -207,6 +207,10 @@ class Board extends React.Component {
         });
         break;
       case selectionTypes.DELETE_DISPLACED_UNIT:
+        selectionActions.deleteDisplacedUnit({
+          clickedUnit: CLICKED_UNIT,
+          context: this
+        });
         break;
       default:
         this.resetState();

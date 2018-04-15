@@ -106,7 +106,7 @@ export function discernSelectionType({
       return MOVE_DISPLACED_UNIT;
     } else if (
       state.selectedUnit !== undefined &&
-      state.selectedUnit.territory === clickedTerr
+      state.selectedUnit.retreating_from === clickedTerr
     ) {
       return DELETE_DISPLACED_UNIT;
     }

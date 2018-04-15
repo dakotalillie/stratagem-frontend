@@ -8,10 +8,11 @@ const retreatingUnits = (state = {}, action) => {
       }
       return state;
     case DELETE_UNIT:
-      // newState = { ...state };
-      // delete newState[action.payload.unit_data.territory];
-      // return newState;
-      break;
+      let newState = { ...state };
+      if (action.payload.unit_data.displaced) {
+        delete newState[action.payload.unit_data.territory];
+      }
+      return newState;
     default:
       return state;
   }

@@ -15,7 +15,9 @@ const units = (state = {}, action) => {
       return newState;
     case DELETE_UNIT:
       newState = { ...state };
-      delete newState[action.payload.unit_data.territory];
+      if (!action.payload.unit_data.displaced) {
+        delete newState[action.payload.unit_data.territory];
+      }
       return newState;
     default:
       return state;
