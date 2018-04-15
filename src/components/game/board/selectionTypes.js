@@ -14,6 +14,9 @@ export const SELECT_CONVOY_PATH = 'SELECT CONVOY PATH';
 export const SELECT_CONVOY_DESTINATION = 'SELECT CONVOY DESTINATION';
 export const ADD_UNIT = 'ADD UNIT';
 export const DELETE_UNIT = 'DELETE UNIT';
+export const SELECT_DISPLACED_UNIT = 'SELECT DISPLACED UNIT';
+export const MOVE_DISPLACED_UNIT = 'MOVE DISPLACED UNIT';
+export const DELETE_DISPLACED_UNIT = 'DELETE DISPLACED UNIT';
 
 // This function determines the type of action that should occur when
 // a territory is clicked.
@@ -90,7 +93,23 @@ export function discernSelectionType({
       return SELECT_CONVOY_DESTINATION;
     }
   } else if (phase === 'retreat') {
-    // ...
+    if (
+      state.displacedUnits.includes(clickedTerr) &&
+      clickedUnit !== undefined &&
+      state.selectedUnit === null
+    ) {
+      return SELECT_DISPLACED_UNIT;
+    } else if (
+      state.selectedUnit !== undefined &&
+      state.potentialMoves.has(clickedTerr)
+    ) {
+      return MOVE_DISPLACED_UNIT;
+    } else if (
+      state.selectedUnit !== undefined &&
+      state.selectedUnit.territory === clickedTerr
+    ) {
+      return DELETE_DISPLACED_UNIT;
+    }
   } else if (phase === 'reinforcement') {
     if (state.potentialAdditions.includes(clickedTerr)) {
       return ADD_UNIT;

@@ -3,29 +3,43 @@ import Army from './army/Army';
 import Fleet from './fleet/Fleet';
 import territoriesData from '../../../utils/territories.json';
 
-export function findPotentialMoves({ unit }) {
-  let potentialMoves = new Set([]);
+export function findPotentialMoves({ unit, displaced, unitsList }) {
+  let potentialMoves;
   let coastOptions = {};
-  const LAND_NEIGHBORS = territoriesData[unit.territory].landNeighbors;
-  const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
-
-  if (unit.unit_type === 'army') {
-    for (let neighbor of LAND_NEIGHBORS) {
-      potentialMoves.add(neighbor);
-    }
-  } else if (unit.unit_type === 'fleet') {
-    // Valid moves for fleets are dependent on their coast. Will need to
-    // handle cases for territories with multiple coasts.
-    if (unit.coast) {
-      for (let neighbor of SEA_NEIGHBORS[unit.coast]) {
-        potentialMoves.add(neighbor);
-      }
-    } else {
-      for (let neighbor of SEA_NEIGHBORS.all) {
-        potentialMoves.add(neighbor);
-      }
-    }
+  if (!displaced) {
+    potentialMoves = findNeighbors({
+      sourceTerr: unit.territory,
+      coast: unit.coast
+    });
+  } else {
+    potentialMoves = findNeighbors({
+      sourceTerr: unit.retreating_from,
+      coast: unit.coast,
+      occupied: false,
+      unitsList
+    });
   }
+  // debugger;
+  // const LAND_NEIGHBORS = territoriesData[unit.territory].landNeighbors;
+  // const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
+
+  // if (unit.unit_type === 'army') {
+  //   for (let neighbor of LAND_NEIGHBORS) {
+  //     potentialMoves.add(neighbor);
+  //   }
+  // } else if (unit.unit_type === 'fleet') {
+  //   // Valid moves for fleets are dependent on their coast. Will need to
+  //   // handle cases for territories with multiple coasts.
+  //   if (unit.coast) {
+  //     for (let neighbor of SEA_NEIGHBORS[unit.coast]) {
+  //       potentialMoves.add(neighbor);
+  //     }
+  //   } else {
+  //     for (let neighbor of SEA_NEIGHBORS.all) {
+  //       potentialMoves.add(neighbor);
+  //     }
+  //   }
+  // }
   // This is where we'll handle any coast information
   potentialMoves = new Set(
     [...potentialMoves].map(terr => {
@@ -259,7 +273,7 @@ export function findNeighbors({
     const SEA_NEIGHBORS = territoriesData[sourceTerr].seaNeighbors;
     if (SEA_NEIGHBORS !== null) {
       for (let key of Object.keys(SEA_NEIGHBORS)) {
-        if (coast === undefined || (coast && coast === key)) {
+        if (!coast || (coast && coast === key)) {
           for (let terrName of SEA_NEIGHBORS[key]) {
             const TERR = splitTerrName({ terr: terrName });
             if (
@@ -288,7 +302,8 @@ function terrMatchesCriteria({
   occupiedType,
   terrType
 }) {
-  if (occupied && unitsList[terr] === undefined) return false;
+  if (occupied === true && unitsList[terr] === undefined) return false;
+  if (occupied === false && unitsList[terr] !== undefined) return false;
   if (occupiedType && unitsList[terr].unit_type !== occupiedType) return false;
   if (terrType && territoriesData[terr].type !== terrType) return false;
   return true;

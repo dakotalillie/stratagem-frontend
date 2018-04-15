@@ -6,6 +6,7 @@ export {
   submitOrders,
   createSandbox,
   createUnit,
-  deleteUnit
+  deleteUnit,
+  createDisplacedOrder
 } from './game';
 export { login, noToken, fetchCurrentUser, signup } from './auth';

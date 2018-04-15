@@ -23,6 +23,7 @@ export function selectUnit({ clickedUnit, context }) {
 export function holdUnit({ context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
+    country: context.state.selectedUnit.country,
     origin: context.state.selectedUnit.territory,
     destination: context.state.selectedUnit.territory,
     order_type: 'hold',
@@ -38,6 +39,7 @@ export function moveUnit({ clickedTerr, context }) {
   if (coast !== -1) {
     context.props.createOrder({
       unit_id: context.state.selectedUnit.id,
+      country: context.state.selectedUnit.country,
       origin: context.state.selectedUnit.territory,
       destination: clickedTerr,
       order_type: 'move',
@@ -87,6 +89,7 @@ export function selectSupportedUnit({ clickedUnit, context }) {
 export function holdSupportedUnit({ context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
+    country: context.state.selectedUnit.country,
     origin: context.state.selectedUnit.territory,
     destination: context.state.selectedUnit.territory,
     order_type: 'support',
@@ -102,6 +105,7 @@ export function holdSupportedUnit({ context }) {
 export function moveSupportedUnit({ clickedTerr, context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
+    country: context.state.selectedUnit.country,
     origin: context.state.selectedUnit.territory,
     destination: context.state.selectedUnit.territory,
     order_type: 'support',
@@ -148,6 +152,7 @@ export function selectConvoyPath({ clickedUnit, context }) {
 export function selectConvoyDestination({ clickedTerr, context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
+    country: context.state.selectedUnit.country,
     origin: context.state.selectedUnit.territory,
     destination: clickedTerr,
     order_type: 'move',
@@ -157,6 +162,7 @@ export function selectConvoyDestination({ clickedTerr, context }) {
   for (let convoyer of context.state.convoyeurs) {
     context.props.createOrder({
       unit_id: convoyer.id,
+      country: convoyer.country,
       origin: convoyer.territory,
       destination: convoyer.territory,
       order_type: 'convoy',
@@ -205,4 +211,48 @@ export function deleteUnit({ clickedUnit, context }) {
     country: clickedUnit.country,
     territory: clickedUnit.territory
   });
+}
+
+export function selectDisplacedUnit({ clickedUnit, context }) {
+  let { potentialMoves, coastOptions } = findPotentialMoves({
+    unit: clickedUnit,
+    displaced: true,
+    unitsList: context.props.units
+  });
+  context.setState({
+    selectedUnit: clickedUnit,
+    potentialMoves,
+    coastOptions,
+    infoText: 'Select where you want to move the unit.'
+  });
+}
+
+export function moveDisplacedUnit({ clickedTerr, context }) {
+  let coast = determineCoast({
+    coastOps: context.state.coastOptions[clickedTerr]
+  });
+  if (coast !== -1) {
+    context.props.createOrder({
+      unit_id: context.state.selectedUnit.id,
+      origin: context.state.selectedUnit.retreating_from,
+      destination: clickedTerr,
+      country: context.state.selectedUnit.country,
+      order_type: 'move',
+      coast
+    });
+  } else {
+    // Save data into temporary storage and raise modal
+    context.setState({
+      tmpMoveStorage: {
+        unit_id: context.state.selectedUnit.id,
+        origin: context.state.selectedUnit.retreating_from,
+        destination: clickedTerr,
+        country: context.state.selectedUnit.country,
+        order_type: 'move'
+      },
+      chooseCoastModal: true
+    });
+    return;
+  }
+  context.resetState();
 }

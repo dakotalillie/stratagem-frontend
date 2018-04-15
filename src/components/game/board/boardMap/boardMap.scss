@@ -101,7 +101,8 @@
         fill-opacity: 0.7;
       }
     }
-    &.supported {
+    &.supported,
+    &.displaced {
       fill: blue;
       fill-opacity: 0.5;
       &:hover {

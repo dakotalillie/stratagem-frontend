@@ -34,6 +34,7 @@ class Board extends React.Component {
     addUnitModal: false,
     potentialAdditions: [],
     potentialDeletions: [],
+    displacedUnits: [],
     infoText: 'Select a unit to give orders.'
   };
 
@@ -41,7 +42,14 @@ class Board extends React.Component {
     if (nextProps.currentTurn.phase === 'diplomatic') {
       return { potentialAdditions: [], potentialDeletions: [] };
     } else if (nextProps.currentTurn.phase === 'retreat') {
-      // TODO
+      let displacedUnits = [];
+      for (let country_name of Object.keys(nextProps.countries)) {
+        const COUNTRY = nextProps.countries[country_name];
+        if (COUNTRY.user === nextProps.currentUser.id) {
+          displacedUnits = displacedUnits.concat(COUNTRY.retreating_units);
+        }
+      }
+      return { displacedUnits };
     } else if (nextProps.currentTurn.phase === 'reinforcement') {
       const potentialAdditions = [];
       const potentialDeletions = [];
@@ -109,7 +117,9 @@ class Board extends React.Component {
 
   handleClick = e => {
     const CLICKED_TERR = e.target.id;
-    const CLICKED_UNIT = this.props.units[CLICKED_TERR];
+    const CLICKED_UNIT = this.props.retreatingUnits[CLICKED_TERR]
+      ? this.props.retreatingUnits[CLICKED_TERR]
+      : this.props.units[CLICKED_TERR];
     const SELECTION_TYPE = selectionTypes.discernSelectionType({
       state: this.state,
       units: this.props.units,
@@ -184,6 +194,20 @@ class Board extends React.Component {
           context: this
         });
         break;
+      case selectionTypes.SELECT_DISPLACED_UNIT:
+        selectionActions.selectDisplacedUnit({
+          clickedUnit: CLICKED_UNIT,
+          context: this
+        });
+        break;
+      case selectionTypes.MOVE_DISPLACED_UNIT:
+        selectionActions.moveDisplacedUnit({
+          clickedTerr: CLICKED_TERR,
+          context: this
+        });
+        break;
+      case selectionTypes.DELETE_DISPLACED_UNIT:
+        break;
       default:
         this.resetState();
     }
@@ -249,7 +273,8 @@ class Board extends React.Component {
     }
     if (
       this.state.selectedUnit !== null &&
-      abbreviation === this.state.selectedUnit.territory
+      (abbreviation === this.state.selectedUnit.territory ||
+        abbreviation === this.state.selectedUnit.retreating_from)
     ) {
       result += ' selected';
     }
@@ -272,6 +297,15 @@ class Board extends React.Component {
     }
     if (this.state.potentialDeletions.includes(abbreviation)) {
       result += ' deletion';
+    }
+    if (this.state.displacedUnits.includes(abbreviation)) {
+      if (
+        !this.state.selectedUnit ||
+        (this.state.selectedUnit &&
+          this.state.selectedUnit.retreating_from !== abbreviation)
+      ) {
+        result += ' displaced';
+      }
     }
     return result;
   };
