@@ -1,7 +1,5 @@
 import {
   NO_TOKEN,
-  REQUEST_TOKEN,
-  RECEIVE_TOKEN,
   REQUEST_CURRENT_USER,
   RECEIVE_CURRENT_USER,
   AUTHENTICATION_ERROR
@@ -14,33 +12,27 @@ export function noToken() {
   };
 }
 
-export function requestToken() {
-  return {
-    type: REQUEST_TOKEN
-  };
-}
-
-function receiveToken(token) {
-  return {
-    type: RECEIVE_TOKEN,
-    payload: {
-      token
-    }
-  };
-}
-
 export function requestCurrentUser() {
   return {
     type: REQUEST_CURRENT_USER
   };
 }
 
-function receiveCurrentUser(user_data) {
+function receiveCurrentUser(data) {
+  let payload;
+  if (data.token) {
+    payload = {
+      token: data.token,
+      user: data.user
+    };
+  } else {
+    payload = {
+      user: data
+    };
+  }
   return {
     type: RECEIVE_CURRENT_USER,
-    payload: {
-      user_data
-    }
+    payload
   };
 }
 
@@ -59,7 +51,7 @@ function authenticationError(error_message) {
 // and password.
 export function login(username, password) {
   return dispatch => {
-    dispatch(requestToken());
+    dispatch(requestCurrentUser());
     return fetch(`${API_ROOT}/login/`, {
       method: 'POST',
       headers: {
@@ -75,7 +67,7 @@ export function login(username, password) {
         }
       })
       .then(json => {
-        dispatch(receiveToken(json.token));
+        dispatch(receiveCurrentUser(json));
         window.location.href = '/games';
       })
       .catch(error => {
@@ -90,13 +82,15 @@ export const fetchCurrentUser = () => {
     dispatch(requestCurrentUser());
     return fetch(`${API_ROOT}/current_user/`, { headers: HEADERS })
       .then(res => res.json())
-      .then(json => dispatch(receiveCurrentUser(json)));
+      .then(json => {
+        dispatch(receiveCurrentUser(json));
+      });
   };
 };
 
 export const signup = params => {
   return dispatch => {
-    dispatch(requestToken());
+    dispatch(requestCurrentUser());
     return fetch(`${API_ROOT}/users/`, {
       method: 'POST',
       headers: {
@@ -112,7 +106,7 @@ export const signup = params => {
         }
       })
       .then(json => {
-        dispatch(receiveToken(json.token));
+        dispatch(receiveCurrentUser(json));
         window.location.href = '/games';
       })
       .catch(error => {
