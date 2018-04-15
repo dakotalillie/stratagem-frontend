@@ -23,7 +23,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <Route exact path="/" component={Welcome} />
+        <Route exact path="/" component={withAuth(Welcome, true)} />
         <Route exact path="/login" component={withAuth(Login, true)} />
         <Route exact path="/signup" component={withAuth(Signup, true)} />
         <Route exact path="/games" component={withAuth(GamesList)} />

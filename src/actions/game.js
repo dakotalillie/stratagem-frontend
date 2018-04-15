@@ -114,7 +114,9 @@ export function createSandbox() {
     dispatch(requestGameCreation());
     return fetch(`${API_ROOT}/games/sandbox/`, {
       method: 'POST',
-      headers: HEADERS
+      headers: {
+        Authorization: `JWT ${localStorage.getItem('token')}`
+      }
     })
       .then(res => {
         if (!res.ok) {

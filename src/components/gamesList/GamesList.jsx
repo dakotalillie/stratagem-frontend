@@ -13,7 +13,12 @@ class GamesList extends React.Component {
   };
 
   render() {
-    const games_list = Object.keys(this.props.games).map(gameId => {
+    const sorted_games = Object.keys(this.props.games).sort((a, b) => {
+      const a_created_at = this.props.games[a].current_turn.created_at;
+      const b_created_at = this.props.games[b].current_turn.created_at;
+      return new Date(b_created_at) - new Date(a_created_at);
+    });
+    const games_list = sorted_games.map(gameId => {
       const game = this.props.games[gameId];
       return (
         <tr key={gameId}>

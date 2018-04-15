@@ -13,6 +13,8 @@ function withAuth(WrappedComponent, reversed) {
         (reversed && !this.props.isLoggedIn)
       ) {
         return <WrappedComponent {...this.props} />;
+      } else if (reversed && this.props.isLoggedIn) {
+        return <Redirect to="/games" />;
       } else {
         return <Redirect to="/" />;
       }
