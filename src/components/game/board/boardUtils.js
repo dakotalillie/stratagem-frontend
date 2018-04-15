@@ -16,7 +16,8 @@ export function findPotentialMoves({ unit, displaced, unitsList }) {
       potentialMoves = findNeighbors({
         sourceTerr: unit.territory,
         coast: unit.coast,
-        neighborType: 'sea'
+        neighborType: 'sea',
+        keepCoastData: true
       });
     }
   } else {
@@ -33,7 +34,8 @@ export function findPotentialMoves({ unit, displaced, unitsList }) {
         coast: unit.coast,
         neighborType: 'sea',
         occupied: false,
-        unitsList
+        unitsList,
+        keepCoastData: true
       });
     }
   }
@@ -247,7 +249,8 @@ export function findNeighbors({
   neighborType, // specify land neighbors or sea neighbors? defaults to all
   occupied, // does the neighbor need to be occupied?
   occupiedType, // if the neighbor is occupied, should the unit be a specific type?
-  terrType // should the neighbor be water, coastal, or inland?
+  terrType, // should the neighbor be water, coastal, or inland?
+  keepCoastData // should the function not remove coast data?
 }) {
   const NEIGHBORS = new Set([]);
   if (neighborType === undefined || neighborType === 'land') {
@@ -272,17 +275,21 @@ export function findNeighbors({
       for (let key of Object.keys(SEA_NEIGHBORS)) {
         if (!coast || (coast && coast === key)) {
           for (let terrName of SEA_NEIGHBORS[key]) {
-            const TERR = splitTerrName({ terr: terrName });
-            if (
-              terrMatchesCriteria({
-                terr: TERR,
-                unitsList,
-                occupied,
-                occupiedType,
-                terrType
-              })
-            ) {
-              NEIGHBORS.add(TERR);
+            if (!keepCoastData) {
+              const TERR = splitTerrName({ terr: terrName });
+              if (
+                terrMatchesCriteria({
+                  terr: TERR,
+                  unitsList,
+                  occupied,
+                  occupiedType,
+                  terrType
+                })
+              ) {
+                NEIGHBORS.add(TERR);
+              }
+            } else {
+              NEIGHBORS.add(terrName);
             }
           }
         }

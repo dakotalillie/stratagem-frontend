@@ -49,6 +49,8 @@ export function moveUnit({ clickedTerr, context }) {
     // Save data into temporary storage and raise modal
     context.setState({
       tmpMoveStorage: {
+        unit_id: context.state.selectedUnit.id,
+        country: context.state.selectedUnit.country,
         origin: context.state.selectedUnit.territory,
         destination: clickedTerr,
         order_type: 'move'

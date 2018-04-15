@@ -40,7 +40,11 @@ class Board extends React.Component {
 
   static getDerivedStateFromProps = (nextProps, prevState) => {
     if (nextProps.currentTurn.phase === 'diplomatic') {
-      return { potentialAdditions: [], potentialDeletions: [] };
+      return {
+        potentialAdditions: [],
+        potentialDeletions: [],
+        displacedUnits: []
+      };
     } else if (nextProps.currentTurn.phase === 'retreat') {
       let displacedUnits = [];
       for (let country_name of Object.keys(nextProps.countries)) {
@@ -84,7 +88,7 @@ class Board extends React.Component {
           }
         }
       }
-      return { potentialAdditions, potentialDeletions };
+      return { potentialAdditions, potentialDeletions, displacedUnits: [] };
     }
     return null;
   };
@@ -316,7 +320,7 @@ class Board extends React.Component {
 
   render() {
     const COASTS_FOR_MODAL = this.state.coastOptions[
-      this.state.tmpMoveStorage.toTerr
+      this.state.tmpMoveStorage.destination
     ];
     return (
       <div className="board">
