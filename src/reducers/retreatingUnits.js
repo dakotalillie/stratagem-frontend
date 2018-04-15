@@ -1,4 +1,9 @@
-import { RECEIVE_GAME_DATA, DELETE_UNIT, LOGOUT } from '../actions/actionTypes';
+import {
+  RECEIVE_GAME_DATA,
+  DELETE_UNIT,
+  LOGOUT,
+  CLEAR_GAME_DETAIL_DATA
+} from '../actions/actionTypes';
 
 const retreatingUnits = (state = {}, action) => {
   switch (action.type) {
@@ -13,6 +18,7 @@ const retreatingUnits = (state = {}, action) => {
         delete newState[action.payload.unit_data.territory];
       }
       return newState;
+    case CLEAR_GAME_DETAIL_DATA:
     case LOGOUT:
       return {};
     default:

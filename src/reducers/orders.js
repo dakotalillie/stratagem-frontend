@@ -2,7 +2,8 @@ import {
   CREATE_ORDER,
   CREATE_UNIT,
   RECEIVE_GAME_DATA,
-  LOGOUT
+  LOGOUT,
+  CLEAR_GAME_DETAIL_DATA
 } from '../actions/actionTypes';
 import { DELETE_UNIT } from '../components/game/board/selectionTypes';
 
@@ -23,6 +24,7 @@ const orders = (state = {}, action) => {
       newState = { ...state };
       newState[action.payload.unit_data.territory] = action.payload.unit_data;
       return newState;
+    case CLEAR_GAME_DETAIL_DATA:
     case LOGOUT:
       return {};
     default:

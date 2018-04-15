@@ -2,7 +2,11 @@ import React from 'react';
 import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchGameData, submitOrders } from '../../actions';
+import {
+  fetchGameData,
+  submitOrders,
+  clearGameDetailData
+} from '../../actions';
 import Board from './board/Board';
 import SiteHeader from '../shared/siteHeader/SiteHeader';
 // import OrderAlert from './orderAlert/OrderAlert';
@@ -11,6 +15,10 @@ import './game.css';
 class Game extends React.Component {
   componentDidMount() {
     this.props.fetchGameData(this.props.match.params.game_id);
+  }
+
+  componentWillUnmount() {
+    this.props.clearGameDetailData();
   }
 
   handleSubmitOrders = () => {
@@ -40,7 +48,8 @@ class Game extends React.Component {
 Game.propTypes = {
   orders: PropTypes.object.isRequired,
   fetchGameData: PropTypes.func.isRequired,
-  submitOrders: PropTypes.func.isRequired
+  submitOrders: PropTypes.func.isRequired,
+  clearGameDetailData: PropTypes.func.isRequired
 };
 
 const connectStateToProps = state => ({
@@ -48,6 +57,8 @@ const connectStateToProps = state => ({
   convoy_routes: state.convoyRoutes
 });
 
-export default connect(connectStateToProps, { fetchGameData, submitOrders })(
-  Game
-);
+export default connect(connectStateToProps, {
+  fetchGameData,
+  submitOrders,
+  clearGameDetailData
+})(Game);

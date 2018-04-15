@@ -2,7 +2,8 @@ import {
   RECEIVE_GAME_DATA,
   CREATE_UNIT,
   DELETE_UNIT,
-  LOGOUT
+  LOGOUT,
+  CLEAR_GAME_DETAIL_DATA
 } from '../actions/actionTypes';
 
 const units = (state = {}, action) => {
@@ -20,6 +21,7 @@ const units = (state = {}, action) => {
         delete newState[action.payload.unit_data.territory];
       }
       return newState;
+    case CLEAR_GAME_DETAIL_DATA:
     case LOGOUT:
       return {};
     default:

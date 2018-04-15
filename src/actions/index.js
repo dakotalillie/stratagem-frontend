@@ -7,6 +7,7 @@ export {
   createSandbox,
   createUnit,
   deleteUnit,
-  createDisplacedOrder
+  createDisplacedOrder,
+  clearGameDetailData
 } from './game';
 export { login, noToken, fetchCurrentUser, signup, logout } from './auth';

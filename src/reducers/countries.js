@@ -3,7 +3,8 @@ import {
   CREATE_UNIT,
   DELETE_UNIT,
   CREATE_ORDER,
-  LOGOUT
+  LOGOUT,
+  CLEAR_GAME_DETAIL_DATA
 } from '../actions/actionTypes';
 
 const countries = (state = {}, action) => {
@@ -40,6 +41,7 @@ const countries = (state = {}, action) => {
         units.splice(index, 1);
       }
       return newState;
+    case CLEAR_GAME_DETAIL_DATA:
     case LOGOUT:
       return {};
     default:

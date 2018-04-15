@@ -1,7 +1,8 @@
 import {
   CREATE_CONVOY_ROUTE,
   CREATE_ORDER,
-  LOGOUT
+  LOGOUT,
+  CLEAR_GAME_DETAIL_DATA
 } from '../actions/actionTypes';
 
 const convoyRoutes = (state = [], action) => {
@@ -26,6 +27,7 @@ const convoyRoutes = (state = [], action) => {
         }
       }
       return newState;
+    case CLEAR_GAME_DETAIL_DATA:
     case LOGOUT:
       return [];
     default:

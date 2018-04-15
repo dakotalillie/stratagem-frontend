@@ -8,7 +8,8 @@ import {
   ORDERS_SUBMISSION_ERROR,
   REQUEST_GAME_CREATION,
   GAME_CREATION_ERROR,
-  CREATE_UNIT
+  CREATE_UNIT,
+  CLEAR_GAME_DETAIL_DATA
 } from './actionTypes';
 import { push } from 'react-router-redux';
 import { API_ROOT, HEADERS } from '../utils/constants';
@@ -104,6 +105,12 @@ export function deleteUnit(unit_data) {
     payload: {
       unit_data
     }
+  };
+}
+
+export function clearGameDetailData() {
+  return {
+    type: CLEAR_GAME_DETAIL_DATA
   };
 }
 
