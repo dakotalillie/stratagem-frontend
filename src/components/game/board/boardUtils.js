@@ -7,39 +7,36 @@ export function findPotentialMoves({ unit, displaced, unitsList }) {
   let potentialMoves;
   let coastOptions = {};
   if (!displaced) {
-    potentialMoves = findNeighbors({
-      sourceTerr: unit.territory,
-      coast: unit.coast
-    });
+    if (unit.unit_type === 'army') {
+      potentialMoves = findNeighbors({
+        sourceTerr: unit.territory,
+        neighborType: 'land'
+      });
+    } else if (unit.unit_type === 'fleet') {
+      potentialMoves = findNeighbors({
+        sourceTerr: unit.territory,
+        coast: unit.coast,
+        neighborType: 'sea'
+      });
+    }
   } else {
-    potentialMoves = findNeighbors({
-      sourceTerr: unit.retreating_from,
-      coast: unit.coast,
-      occupied: false,
-      unitsList
-    });
+    if (unit.unit_type === 'army') {
+      potentialMoves = findNeighbors({
+        sourceTerr: unit.retreating_from,
+        neighborType: 'land',
+        occupied: false,
+        unitsList
+      });
+    } else if (unit.unit_type === 'fleet') {
+      potentialMoves = findNeighbors({
+        sourceTerr: unit.retreating_from,
+        coast: unit.coast,
+        neighborType: 'sea',
+        occupied: false,
+        unitsList
+      });
+    }
   }
-  // debugger;
-  // const LAND_NEIGHBORS = territoriesData[unit.territory].landNeighbors;
-  // const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
-
-  // if (unit.unit_type === 'army') {
-  //   for (let neighbor of LAND_NEIGHBORS) {
-  //     potentialMoves.add(neighbor);
-  //   }
-  // } else if (unit.unit_type === 'fleet') {
-  //   // Valid moves for fleets are dependent on their coast. Will need to
-  //   // handle cases for territories with multiple coasts.
-  //   if (unit.coast) {
-  //     for (let neighbor of SEA_NEIGHBORS[unit.coast]) {
-  //       potentialMoves.add(neighbor);
-  //     }
-  //   } else {
-  //     for (let neighbor of SEA_NEIGHBORS.all) {
-  //       potentialMoves.add(neighbor);
-  //     }
-  //   }
-  // }
   // This is where we'll handle any coast information
   potentialMoves = new Set(
     [...potentialMoves].map(terr => {

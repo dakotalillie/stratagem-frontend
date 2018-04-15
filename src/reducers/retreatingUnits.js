@@ -6,7 +6,7 @@ const retreatingUnits = (state = {}, action) => {
       if (action.payload.game_data.retreating_units !== undefined) {
         return action.payload.game_data.retreating_units;
       }
-      return state;
+      return {};
     case DELETE_UNIT:
       let newState = { ...state };
       if (action.payload.unit_data.displaced) {
