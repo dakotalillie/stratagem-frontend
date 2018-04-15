@@ -1,18 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Container, ListGroup, ListGroupItem } from 'reactstrap';
+import { Button, Col, Container, Table, Row } from 'reactstrap';
+import Moment from 'react-moment';
 import { createSandbox } from '../../actions';
 import SiteHeader from '../shared/siteHeader/SiteHeader';
+import './gamesList.css';
 
 class GamesList extends React.Component {
   handleNewSandbox = () => {
-    // const countries = ['Au', 'En', 'Fr', 'Ge', 'It', 'Ru', 'Tu'];
-    // const country_data = countries.reduce((memo, abbr) => {
-    //   memo[abbr] = this.props.currentUser.id;
-    //   return memo;
-    // }, {});
-    // will make call to createGame method here.
     this.props.createSandbox();
   };
 
@@ -20,19 +16,47 @@ class GamesList extends React.Component {
     const games_list = Object.keys(this.props.games).map(gameId => {
       const game = this.props.games[gameId];
       return (
-        <ListGroupItem key={gameId} tag="button" action>
-          <Link to={`/games/${gameId}`}>{game.title}</Link>
-        </ListGroupItem>
+        <tr key={gameId}>
+          <td>
+            <Link to={`/games/${gameId}`}>{game.title}</Link>
+          </td>
+          <td>all</td>
+          <td>
+            {game.current_turn.phase}, {game.current_turn.season}{' '}
+            {game.current_turn.year}
+          </td>
+          <td>
+            <Moment fromNow>{game.current_turn.created_at}</Moment>
+          </td>
+        </tr>
       );
     });
 
     return (
       <div className="games-list">
         <SiteHeader />
-        <Container>
-          <h2>Your Games:</h2>
-          <Button onClick={this.handleNewSandbox}>New Sandbox</Button>
-          <ListGroup>{games_list}</ListGroup>
+        <Container className="content">
+          <Row>
+            <Col sm="6" className="title-col">
+              <h2>Your Games</h2>
+            </Col>
+            <Col sm="6" className="button-col">
+              <Button onClick={this.handleNewSandbox}>New Sandbox</Button>
+            </Col>
+          </Row>
+          <Row>
+            <Table>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Countries</th>
+                  <th>Current Turn</th>
+                  <th>Last Played</th>
+                </tr>
+              </thead>
+              <tbody>{games_list}</tbody>
+            </Table>
+          </Row>
         </Container>
       </div>
     );
@@ -47,3 +71,14 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, { createSandbox })(GamesList);
+
+// helpers
+
+// function title(str) {
+//   if (str !== undefined) {
+//     const strArr = str.split('');
+//     strArr[0] = strArr[0].toUpperCase();
+//     return strArr.join('');
+//   }
+//   return '';
+// }

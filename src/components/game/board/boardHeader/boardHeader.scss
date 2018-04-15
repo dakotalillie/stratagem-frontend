@@ -1,6 +1,8 @@
+@import 'utils/colors.scss';
+
 .board-header {
   width: 100%;
-  background-color: lightgrey;
+  background-color: $lightGrey;
   .row {
     padding-bottom: 10px;
     padding-top: 10px;

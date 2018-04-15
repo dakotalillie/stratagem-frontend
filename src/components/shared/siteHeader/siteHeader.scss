@@ -1,5 +1,8 @@
+@import 'utils/colors.scss';
+
 .site-header {
   .navbar {
+    background-color: $lightGrey !important;
     .nav-link {
       cursor: pointer;
     }

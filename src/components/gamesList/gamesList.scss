@@ -1,0 +1,32 @@
+.games-list {
+  .content {
+    margin-top: 50px;
+    .title-col {
+      text-align: left;
+    }
+    .button-col {
+      text-align: right;
+    }
+    .table {
+      margin-top: 30px;
+      text-align: left;
+      a {
+        color: inherit;
+      }
+      th {
+        border-top: none;
+      }
+    }
+  }
+}
+
+@media (max-width: 575px) {
+  .games-list {
+    .content {
+      .title-col,
+      .button-col {
+        text-align: center;
+      }
+    }
+  }
+}
