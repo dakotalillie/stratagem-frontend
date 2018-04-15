@@ -10,9 +10,11 @@ import {
   GAME_CREATION_ERROR,
   CREATE_UNIT
 } from './actionTypes';
+import { push } from 'react-router-redux';
 import { API_ROOT, HEADERS } from '../utils/constants';
 import { normalize, schema } from 'normalizr';
 import { DELETE_UNIT } from '../components/game/board/selectionTypes';
+import { logout } from './auth';
 
 export function createOrder(args) {
   return {
@@ -122,7 +124,7 @@ export function createSandbox() {
         }
       })
       .then(json => {
-        window.location.href = `/games/${json.game_id}`;
+        dispatch(push(`/games/${json.game_id}`));
       })
       .catch(error => {
         dispatch(gameCreationError(error.message));
@@ -133,20 +135,22 @@ export function createSandbox() {
 export function fetchGameData(game_id) {
   return dispatch => {
     dispatch(requestGameData());
-    return fetch(`${API_ROOT}/games/${game_id}`, {
+    return fetch(`${API_ROOT}/games/${game_id}/`, {
       headers: HEADERS
     })
       .then(res => {
-        if (!res.ok) {
-          throw new Error('Error fetching game data');
-        } else {
-          return res.json();
-        }
+        return res.json();
+        // if (!res.ok) {
+        //   throw new Error('Error fetching game data');
+        // } else {
+        //   return res.json();
+        // }
       })
       .then(json => {
         dispatch(receiveGameData(json));
       })
       .catch(error => {
+        dispatch(logout());
         dispatch(gameDataError(error.message));
       });
   };

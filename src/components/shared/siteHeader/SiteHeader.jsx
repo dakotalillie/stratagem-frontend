@@ -21,11 +21,11 @@ class SiteHeader extends React.Component {
     loggedOut: false
   };
 
-  toggle() {
+  toggle = () => {
     this.setState({
       isOpen: !this.state.isOpen
     });
-  }
+  };
 
   logout = () => {
     this.props.logout();

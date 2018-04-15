@@ -25,7 +25,9 @@ class Game extends React.Component {
       <div className="game">
         <SiteHeader />
         <Board />
-        <Button onClick={this.handleSubmitOrders}>Submit Orders</Button>
+        <Button onClick={this.handleSubmitOrders} className="submit-button">
+          Submit Orders
+        </Button>
       </div>
     );
   }

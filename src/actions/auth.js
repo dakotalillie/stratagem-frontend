@@ -92,7 +92,11 @@ export const fetchCurrentUser = () => {
     return fetch(`${API_ROOT}/current_user/`, { headers: HEADERS })
       .then(res => res.json())
       .then(json => {
-        dispatch(receiveCurrentUser(json));
+        if (json.detail === 'Signature has expired.') {
+          dispatch(logout());
+        } else {
+          dispatch(receiveCurrentUser(json));
+        }
       });
   };
 };

@@ -9,3 +9,33 @@
     margin-top: -2px;
   }
 }
+
+@media (min-width: 1200px) {
+  .info-text {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .info-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  .info-text {
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767px) {
+  .info-text {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 575px) {
+  .info-text {
+    font-size: 0.5rem;
+  }
+}
