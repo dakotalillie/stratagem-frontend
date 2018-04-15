@@ -136,15 +136,16 @@ export function fetchGameData(game_id) {
   return dispatch => {
     dispatch(requestGameData());
     return fetch(`${API_ROOT}/games/${game_id}/`, {
-      headers: HEADERS
+      headers: {
+        Authorization: `JWT ${localStorage.getItem('token')}`
+      }
     })
       .then(res => {
-        return res.json();
-        // if (!res.ok) {
-        //   throw new Error('Error fetching game data');
-        // } else {
-        //   return res.json();
-        // }
+        if (!res.ok) {
+          throw new Error('Error fetching game data');
+        } else {
+          return res.json();
+        }
       })
       .then(json => {
         dispatch(receiveGameData(json));
