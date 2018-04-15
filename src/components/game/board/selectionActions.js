@@ -221,6 +221,10 @@ export function selectDisplacedUnit({ clickedUnit, context }) {
     displaced: true,
     unitsList: context.props.units
   });
+  // Remove invaded_from from potential moves
+  const invaded_from =
+    context.props.retreatingUnits[clickedUnit.retreating_from].invaded_from;
+  potentialMoves.delete(invaded_from);
   context.setState({
     selectedUnit: clickedUnit,
     potentialMoves,

@@ -275,21 +275,17 @@ export function findNeighbors({
       for (let key of Object.keys(SEA_NEIGHBORS)) {
         if (!coast || (coast && coast === key)) {
           for (let terrName of SEA_NEIGHBORS[key]) {
-            if (!keepCoastData) {
-              const TERR = splitTerrName({ terr: terrName });
-              if (
-                terrMatchesCriteria({
-                  terr: TERR,
-                  unitsList,
-                  occupied,
-                  occupiedType,
-                  terrType
-                })
-              ) {
-                NEIGHBORS.add(TERR);
-              }
-            } else {
-              NEIGHBORS.add(terrName);
+            const TERR = splitTerrName({ terr: terrName });
+            if (
+              terrMatchesCriteria({
+                terr: TERR,
+                unitsList,
+                occupied,
+                occupiedType,
+                terrType
+              })
+            ) {
+              !keepCoastData ? NEIGHBORS.add(TERR) : NEIGHBORS.add(terrName);
             }
           }
         }
