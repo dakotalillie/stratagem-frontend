@@ -12,7 +12,7 @@ import {
   CLEAR_GAME_DETAIL_DATA
 } from './actionTypes';
 import { push } from 'react-router-redux';
-import { API_ROOT, HEADERS } from '../utils/constants';
+import { API_ROOT } from '../utils/constants';
 import { normalize, schema } from 'normalizr';
 import { DELETE_UNIT } from '../components/game/board/selectionTypes';
 import { logout } from './auth';
@@ -171,7 +171,10 @@ export function submitOrders({ game_id, orders, convoy_routes }) {
     dispatch(requestOrdersSubmission());
     return fetch(`${API_ROOT}/games/${game_id}/orders`, {
       method: 'POST',
-      headers: HEADERS,
+      headers: {
+        Authorization: `JWT ${localStorage.getItem('token')}`,
+        'Content-Type': 'application/json'
+      },
       body: JSON.stringify({ orders, convoy_routes })
     })
       .then(res => {
