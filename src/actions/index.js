@@ -9,4 +9,4 @@ export {
   deleteUnit,
   createDisplacedOrder
 } from './game';
-export { login, noToken, fetchCurrentUser, signup } from './auth';
+export { login, noToken, fetchCurrentUser, signup, logout } from './auth';

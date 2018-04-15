@@ -9,13 +9,16 @@ import {
   NavLink,
   NavbarToggler
 } from 'reactstrap';
+import { Redirect } from 'react-router';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { logout } from '../../../actions';
 import './siteHeader.css';
 
 class SiteHeader extends React.Component {
   state = {
-    isOpen: false
+    isOpen: false,
+    loggedOut: false
   };
 
   toggle() {
@@ -24,10 +27,10 @@ class SiteHeader extends React.Component {
     });
   }
 
-  logout() {
-    localStorage.removeItem('token');
-    window.location.href = '/';
-  }
+  logout = () => {
+    this.props.logout();
+    this.setState({ loggedOut: true });
+  };
 
   render() {
     let loggedOutContent = (
@@ -58,7 +61,7 @@ class SiteHeader extends React.Component {
       </Nav>
     );
 
-    return (
+    return !this.state.loggedOut ? (
       <div className="site-header">
         <Navbar color="light" light expand="md">
           <Container>
@@ -72,6 +75,8 @@ class SiteHeader extends React.Component {
           </Container>
         </Navbar>
       </div>
+    ) : (
+      <Redirect push to="/" />
     );
   }
 }
@@ -86,4 +91,4 @@ SiteHeader.propTypes = {
   isLoggedIn: PropTypes.bool
 };
 
-export default connect(mapStateToProps, null)(SiteHeader);
+export default connect(mapStateToProps, { logout })(SiteHeader);

@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { routerReducer } from 'react-router-redux';
 import isLoggedIn from './isLoggedIn';
 import currentUser from './currentUser';
 import games from './games';
@@ -22,7 +23,8 @@ const rootReducer = combineReducers({
   retreatingUnits,
   orders,
   convoyRoutes,
-  showOrderAlert
+  showOrderAlert,
+  router: routerReducer
 });
 
 export default rootReducer;

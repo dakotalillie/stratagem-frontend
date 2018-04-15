@@ -1,8 +1,10 @@
+import { push } from 'react-router-redux';
 import {
   NO_TOKEN,
   REQUEST_CURRENT_USER,
   RECEIVE_CURRENT_USER,
-  AUTHENTICATION_ERROR
+  AUTHENTICATION_ERROR,
+  LOGOUT
 } from './actionTypes';
 import { API_ROOT, HEADERS } from '../utils/constants';
 
@@ -45,6 +47,13 @@ function authenticationError(error_message) {
   };
 }
 
+export function logout() {
+  localStorage.removeItem('token');
+  return {
+    type: LOGOUT
+  };
+}
+
 // Thunks
 
 // This thunk is used for retrieving a user's token based off their username
@@ -68,7 +77,7 @@ export function login(username, password) {
       })
       .then(json => {
         dispatch(receiveCurrentUser(json));
-        window.location.href = '/games';
+        dispatch(push('/games'));
       })
       .catch(error => {
         dispatch(authenticationError(error.message));
@@ -107,7 +116,7 @@ export const signup = params => {
       })
       .then(json => {
         dispatch(receiveCurrentUser(json));
-        window.location.href = '/games';
+        dispatch(push('/games'));
       })
       .catch(error => {
         dispatch(authenticationError(error.message));

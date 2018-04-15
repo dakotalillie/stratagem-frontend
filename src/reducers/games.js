@@ -1,4 +1,4 @@
-import { RECEIVE_CURRENT_USER } from '../actions/actionTypes';
+import { RECEIVE_CURRENT_USER, LOGOUT } from '../actions/actionTypes';
 
 function games(state = {}, action) {
   switch (action.type) {
@@ -7,6 +7,8 @@ function games(state = {}, action) {
         memo[game.id] = game;
         return memo;
       }, {});
+    case LOGOUT:
+      return {};
     default:
       return state;
   }

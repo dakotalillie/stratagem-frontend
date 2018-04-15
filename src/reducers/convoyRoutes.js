@@ -1,4 +1,8 @@
-import { CREATE_CONVOY_ROUTE, CREATE_ORDER } from '../actions/actionTypes';
+import {
+  CREATE_CONVOY_ROUTE,
+  CREATE_ORDER,
+  LOGOUT
+} from '../actions/actionTypes';
 
 const convoyRoutes = (state = [], action) => {
   let newState;
@@ -22,6 +26,8 @@ const convoyRoutes = (state = [], action) => {
         }
       }
       return newState;
+    case LOGOUT:
+      return [];
     default:
       return state;
   }

@@ -2,7 +2,8 @@ import {
   REQUEST_CURRENT_USER,
   RECEIVE_CURRENT_USER,
   AUTHENTICATION_ERROR,
-  NO_TOKEN
+  NO_TOKEN,
+  LOGOUT
 } from '../actions/actionTypes';
 
 const currentUser = (state = { loading: true }, action) => {
@@ -19,6 +20,8 @@ const currentUser = (state = { loading: true }, action) => {
       return { loading: false, id, first_name, last_name, email };
     case AUTHENTICATION_ERROR:
       return { loading: false, error: action.payload.error };
+    case LOGOUT:
+      return { loading: false };
     default:
       return state;
   }
