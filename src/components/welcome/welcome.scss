@@ -5,28 +5,7 @@
   -o-background-size: cover;
   background-size: cover;
   height: 100vh;
-  .center-content {
-    position: absolute;
-    margin: auto;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    width: 50%;
-    height: 40%;
-    h1 {
-      font-family: 'Cinzel Decorative', cursive;
-      font-size: 6rem;
-      font-weight: 700;
-      margin-bottom: 0px;
-    }
-    h5 {
-      font-size: 2rem;
-      margin-bottom: 15px;
-      margin-top: -15px;
-    }
-    .btn {
-      margin: 0 10px;
-    }
+  .btn {
+    margin: 0 10px;
   }
 }

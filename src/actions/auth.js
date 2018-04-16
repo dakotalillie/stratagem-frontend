@@ -6,7 +6,7 @@ import {
   AUTHENTICATION_ERROR,
   LOGOUT
 } from './actionTypes';
-import { API_ROOT } from '../utils/constants';
+import { API_ROOT, HEADERS } from '../utils/constants';
 
 export function noToken() {
   return {
@@ -89,11 +89,7 @@ export function login(username, password) {
 export const fetchCurrentUser = () => {
   return dispatch => {
     dispatch(requestCurrentUser());
-    return fetch(`${API_ROOT}/current_user/`, {
-      headers: {
-        Authorization: `JWT ${localStorage.getItem('token')}`
-      }
-    })
+    return fetch(`${API_ROOT}/current_user/`, { headers: HEADERS })
       .then(res => res.json())
       .then(json => {
         if (json.detail === 'Signature has expired.') {
