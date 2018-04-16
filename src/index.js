@@ -8,7 +8,6 @@ import { ConnectedRouter, routerMiddleware } from 'react-router-redux';
 import rootReducer from './reducers/rootReducer';
 import './index.css';
 import App from './App';
-import registerServiceWorker from './registerServiceWorker';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const history = createHistory();
@@ -27,4 +26,3 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root')
 );
-registerServiceWorker();
