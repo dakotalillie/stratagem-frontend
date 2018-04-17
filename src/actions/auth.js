@@ -21,16 +21,21 @@ export function requestCurrentUser() {
 }
 
 function receiveCurrentUser(data) {
-  let payload;
+  /* TODO: right now you have three different ways of receiving user
+  data. This needs to be standardized */
+  const payload = {};
   if (data.token) {
-    payload = {
-      token: data.token,
-      user: data.user
-    };
+    payload.token = data.token;
+  }
+  if (data.user) {
+    payload.user = data.user;
   } else {
-    payload = {
-      user: data
-    };
+    payload.user = {};
+    payload.user.first_name = data.first_name;
+    payload.user.last_name = data.last_name;
+    payload.user.username = data.username;
+    payload.user.email = data.email;
+    payload.user.games = data.games;
   }
   return {
     type: RECEIVE_CURRENT_USER,
