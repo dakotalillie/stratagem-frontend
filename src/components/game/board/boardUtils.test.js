@@ -168,4 +168,60 @@ describe('boardUtils', () => {
         .toContain('Lon');
     })
   })
+
+  describe('findPotentialSupportedMoves', () => {
+    it('Identifies common moves between two units', () => {
+      const selectedUnit = {
+        coast: '', country: 'France', territory: 'Par', unit_type: 'army'
+      };
+      const supportedUnit = {
+        coast: '', country: 'France', territory: 'Bel', unit_type: 'army'
+      };
+      const unitsList = {
+        Par: selectedUnit,
+        Bel: supportedUnit
+      }
+      expect(boardUtils.findPotentialSupportedMoves(
+        { selectedUnit, supportedUnit, unitsList }
+      )).toEqual(new Set(['Bur', 'Pic']));
+    });
+
+    it('Does not include the selected unit\'s territory', () => {
+      const selectedUnit = {
+        coast: '', country: 'France', territory: 'Par', unit_type: 'army'
+      };
+      const supportedUnit = {
+        coast: '', country: 'France', territory: 'Bur', unit_type: 'army'
+      };
+      const unitsList = {
+        Par: selectedUnit,
+        Bur: supportedUnit
+      }
+      expect(boardUtils.findPotentialSupportedMoves(
+        { selectedUnit, supportedUnit, unitsList }
+      )).not.toContain('Par');
+    })
+
+    it('Includes territories to which the supported unit can convoy', () => {
+      const selectedUnit = {
+        coast: '', country: 'France', territory: 'Mar', unit_type: 'army'
+      };
+      const supportedUnit = {
+        coast: '', country: 'England', territory: 'Lon', unit_type: 'army'
+      };
+      const unitsList = {
+        Mar: selectedUnit,
+        Lon: supportedUnit,
+        MAO: {
+          coast: '', country: 'France', territory: 'MAO', unit_type: 'fleet'
+        },
+        ENG: {
+          coast: '', country: 'France', territory: 'ENG', unit_type: 'fleet'
+        }
+      };
+      expect(boardUtils.findPotentialSupportedMoves(
+        { selectedUnit, supportedUnit, unitsList }
+      )).toEqual(new Set(['Gas', 'Spa']))
+    })
+  })
 })
