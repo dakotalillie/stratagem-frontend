@@ -93,6 +93,7 @@ export function discernSelectionType({
       return SELECT_CONVOY_DESTINATION;
     }
   } else if (phase === 'retreat') {
+    debugger;
     if (
       state.displacedUnits.includes(clickedTerr) &&
       clickedUnit !== undefined &&
@@ -100,12 +101,12 @@ export function discernSelectionType({
     ) {
       return SELECT_DISPLACED_UNIT;
     } else if (
-      state.selectedUnit !== undefined &&
+      state.selectedUnit !== null &&
       state.potentialMoves.has(clickedTerr)
     ) {
       return MOVE_DISPLACED_UNIT;
     } else if (
-      state.selectedUnit !== undefined &&
+      state.selectedUnit !== null &&
       state.selectedUnit.retreating_from === clickedTerr
     ) {
       return DELETE_DISPLACED_UNIT;

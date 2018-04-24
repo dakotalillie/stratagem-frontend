@@ -39,7 +39,7 @@ export function findPotentialMoves({ unit, displaced, unitsList }) {
       });
     }
   }
-  // This is where we'll handle any coast information
+  // Handle coast information
   potentialMoves = new Set(
     [...potentialMoves].map(terr => {
       if (terr.endsWith('SC') || terr.endsWith('EC') || terr.endsWith('NC')) {
@@ -60,6 +60,13 @@ export function findPotentialMoves({ unit, displaced, unitsList }) {
       return terr;
     })
   );
+
+  // Units can't retreat to territories they were invaded from.
+  if (displaced) {
+    potentialMoves.delete(unit.invaded_from);
+    delete coastOptions[unit.invaded_from];
+  }
+
   return { potentialMoves, coastOptions };
 }
 
@@ -160,6 +167,65 @@ export function findPotentialSupports({ unit, unitsList }) {
   return potentialSupportedUnits;
 }
 
+export function findPotentialSupportedMoves({
+  selectedUnit,
+  supportedUnit,
+  unitsList
+}) {
+  const COMMON_MOVES = findCommonMoves({
+    unit1: selectedUnit,
+    unit2: supportedUnit
+  });
+  const POTENTIAL_CONVOY_SUPPORTS = new Set([]);
+  if (supportedUnit.unit_type === 'army') {
+    const SELECTED_UNIT_POTENTIAL_MOVES = findPotentialMoves({
+      unit: selectedUnit
+    }).potentialMoves;
+    // step 1: find occupied water territories next to supported unit
+    const POTENTIAL_CONVOY_PATH = findNeighbors({
+      sourceTerr: supportedUnit.territory,
+      unitsList,
+      occupied: true,
+      occupiedType: 'fleet',
+      terrType: 'water'
+    });
+    // Make sure not to include potential convoys that include the supporting
+    // unit.
+    POTENTIAL_CONVOY_PATH.delete(selectedUnit.territory);
+    const CONVOY_CHECK_QUEUE = [...POTENTIAL_CONVOY_PATH];
+    while (CONVOY_CHECK_QUEUE.length > 0) {
+      const TERR = CONVOY_CHECK_QUEUE.shift();
+      const OCCUPIED_WATER_NEIGHBORS = findNeighbors({
+        sourceTerr: TERR,
+        unitsList,
+        occupied: true,
+        occupiedType: 'fleet',
+        terrType: 'water'
+      });
+      for (let terr of OCCUPIED_WATER_NEIGHBORS) {
+        if (!POTENTIAL_CONVOY_PATH.has(terr)) {
+          CONVOY_CHECK_QUEUE.push(terr);
+        }
+        POTENTIAL_CONVOY_PATH.add(terr);
+      }
+      const COASTAL_NEIGHBORS = findNeighbors({
+        sourceTerr: TERR,
+        unitsList,
+        terrType: 'coastal'
+      });
+      for (let terr of COASTAL_NEIGHBORS) {
+        if (
+          terr !== supportedUnit.territory &&
+          SELECTED_UNIT_POTENTIAL_MOVES.has(terr)
+        ) {
+          POTENTIAL_CONVOY_SUPPORTS.add(terr);
+        }
+      }
+    }
+  }
+  return new Set([...COMMON_MOVES, ...POTENTIAL_CONVOY_SUPPORTS]);
+}
+
 export function findPotentialConvoys({ unit, unitsList }) {
   return findNeighbors({
     sourceTerr: unit.territory,
@@ -168,6 +234,38 @@ export function findPotentialConvoys({ unit, unitsList }) {
     occupiedType: 'fleet',
     terrType: 'water'
   });
+}
+
+export function findPotentialConvoyPaths({
+  unit,
+  unitsList,
+  selectedUnit,
+  convoyeurs
+}) {
+  const OCCUPIED_SEA_NEIGHBORS = findNeighbors({
+    sourceTerr: unit.territory,
+    unitsList,
+    occupied: true,
+    occupiedType: 'fleet',
+    terrType: 'water'
+  });
+  const COASTAL_NEIGHBORS = findNeighbors({
+    sourceTerr: unit.territory,
+    terrType: 'coastal'
+  });
+  const POTENTIAL_CONVOY_PATHS = new Set([
+    ...OCCUPIED_SEA_NEIGHBORS,
+    ...COASTAL_NEIGHBORS
+  ]);
+  // Make sure the selected unit's territory is not included as an option.
+  POTENTIAL_CONVOY_PATHS.delete(selectedUnit.territory);
+  // Same with any previously selected convoys
+  for (let convoyeur of convoyeurs) {
+    if (POTENTIAL_CONVOY_PATHS.has(convoyeur.territory)) {
+      POTENTIAL_CONVOY_PATHS.delete(convoyeur.territory);
+    }
+  }
+  return POTENTIAL_CONVOY_PATHS;
 }
 
 export function findPotentialLandingZones({ unit }) {
@@ -208,38 +306,6 @@ export function findPotentialLandingZones({ unit }) {
       .filter(terr => territoriesData[terr].type === 'coastal')
   );
   return potentialMoves;
-}
-
-export function findPotentialConvoyPaths({
-  unit,
-  unitsList,
-  selectedUnit,
-  convoyeurs
-}) {
-  const OCCUPIED_SEA_NEIGHBORS = findNeighbors({
-    sourceTerr: unit.territory,
-    unitsList,
-    occupied: true,
-    occupiedType: 'fleet',
-    terrType: 'water'
-  });
-  const COASTAL_NEIGHBORS = findNeighbors({
-    sourceTerr: unit.territory,
-    terrType: 'coastal'
-  });
-  const POTENTIAL_CONVOY_PATHS = new Set([
-    ...OCCUPIED_SEA_NEIGHBORS,
-    ...COASTAL_NEIGHBORS
-  ]);
-  // Make sure the selected unit's territory is not included as an option.
-  POTENTIAL_CONVOY_PATHS.delete(selectedUnit.territory);
-  // Same with any previously selected convoys
-  for (let convoyeur of convoyeurs) {
-    if (POTENTIAL_CONVOY_PATHS.has(convoyeur.territory)) {
-      POTENTIAL_CONVOY_PATHS.delete(convoyeur.territory);
-    }
-  }
-  return POTENTIAL_CONVOY_PATHS;
 }
 
 export function findNeighbors({
@@ -315,65 +381,6 @@ function splitTerrName({ terr }) {
     return SPLIT[0];
   }
   return terr;
-}
-
-export function findPotentialSupportedMoves({
-  selectedUnit,
-  supportedUnit,
-  unitsList
-}) {
-  const COMMON_MOVES = findCommonMoves({
-    unit1: selectedUnit,
-    unit2: supportedUnit
-  });
-  const POTENTIAL_CONVOY_SUPPORTS = new Set([]);
-  if (supportedUnit.unit_type === 'army') {
-    const SELECTED_UNIT_POTENTIAL_MOVES = findPotentialMoves({
-      unit: selectedUnit
-    }).potentialMoves;
-    // step 1: find occupied water territories next to supported unit
-    const POTENTIAL_CONVOY_PATH = findNeighbors({
-      sourceTerr: supportedUnit.territory,
-      unitsList,
-      occupied: true,
-      occupiedType: 'fleet',
-      terrType: 'water'
-    });
-    // Make sure not to include potential convoys that include the supporting
-    // unit.
-    POTENTIAL_CONVOY_PATH.delete(selectedUnit.territory);
-    const CONVOY_CHECK_QUEUE = [...POTENTIAL_CONVOY_PATH];
-    while (CONVOY_CHECK_QUEUE.length > 0) {
-      const TERR = CONVOY_CHECK_QUEUE.shift();
-      const OCCUPIED_WATER_NEIGHBORS = findNeighbors({
-        sourceTerr: TERR,
-        unitsList,
-        occupied: true,
-        occupiedType: 'fleet',
-        terrType: 'water'
-      });
-      for (let terr of OCCUPIED_WATER_NEIGHBORS) {
-        if (!POTENTIAL_CONVOY_PATH.has(terr)) {
-          CONVOY_CHECK_QUEUE.push(terr);
-        }
-        POTENTIAL_CONVOY_PATH.add(terr);
-      }
-      const COASTAL_NEIGHBORS = findNeighbors({
-        sourceTerr: TERR,
-        unitsList,
-        terrType: 'coastal'
-      });
-      for (let terr of COASTAL_NEIGHBORS) {
-        if (
-          terr !== supportedUnit.territory &&
-          SELECTED_UNIT_POTENTIAL_MOVES.has(terr)
-        ) {
-          POTENTIAL_CONVOY_SUPPORTS.add(terr);
-        }
-      }
-    }
-  }
-  return new Set([...COMMON_MOVES, ...POTENTIAL_CONVOY_SUPPORTS]);
 }
 
 function findCommonMoves({ unit1, unit2 }) {
