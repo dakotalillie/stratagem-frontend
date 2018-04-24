@@ -54,7 +54,7 @@ export function findPotentialMoves({ unit, displaced, unitsList }) {
           return TERR;
         } else {
           coastOptions[TERR].push(COAST);
-          return null;
+          return;
         }
       }
       return terr;
