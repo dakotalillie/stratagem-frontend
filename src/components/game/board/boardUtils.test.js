@@ -224,4 +224,34 @@ describe('boardUtils', () => {
       )).toEqual(new Set(['Gas', 'Spa']))
     })
   })
+
+  describe('findPotentialConvoys', () => {
+    it('Identifies neighboring fleets in water territories', () => {
+      const unit = {
+        coast: '', country: 'France', territory: 'Bre', unit_type: 'army'
+      };
+      const unitsList = {
+        Bre: unit,
+        ENG: {
+          coast: '', country: 'France', territory: 'ENG', unit_type: 'fleet'
+        }
+      };
+      expect(boardUtils.findPotentialConvoys({ unit, unitsList }))
+        .toEqual(new Set(['ENG']));
+    })
+
+    it('Excludes neighboring fleets in coastal territories', () => {
+      const unit = {
+        coast: '', country: 'France', territory: 'Bre', unit_type: 'army'
+      };
+      const unitsList = {
+        Bre: unit,
+        Pic: {
+          coast: '', country: 'France', territory: 'Pic', unit_type: 'fleet'
+        }
+      };
+      expect(boardUtils.findPotentialConvoys({ unit, unitsList }))
+        .toEqual(new Set([]));
+    })
+  });
 })
