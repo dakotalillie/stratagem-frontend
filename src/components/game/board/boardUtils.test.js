@@ -296,4 +296,63 @@ describe('boardUtils', () => {
       )).not.toContain('Wal');
     });
   })
+
+  describe('findNeighbors', () => {
+    let unitsList;
+    beforeEach(() => {
+      unitsList = {
+        Ank: { territory: 'Ank', unit_type: 'army' },
+        BLA: { territory: 'BLA', unit_type: 'fleet' },
+        Bul: { territory: 'Bul', unit_type: 'fleet', coast: 'SC'}
+      }
+    })
+
+    it('Can identify all neighbors', () => {
+      expect(boardUtils.findNeighbors({ sourceTerr: 'Lon' }))
+        .toEqual(new Set(['Wal', 'Yor', 'ENG', 'NTH']))
+    });
+
+    it('Can identify land neighbors', () => {
+      expect(boardUtils.findNeighbors(
+        { sourceTerr: 'Lon', neighborType: 'land' }
+      )).toEqual(new Set(['Wal', 'Yor']))
+    });
+
+    it('Can identify sea neighbors (no coast)', () => {
+      expect(boardUtils.findNeighbors(
+        { sourceTerr: 'Lon', neighborType: 'sea' }
+      )).toEqual(new Set(['ENG', 'NTH', 'Wal', 'Yor']));
+    });
+
+    it('Can identify sea neighbors (with coast)', () => {
+      expect(boardUtils.findNeighbors(
+        { sourceTerr: 'Spa', neighborType: 'sea', coast: 'NC' }
+      )).toEqual(new Set(['Gas', 'MAO', 'Por']))
+    });
+
+    it('Can identify neighbors of a particular type', () => {
+      expect(boardUtils.findNeighbors(
+        { sourceTerr: 'Bur', terrType: 'inland' }
+      )).toEqual(new Set(['Mun', 'Ruh', 'Par']))
+    });
+
+    it('Can identify occupied neighbors', () => {
+      expect(boardUtils.findNeighbors(
+        { sourceTerr: 'Con', unitsList, occupied: true }
+      )).toEqual(new Set(['Ank', 'Bul', 'BLA']))
+    });
+
+    it('Can identify occupied neighbors of a particular type', () => {
+      expect(boardUtils.findNeighbors(
+        { sourceTerr: 'Con', unitsList, occupied: true, occupiedType: 'fleet' }
+      )).toEqual(new Set(['Bul', 'BLA']))
+    });
+
+    it('Can preserve coast data if specified', () => {
+      expect(boardUtils.findNeighbors(
+        { sourceTerr: 'Con', keepCoastData: true }
+      )).toEqual(new Set(['Ank', 'Bul', 'Smy', 'AEG', 'BLA', 'Bul_SC',
+        'Bul_EC']));
+    });
+  })
 })
