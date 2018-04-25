@@ -340,7 +340,7 @@ export function terrMatchesCriteria({
   return true;
 }
 
-function splitTerrName({ terr }) {
+export function splitTerrName({ terr }) {
   if (terr.endsWith('SC') || terr.endsWith('EC') || terr.endsWith('NC')) {
     const SPLIT = terr.split('_');
     return SPLIT[0];
@@ -348,7 +348,7 @@ function splitTerrName({ terr }) {
   return terr;
 }
 
-function findCommonMoves({ unit1, unit2 }) {
+export function findCommonMoves({ unit1, unit2 }) {
   const UNIT_MOVES = findPotentialMoves({ unit: unit1 }).potentialMoves;
   const SUPPORTED_UNIT_MOVES = findPotentialMoves({
     unit: unit2

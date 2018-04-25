@@ -380,12 +380,27 @@ describe('boardUtils', () => {
       expect(boardUtils.terrMatchesCriteria(
         { terr: 'Lon', unitsList, occupied: true, occupiedType: 'fleet' }
       )).toBe(false);
-    })
+    });
 
     it('Can filter by territory type', () => {
       expect(boardUtils.terrMatchesCriteria(
         { terr: 'Lon', terrType: 'inland' }
       )).toBe(false);
-    })
-  })
+    });
+  });
+
+  describe('splitTerrName', () => {
+    it('Removes the coast suffix from the territory name', () => {
+      expect(boardUtils.splitTerrName({ terr: 'Spa_SC' })).toEqual('Spa');
+    });
+  });
+
+  describe('findCommonMoves', () => {
+    it('Identifies the union between the potential moves of two units', () => {
+      const unit1 = { territory: 'Mar', unit_type: 'army' };
+      const unit2 = { territory: 'MAO', unit_type: 'fleet' };
+      expect(boardUtils.findCommonMoves({ unit1, unit2 }))
+        .toEqual(new Set(['Gas', 'Spa']))
+    });
+  });
 })
