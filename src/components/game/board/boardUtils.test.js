@@ -256,49 +256,43 @@ describe('boardUtils', () => {
   });
 
   describe('findPotentialConvoyPaths', () => {
-    let selectedUnit, unit, ENG_fleet, convoyeurs, unitsList;
+    let WAL_army, IRI_fleet, ENG_fleet, convoyeurs, unitsList;
     beforeEach(() => {
-      selectedUnit = {
-        coast: '', country: 'England', territory: 'Wal', unit_type: 'army'
-      };
-      ENG_fleet = {
-        coast: '', country: 'England', territory: 'ENG', unit_type: 'fleet'
-      }
-      unit = {
-        coast: '', country: 'England', territory: 'IRI', unit_type: 'fleet'
-      };
-      convoyeurs = new Set([ENG_fleet, unit]);
+      WAL_army = {territory: 'Wal', unit_type: 'army'};
+      ENG_fleet = {territory: 'ENG', unit_type: 'fleet'}
+      IRI_fleet = {territory: 'IRI', unit_type: 'fleet'};
+      convoyeurs = new Set([ENG_fleet, IRI_fleet]);
       unitsList = {
-        Wal: selectedUnit,
+        Wal: WAL_army,
         ENG: ENG_fleet,
-        IRI: unit,
+        IRI: IRI_fleet,
         MAO: {
-          coast: '', country: 'England', territory: 'MAO', unit_type: 'fleet'
+          territory: 'MAO', unit_type: 'fleet'
         }
       }
     });
 
     it('Includes neighboring fleets in water territories', () => {
       expect(boardUtils.findPotentialConvoyPaths(
-        { unit, unitsList, selectedUnit, convoyeurs }
+        { unit: IRI_fleet, unitsList, selectedUnit: WAL_army, convoyeurs }
       )).toContain('MAO');
     });
 
     it('Includes neighboring coastal territories', () => {
       expect(boardUtils.findPotentialConvoyPaths(
-        { unit, unitsList, selectedUnit, convoyeurs }
+        { unit: IRI_fleet, unitsList, selectedUnit: WAL_army, convoyeurs }
       )).toContain('Lvp');
     });
 
     it('Excludes fleets which are already part of the convoy route', () => {
       expect(boardUtils.findPotentialConvoyPaths(
-        { unit, unitsList, selectedUnit, convoyeurs }
+        { unit: IRI_fleet, unitsList, selectedUnit: WAL_army, convoyeurs }
       )).not.toContain('ENG');
     });
 
     it('Excludes the selected unit\'s territory', () => {
       expect(boardUtils.findPotentialConvoyPaths(
-        { unit, unitsList, selectedUnit, convoyeurs }
+        { unit: IRI_fleet, unitsList, selectedUnit: WAL_army, convoyeurs }
       )).not.toContain('Wal');
     });
   })

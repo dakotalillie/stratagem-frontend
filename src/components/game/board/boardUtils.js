@@ -111,7 +111,12 @@ export function findPotentialSupports({ unit, unitsList }) {
 
   // We also need to find any distant units we could support when they're
   // convoyed to an adjacent territory. First, identify the landing zones.
-  const LANDING_ZONES = findPotentialLandingZones({ unit });
+  const LANDING_ZONES = findNeighbors({ 
+    sourceTerr: unit.territory,
+    coast: unit.coast,
+    neighborType: unit.unit_type === 'army' ? 'land' : 'sea',
+    terrType: 'coastal'
+  });
   // Then, find occupied water territories next to those landing zones.
   const POTENTIAL_CONVOY_PATH = new Set([]);
   for (let landingZone of LANDING_ZONES) {
@@ -266,46 +271,6 @@ export function findPotentialConvoyPaths({
     }
   }
   return POTENTIAL_CONVOY_PATHS;
-}
-
-export function findPotentialLandingZones({ unit }) {
-  // If an army, this consists of finding potential moves that are coastal
-  // If a fleet, this consists of finding potential moves that are coastal
-  let potentialMoves = new Set([]);
-  const LAND_NEIGHBORS = territoriesData[unit.territory].landNeighbors;
-  const SEA_NEIGHBORS = territoriesData[unit.territory].seaNeighbors;
-
-  if (unit.unit_type === 'army') {
-    for (let neighbor of LAND_NEIGHBORS) {
-      potentialMoves.add(neighbor);
-    }
-  } else if (unit.unit_type === 'fleet') {
-    // Valid moves for fleets are dependent on their coast. Will need to
-    // handle cases for territories with multiple coasts.
-    if (unit.coast) {
-      for (let neighbor of SEA_NEIGHBORS[unit.coast]) {
-        potentialMoves.add(neighbor);
-      }
-    } else {
-      for (let neighbor of SEA_NEIGHBORS.all) {
-        potentialMoves.add(neighbor);
-      }
-    }
-  }
-
-  // remove coast data, then filter to make sure they're coastal.
-  potentialMoves = new Set(
-    [...potentialMoves]
-      .map(terr => {
-        if (terr.endsWith('SC') || terr.endsWith('EC') || terr.endsWith('NC')) {
-          const SPLIT = terr.split('_');
-          return SPLIT[0];
-        }
-        return terr;
-      })
-      .filter(terr => territoriesData[terr].type === 'coastal')
-  );
-  return potentialMoves;
 }
 
 export function findNeighbors({
