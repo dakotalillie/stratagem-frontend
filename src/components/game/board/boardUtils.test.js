@@ -254,4 +254,52 @@ describe('boardUtils', () => {
         .toEqual(new Set([]));
     })
   });
+
+  describe('findPotentialConvoyPaths', () => {
+    let selectedUnit, unit, ENG_fleet, convoyeurs, unitsList;
+    beforeEach(() => {
+      selectedUnit = {
+        coast: '', country: 'England', territory: 'Wal', unit_type: 'army'
+      };
+      ENG_fleet = {
+        coast: '', country: 'England', territory: 'ENG', unit_type: 'fleet'
+      }
+      unit = {
+        coast: '', country: 'England', territory: 'IRI', unit_type: 'fleet'
+      };
+      convoyeurs = new Set([ENG_fleet, unit]);
+      unitsList = {
+        Wal: selectedUnit,
+        ENG: ENG_fleet,
+        IRI: unit,
+        MAO: {
+          coast: '', country: 'England', territory: 'MAO', unit_type: 'fleet'
+        }
+      }
+    });
+
+    it('Includes neighboring fleets in water territories', () => {
+      expect(boardUtils.findPotentialConvoyPaths(
+        { unit, unitsList, selectedUnit, convoyeurs }
+      )).toContain('MAO');
+    });
+
+    it('Includes neighboring coastal territories', () => {
+      expect(boardUtils.findPotentialConvoyPaths(
+        { unit, unitsList, selectedUnit, convoyeurs }
+      )).toContain('Lvp');
+    });
+
+    it('Excludes fleets which are already part of the convoy route', () => {
+      expect(boardUtils.findPotentialConvoyPaths(
+        { unit, unitsList, selectedUnit, convoyeurs }
+      )).not.toContain('ENG');
+    });
+
+    it('Excludes the selected unit\'s territory', () => {
+      expect(boardUtils.findPotentialConvoyPaths(
+        { unit, unitsList, selectedUnit, convoyeurs }
+      )).not.toContain('Wal');
+    });
+  })
 })
