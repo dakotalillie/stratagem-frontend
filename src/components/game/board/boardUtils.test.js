@@ -355,4 +355,37 @@ describe('boardUtils', () => {
         'Bul_EC']));
     });
   })
+
+  describe('terrMatchesCriteria', () => {
+    let unitsList;
+    beforeEach(() => {
+      unitsList = {
+        Lon: { territory: 'Lon', unit_type: 'army' }
+      }
+    })
+
+    it('Can filter by occupied territory', () => {
+      expect(boardUtils.terrMatchesCriteria(
+        { terr: 'Lon', unitsList, occupied: true }
+      )).toBe(true);
+    });
+
+    it('Can filter by unoccupied territory', () => {
+      expect(boardUtils.terrMatchesCriteria(
+        { terr: 'Lon', unitsList, occupied: false }
+      )).toBe(false);
+    });
+
+    it('Can filter by occupying unit type', () => {
+      expect(boardUtils.terrMatchesCriteria(
+        { terr: 'Lon', unitsList, occupied: true, occupiedType: 'fleet' }
+      )).toBe(false);
+    })
+
+    it('Can filter by territory type', () => {
+      expect(boardUtils.terrMatchesCriteria(
+        { terr: 'Lon', terrType: 'inland' }
+      )).toBe(false);
+    })
+  })
 })

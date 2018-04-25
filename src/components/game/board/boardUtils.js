@@ -326,7 +326,7 @@ export function findNeighbors({
   return NEIGHBORS;
 }
 
-function terrMatchesCriteria({
+export function terrMatchesCriteria({
   terr,
   unitsList,
   occupied,
