@@ -20,7 +20,7 @@ export const DELETE_DISPLACED_UNIT = 'DELETE DISPLACED UNIT';
 
 // This function determines the type of action that should occur when
 // a territory is clicked.
-export function discernSelectionType({
+export default function discernSelectionType({
   state,
   units,
   clickedTerr,
@@ -93,10 +93,8 @@ export function discernSelectionType({
       return SELECT_CONVOY_DESTINATION;
     }
   } else if (phase === 'retreat') {
-    debugger;
     if (
       state.displacedUnits.includes(clickedTerr) &&
-      clickedUnit !== undefined &&
       state.selectedUnit === null
     ) {
       return SELECT_DISPLACED_UNIT;
