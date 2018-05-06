@@ -14,7 +14,7 @@ import BoardFooter from './boardFooter/BoardFooter';
 import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
 import CreateUnitModal from './createUnitModal/CreateUnitModal';
 import { mapUnits, mapRetreatingUnits } from './boardUtils';
-import * as selectionTypes from './selectionTypes';
+import discernSelectionType, * as selectionTypes from './selectionTypes';
 import * as selectionActions from './selectionActions';
 import territoriesData from '../../../utils/territories.json';
 import countriesData from '../../../utils/countries.json';
@@ -124,7 +124,7 @@ class Board extends React.Component {
     const CLICKED_UNIT = this.props.retreatingUnits[CLICKED_TERR]
       ? this.props.retreatingUnits[CLICKED_TERR]
       : this.props.units[CLICKED_TERR];
-    const SELECTION_TYPE = selectionTypes.discernSelectionType({
+    const SELECTION_TYPE = discernSelectionType({
       state: this.state,
       units: this.props.units,
       clickedTerr: CLICKED_TERR,

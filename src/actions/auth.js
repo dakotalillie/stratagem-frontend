@@ -31,6 +31,7 @@ function receiveCurrentUser(data) {
     payload.user = data.user;
   } else {
     payload.user = {};
+    payload.user.id = data.id;
     payload.user.first_name = data.first_name;
     payload.user.last_name = data.last_name;
     payload.user.username = data.username;
@@ -66,7 +67,7 @@ export function logout() {
 export function login(username, password) {
   return dispatch => {
     dispatch(requestCurrentUser());
-    return fetch(`${API_ROOT}/login/`, {
+    return fetch(`${API_ROOT}/auth/login/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -94,7 +95,7 @@ export function login(username, password) {
 export const fetchCurrentUser = () => {
   return dispatch => {
     dispatch(requestCurrentUser());
-    return fetch(`${API_ROOT}/current_user/`, {
+    return fetch(`${API_ROOT}/auth/current_user/`, {
       headers: {
         Authorization: `JWT ${localStorage.getItem('token')}`
       }
@@ -113,7 +114,7 @@ export const fetchCurrentUser = () => {
 export const signup = params => {
   return dispatch => {
     dispatch(requestCurrentUser());
-    return fetch(`${API_ROOT}/users/`, {
+    return fetch(`${API_ROOT}/auth/users/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -16,24 +16,31 @@
   & > g.army,
   & > g.fleet {
     &.England {
+      stroke: black;
       fill: $EnglishUnit;
     }
     &.France {
+      stroke: black;
       fill: $FrenchUnit;
     }
     &.Germany {
+      stroke: black;
       fill: $GermanUnit;
     }
     &.Italy {
+      stroke: black;
       fill: $ItalianUnit;
     }
     &.Austria {
+      stroke: black;
       fill: $AustrianUnit;
     }
     &.Russia {
+      stroke: black;
       fill: $RussianUnit;
     }
     &.Turkey {
+      stroke: black;
       fill: $TurkishUnit;
     }
   }
