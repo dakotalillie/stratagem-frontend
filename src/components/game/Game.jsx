@@ -12,6 +12,11 @@ import SubBoard from './subBoard/SubBoard';
 import './game.css';
 
 class Game extends React.Component {
+
+  state = {
+    loading: false
+  }
+
   componentDidMount() {
     this.props.fetchGameData(this.props.match.params.game_id);
   }
@@ -21,10 +26,11 @@ class Game extends React.Component {
   }
 
   handleSubmitOrders = () => {
-    const game_id = this.props.match.params.game_id;
-    const orders = this.props.orders;
-    const convoy_routes = this.props.convoy_routes;
-    this.props.submitOrders({ game_id, orders, convoy_routes });
+    this.setState(prevState => ({ loading: !prevState.loading }))
+    // const game_id = this.props.match.params.game_id;
+    // const orders = this.props.orders;
+    // const convoy_routes = this.props.convoy_routes;
+    // this.props.submitOrders({ game_id, orders, convoy_routes });
   };
 
   render() {
@@ -32,7 +38,10 @@ class Game extends React.Component {
       <div className="game">
         <SiteHeader />
         <Board />
-        <SubBoard handleSubmitOrders={this.handleSubmitOrders} />
+        <SubBoard
+          handleSubmitOrders={this.handleSubmitOrders}
+          loading={this.state.loading}
+        />
       </div>
     );
   }

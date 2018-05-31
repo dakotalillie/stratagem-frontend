@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Col, Container, Row } from 'reactstrap';
+import Spinner from 'react-spinkit';
 
 import IconsRow from './iconsRow/IconsRow';
 import './subBoard.css';
 
-export default function SubBoard({ handleSubmitOrders }) {
+export default function SubBoard({ handleSubmitOrders, loading }) {
   return (
     <div className="sub-board">
       <Container>
@@ -16,8 +17,10 @@ export default function SubBoard({ handleSubmitOrders }) {
               onClick={handleSubmitOrders}
               size="lg"
               className="submit-button"
-            >
-              Submit Orders
+            > 
+              {loading ? (
+                <Spinner name='ball-clip-rotate' fadeIn='none' />
+              ) : 'Submit Orders'}  
             </Button>
           </Col>  
         </Row>  
@@ -28,5 +31,6 @@ export default function SubBoard({ handleSubmitOrders }) {
 }
 
 SubBoard.propTypes = {
-  handleSubmitOrders: PropTypes.func.isRequired
+  handleSubmitOrders: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
 }

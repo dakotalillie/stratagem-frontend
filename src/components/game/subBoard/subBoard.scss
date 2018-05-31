@@ -5,5 +5,14 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    .submit-button {
+      height: 46px;
+      text-align: center;
+      width: 158px;
+      .sk-spinner {
+        color: white;
+        margin: auto;
+      }
+    }
   }
 }
