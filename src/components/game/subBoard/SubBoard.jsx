@@ -20,7 +20,7 @@ export default function SubBoard({ handleSubmitOrders, loading }) {
             > 
               {loading ? (
                 <Spinner name='ball-clip-rotate' fadeIn='none' />
-              ) : 'Submit Orders'}  
+              ) : 'Ready'}  
             </Button>
           </Col>  
         </Row>  

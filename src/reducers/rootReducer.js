@@ -9,8 +9,8 @@ import territories from './territories';
 import units from './units';
 import retreatingUnits from './retreatingUnits';
 import orders from './orders';
-import showOrderAlert from './showOrderAlert';
 import convoyRoutes from './convoyRoutes';
+import gameDataStatus from './gameDataStatus';
 
 const rootReducer = combineReducers({
   isLoggedIn,
@@ -23,7 +23,7 @@ const rootReducer = combineReducers({
   retreatingUnits,
   orders,
   convoyRoutes,
-  showOrderAlert,
+  gameDataStatus,
   router: routerReducer
 });
 
