@@ -2,42 +2,47 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Button, ButtonGroup, Col, Container, Row } from 'reactstrap';
+import FaListUl from 'react-icons/lib/fa/list-ul'
+import FaCommentsO from 'react-icons/lib/fa/comments-o'
+
 import { title } from '../boardUtils';
 import './boardHeader.css';
 
-const BoardHeader = props => {
+const BoardHeader = ({ mode, setMode, phase, season, year }) => {
   return (
     <div className="board-header">
       <Container>
         <Row>
           <Col md="4" className="col-left">
-            <h5 className="date">
-              {title(props.season)} {props.year}
-            </h5>
+            <FaListUl className="list_icon" />
+            <FaCommentsO className="chat_icon" />
           </Col>
           <Col md="4" className="col-middle">
-            <h4 className="phase">{title(props.phase)} Phase</h4>
+            <h4 className="phase">{title(phase)} Phase</h4>
+            <h5 className="date">
+              {title(season)} {year}
+            </h5>
           </Col>
           <Col md="4" className="col-right">
             <ButtonGroup>
               <Button
                 outline
-                active={props.mode === 'normal'}
-                onClick={() => props.setMode('normal')}
+                active={mode === 'normal'}
+                onClick={() => setMode('normal')}
               >
                 Normal
               </Button>
               <Button
                 outline
-                active={props.mode === 'support'}
-                onClick={() => props.setMode('support')}
+                active={mode === 'support'}
+                onClick={() => setMode('support')}
               >
                 Support
               </Button>
               <Button
                 outline
-                active={props.mode === 'convoy'}
-                onClick={() => props.setMode('convoy')}
+                active={mode === 'convoy'}
+                onClick={() => setMode('convoy')}
               >
                 Convoy
               </Button>

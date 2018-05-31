@@ -8,22 +8,37 @@
     padding-top: 10px;
     .col-left {
       text-align: left;
-      .date {
-        margin-bottom: 0px;
-        margin-top: 3px;
+      .list_icon {
+        height: 100%;
+        margin-right: 15px;
+        width: 25px;
+      }
+      .chat_icon {
+        height: 100%;
+        margin-top: -2px;
+        width: 30px;
       }
     }
     .col-middle {
       text-align: middle;
       .phase {
+        font-size: 1.2em;
         margin-bottom: 0px;
         margin-top: 0px;
+      }
+      .date {
+        font-size: 0.85em;
+        margin-bottom: 0px;
+        margin-top: 3px;
       }
     }
     .col-right {
       text-align: right;
-      .btn {
-        font-size: 0.5rem;
+      .btn-group {
+        vertical-align: text-top;
+        .btn {
+          font-size: 0.95em;
+        }
       }
     }
   }
@@ -35,7 +50,7 @@
       margin-top: 6px;
     }
     .col-middle .phase {
-      margin-top: 4px;
+      margin-top: 0px;
     }
     .col-right .btn {
       font-size: 1rem;
