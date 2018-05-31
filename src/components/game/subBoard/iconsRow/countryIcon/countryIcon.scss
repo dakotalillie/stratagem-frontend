@@ -1,0 +1,17 @@
+.country-icon {
+  display: inline-block;
+  position: relative;
+  .overlay {
+    background-color: rgba(0,0,0,0.4);
+    border-radius: 50%;
+    display: inline-block;
+    height: 100%;
+    position: absolute;
+    width: calc(100% - 15px);
+    .checkmark {
+      color: lightgreen;
+      height: 100%;
+      width: 22px;
+    }
+  }
+}

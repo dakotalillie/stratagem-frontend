@@ -1,0 +1,9 @@
+.sub-board {
+  margin-top: 15px;
+  .flex-col {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Button } from 'reactstrap';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
@@ -7,9 +6,9 @@ import {
   submitOrders,
   clearGameDetailData
 } from '../../actions';
-import Board from './board/Board';
 import SiteHeader from '../shared/siteHeader/SiteHeader';
-// import OrderAlert from './orderAlert/OrderAlert';
+import Board from './board/Board';
+import SubBoard from './subBoard/SubBoard';
 import './game.css';
 
 class Game extends React.Component {
@@ -33,13 +32,7 @@ class Game extends React.Component {
       <div className="game">
         <SiteHeader />
         <Board />
-        <Button
-          onClick={this.handleSubmitOrders}
-          size="lg"
-          className="submit-button"
-        >
-          Submit Orders
-        </Button>
+        <SubBoard handleSubmitOrders={this.handleSubmitOrders} />
       </div>
     );
   }
