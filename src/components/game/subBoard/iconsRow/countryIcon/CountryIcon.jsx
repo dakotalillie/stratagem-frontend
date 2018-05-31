@@ -13,7 +13,7 @@ export default function CountryIcon({ country, ready }) {
         </div>
       )}  
       <img
-        src={require(`../../../../../img/${country}.png`)}
+        src={require(`../../../../../img/${country.toLowerCase()}.png`)}
         alt={country}
       />
     </div>

@@ -4,7 +4,9 @@ import {
   DELETE_UNIT,
   CREATE_ORDER,
   LOGOUT,
-  CLEAR_GAME_DETAIL_DATA
+  CLEAR_GAME_DETAIL_DATA,
+  REQUEST_ORDERS_SUBMISSION,
+  ORDERS_SUBMISSION_ERROR,
 } from '../actions/actionTypes';
 
 const countries = (state = {}, action) => {
@@ -12,7 +14,11 @@ const countries = (state = {}, action) => {
   let index;
   switch (action.type) {
     case RECEIVE_GAME_DATA:
-      return action.payload.game_data.countries;
+      newState = action.payload.game_data.countries;
+      for (let country of Object.values(newState)) {
+        country.ready = false;
+      }
+      return newState;
     case CREATE_ORDER:
       newState = { ...state };
       const retreating_units =
@@ -39,6 +45,12 @@ const countries = (state = {}, action) => {
       index = units.indexOf(action.payload.unit_data.territory);
       if (index > -1) {
         units.splice(index, 1);
+      }
+      return newState;
+    case REQUEST_ORDERS_SUBMISSION:
+      newState = { ...state }
+      for (let country of Object.values(newState)) {
+        country.ready = country.user === action.payload.userId
       }
       return newState;
     case CLEAR_GAME_DETAIL_DATA:

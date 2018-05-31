@@ -6,13 +6,13 @@ import Spinner from 'react-spinkit';
 import IconsRow from './iconsRow/IconsRow';
 import './subBoard.css';
 
-export default function SubBoard({ handleSubmitOrders, loading }) {
+export default function SubBoard({ handleSubmitOrders, loading, countries }) {
   return (
     <div className="sub-board">
       <Container>
         <Row>
           <Col className="flex-col">
-            <IconsRow />
+            <IconsRow countries={countries} />
             <Button
               onClick={handleSubmitOrders}
               size="lg"
@@ -33,4 +33,5 @@ export default function SubBoard({ handleSubmitOrders, loading }) {
 SubBoard.propTypes = {
   handleSubmitOrders: PropTypes.func.isRequired,
   loading: PropTypes.bool,
+  countries: PropTypes.object.isRequired,
 }

@@ -23,9 +23,8 @@ class Game extends React.Component {
 
   handleSubmitOrders = () => {
     const game_id = this.props.match.params.game_id;
-    const orders = this.props.orders;
-    const convoy_routes = this.props.convoy_routes;
-    this.props.submitOrders({ game_id, orders, convoy_routes });
+    const { orders, convoy_routes, userId } = this.props;  
+    this.props.submitOrders({ game_id, orders, convoy_routes, userId });
   };
 
   render() {
@@ -36,6 +35,7 @@ class Game extends React.Component {
         <SubBoard
           handleSubmitOrders={this.handleSubmitOrders}
           loading={this.props.gameDataStatus.loading}
+          countries={this.props.countries}
         />
       </div>
     );
@@ -44,10 +44,13 @@ class Game extends React.Component {
 
 Game.propTypes = {
   orders: PropTypes.object.isRequired,
+  convoy_routes: PropTypes.arrayOf(PropTypes.object).isRequired,
   gameDataStatus: PropTypes.shape({
     loading: PropTypes.bool.isRequired,
     error: PropTypes.bool.isRequired
   }).isRequired,
+  countries: PropTypes.object.isRequired,
+  userId: PropTypes.string.isRequired,
   fetchGameData: PropTypes.func.isRequired,
   submitOrders: PropTypes.func.isRequired,
   clearGameDetailData: PropTypes.func.isRequired
@@ -57,6 +60,8 @@ const connectStateToProps = state => ({
   orders: state.orders,
   convoy_routes: state.convoyRoutes,
   gameDataStatus: state.gameDataStatus,
+  countries: state.countries,
+  userId: state.currentUser ? state.currentUser.id : null,
 });
 
 export default connect(connectStateToProps, {

@@ -1,20 +1,24 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import CountryIcon from './countryIcon/CountryIcon';
 import './iconsRow.css';
 
-export default function IconsRow() {
-  const countries = ['austria', 'england', 'france', 'germany', 'italy',
-                     'russia', 'turkey']
+export default function IconsRow({ countries }) {
+  const countryObs = Object.keys(countries).map(name => countries[name])
   return (
     <div className="icons-row">
-      {countries.map(country => (
+      {countryObs.map(country => (
         <CountryIcon
-          key={country}  
-          country={country}
-          ready={false}
+          key={country.id}  
+          country={country.name}
+          ready={country.ready}
         />
       ))}  
     </div>
   )
+}
+
+IconsRow.propTypes = {
+  countries: PropTypes.object.isRequired
 }

@@ -60,9 +60,12 @@ function gameDataError(error_message) {
   };
 }
 
-function requestOrdersSubmission() {
+function requestOrdersSubmission(userId) {
   return {
-    type: REQUEST_ORDERS_SUBMISSION
+    type: REQUEST_ORDERS_SUBMISSION,
+    payload: {
+      userId
+    }
   };
 }
 
@@ -166,9 +169,9 @@ export function fetchGameData(game_id) {
   };
 }
 
-export function submitOrders({ game_id, orders, convoy_routes }) {
+export function submitOrders({ game_id, userId, orders, convoy_routes }) {
   return dispatch => {
-    dispatch(requestOrdersSubmission());
+    dispatch(requestOrdersSubmission(userId));
     return fetch(`${API_ROOT}/games/${game_id}/orders`, {
       method: 'POST',
       headers: {
