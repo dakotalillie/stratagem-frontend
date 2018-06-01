@@ -17,9 +17,23 @@
         padding: 10px 0;
         text-align: center;
         width: 100%;
+        &:first-of-type {
+          border-top-left-radius: 0.5em;
+        }
+        &:last-of-type {
+          border-top-right-radius: 0.5em;
+        }
         &.active {
           background-color: #eee;
         }
+      }
+    }
+  }
+  .modal-body {
+    .order-row {
+      padding: 5px 0;
+      span {
+        vertical-align: middle;
       }
     }
   }

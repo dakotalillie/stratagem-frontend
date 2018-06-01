@@ -23,6 +23,7 @@ export function selectUnit({ clickedUnit, context }) {
 export function holdUnit({ context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
+    unit_type: context.state.selectedUnit.unit_type,
     country: context.state.selectedUnit.country,
     origin: context.state.selectedUnit.territory,
     destination: context.state.selectedUnit.territory,
@@ -39,6 +40,7 @@ export function moveUnit({ clickedTerr, context }) {
   if (coast !== -1) {
     context.props.createOrder({
       unit_id: context.state.selectedUnit.id,
+      unit_type: context.state.selectedUnit.unit_type,
       country: context.state.selectedUnit.country,
       origin: context.state.selectedUnit.territory,
       destination: clickedTerr,
@@ -91,12 +93,15 @@ export function selectSupportedUnit({ clickedUnit, context }) {
 export function holdSupportedUnit({ context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
+    unit_type: context.state.selectedUnit.unit_type,
     country: context.state.selectedUnit.country,
     origin: context.state.selectedUnit.territory,
     destination: context.state.selectedUnit.territory,
     order_type: 'support',
     coast: context.state.selectedUnit.coast,
     aux_unit_id: context.state.supportedUnit.id,
+    aux_unit_type: context.state.supportedUnit.unit_type,
+    aux_country: context.state.supportedUnit.country,
     aux_origin: context.state.supportedUnit.territory,
     aux_destination: context.state.supportedUnit.territory,
     aux_order_type: 'hold'
@@ -107,12 +112,15 @@ export function holdSupportedUnit({ context }) {
 export function moveSupportedUnit({ clickedTerr, context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
+    unit_type: context.state.selectedUnit.unit_type,
     country: context.state.selectedUnit.country,
     origin: context.state.selectedUnit.territory,
     destination: context.state.selectedUnit.territory,
     order_type: 'support',
     coast: context.state.selectedUnit.coast,
     aux_unit_id: context.state.supportedUnit.id,
+    aux_unit_type: context.state.supportedUnit.unit_type,
+    aux_country: context.state.supportedUnit.country,
     aux_origin: context.state.supportedUnit.territory,
     aux_destination: clickedTerr,
     aux_order_type: 'move'
@@ -154,6 +162,7 @@ export function selectConvoyPath({ clickedUnit, context }) {
 export function selectConvoyDestination({ clickedTerr, context }) {
   context.props.createOrder({
     unit_id: context.state.selectedUnit.id,
+    unit_type: context.state.selectedUnit.unit_type,
     country: context.state.selectedUnit.country,
     origin: context.state.selectedUnit.territory,
     destination: clickedTerr,
@@ -164,12 +173,15 @@ export function selectConvoyDestination({ clickedTerr, context }) {
   for (let convoyer of context.state.convoyeurs) {
     context.props.createOrder({
       unit_id: convoyer.id,
+      unit_type: convoyer.unit_type,
       country: convoyer.country,
       origin: convoyer.territory,
       destination: convoyer.territory,
       order_type: 'convoy',
       coast: '',
       aux_unit_id: context.state.selectedUnit.id,
+      aux_unit_type: context.state.selectedUnit.unit_type,
+      aux_country: context.state.selectedUnit.country,
       aux_origin: context.state.selectedUnit.territory,
       aux_destination: clickedTerr,
       aux_order_type: 'move'
@@ -210,6 +222,7 @@ export function deleteUnit({ clickedUnit, context }) {
   context.props.deleteUnit({
     order_type: 'delete',
     unit_id: clickedUnit.id,
+    unit_type: clickedUnit.unit_type,
     country: clickedUnit.country,
     territory: clickedUnit.territory
   });
@@ -240,6 +253,7 @@ export function moveDisplacedUnit({ clickedTerr, context }) {
   if (coast !== -1) {
     context.props.createOrder({
       unit_id: context.state.selectedUnit.id,
+      unit_type: context.state.selectedUnit.unit_type,
       origin: context.state.selectedUnit.retreating_from,
       destination: clickedTerr,
       country: context.state.selectedUnit.country,
@@ -267,6 +281,7 @@ export function deleteDisplacedUnit({ clickedUnit, context }) {
   context.props.deleteUnit({
     order_type: 'delete',
     unit_id: clickedUnit.id,
+    unit_type: clickedUnit.unit_type,
     country: clickedUnit.country,
     territory: clickedUnit.retreating_from,
     displaced: true

@@ -8,13 +8,19 @@ import FaCommentsO from 'react-icons/lib/fa/comments-o'
 import { title } from '../boardUtils';
 import './boardHeader.css';
 
-const BoardHeader = ({ mode, setMode, phase, season, year }) => {
+const BoardHeader = (
+  { mode, setMode, phase, season, year, toggleGameInfoModal }
+) => {
   return (
     <div className="board-header">
       <Container>
         <Row>
           <Col md="4" className="col-left">
-            <FaListUl className="list_icon" color="#6C757C" />
+            <FaListUl
+              className="list_icon"
+              color="#6C757C"
+              onClick={toggleGameInfoModal}
+            />
             <FaCommentsO className="chat_icon" color="#6C757C" />
           </Col>
           <Col md="4" className="col-middle">

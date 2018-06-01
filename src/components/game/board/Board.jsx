@@ -35,7 +35,7 @@ class Board extends React.Component {
     tmpMoveStorage: {},
     chooseCoastModal: false,
     addUnitModal: false,
-    gameInfoModal: true,
+    gameInfoModal: false,
     potentialAdditions: [],
     potentialDeletions: [],
     displacedUnits: [],
@@ -111,6 +111,12 @@ class Board extends React.Component {
       infoText: 'Select a unit to give orders.'
     });
   };
+
+  toggleGameInfoModal = () => {
+    this.setState(prevState => ({
+      gameInfoModal: !prevState.gameInfoModal
+    }));
+  }
 
   handleMouseEnter = e => {
     const TERRITORY = territoriesData[e.target.id];
@@ -329,7 +335,11 @@ class Board extends React.Component {
     return (
       <div className="board">
         <Container>
-          <BoardHeader mode={this.state.mode} setMode={this.setMode} />
+          <BoardHeader
+            mode={this.state.mode}
+            setMode={this.setMode}
+            toggleGameInfoModal={this.toggleGameInfoModal}
+          />
           <div className="board-map">
             {this.state.chooseCoastModal && (
               <ChooseCoastModal
@@ -343,9 +353,10 @@ class Board extends React.Component {
                 multiCoast={this.state.tmpMoveStorage.territory === 'Stp'}
               />
             )}
-            {this.state.gameInfoModal && (
-              <GameInfoModal />
-            )}
+            <GameInfoModal
+              isOpen={this.state.gameInfoModal}
+              toggle={this.toggleGameInfoModal}
+            />
             <BoardMap
               chooseCoastModal={this.state.chooseCoastModal}
               determineTerrClass={this.determineTerrClass}

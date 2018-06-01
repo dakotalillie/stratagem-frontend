@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import CountryIcon from './countryIcon/CountryIcon';
+import CountryIcon from '../../../shared/countryIcon/CountryIcon';
 import './iconsRow.css';
 
 export default function IconsRow({ countries }) {
