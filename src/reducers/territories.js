@@ -7,7 +7,7 @@ import {
 const territories = (state = {}, action) => {
   switch (action.type) {
     case RECEIVE_GAME_DATA:
-      return action.payload.game_data.territories;
+      return action.payload.gameData.territories;
     case CLEAR_GAME_DETAIL_DATA:
     case LOGOUT:
       return {};

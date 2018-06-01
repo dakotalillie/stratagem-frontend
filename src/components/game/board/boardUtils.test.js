@@ -3,7 +3,7 @@ import * as boardUtils from './boardUtils';
 describe('boardUtils', () => {
   describe('findPotentialMoves', () => {
     it('Identifies potential moves for a non-displaced army', () => {
-      const unit = {territory: 'Swe', unit_type: 'army'};
+      const unit = {territory: 'Swe', unitType: 'army'};
       expect(boardUtils.findPotentialMoves({ unit }).potentialMoves).toEqual(
         new Set(['Den', 'Fin', 'Nwy'])
       );
@@ -11,7 +11,7 @@ describe('boardUtils', () => {
 
     it('Identifies potential moves for a non-displaced fleet (no coast)',
       () => {
-        const unit = {territory: 'Sev', unit_type: 'fleet'}
+        const unit = {territory: 'Sev', unitType: 'fleet'}
         expect(boardUtils.findPotentialMoves({ unit }).potentialMoves).toEqual(
           new Set(['Arm', 'BLA', 'Rum'])
         );
@@ -19,7 +19,7 @@ describe('boardUtils', () => {
     
     it('Identifies potential moves for a non-displaced fleet (with coast)',
       () => {
-        const unit = { coast: 'SC', territory: 'Stp', unit_type: 'fleet' };
+        const unit = { coast: 'SC', territory: 'Stp', unitType: 'fleet' };
         expect(boardUtils.findPotentialMoves({ unit }).potentialMoves).toEqual(
           new Set(['BOT', 'Fin', 'Lvn'])
         );
@@ -27,12 +27,12 @@ describe('boardUtils', () => {
     
     it('Identifies potential moves for a displaced army', () => {
       const unit = {
-        unit_type: 'army', retreating_from: 'Swe', invaded_from: 'Den'
+        unitType: 'army', retreatingFrom: 'Swe', invadedFrom: 'Den'
       };
       const displaced = true;
       const unitsList = {
-        Swe: {territory: 'Swe', unit_type: 'army'},
-        Fin: {territory: 'Fin', unit_type: 'fleet'}
+        Swe: {territory: 'Swe', unitType: 'army'},
+        Fin: {territory: 'Fin', unitType: 'fleet'}
       }
       expect(boardUtils.findPotentialMoves({ unit, displaced, unitsList })
         .potentialMoves).toEqual(new Set(['Nwy']));
@@ -41,12 +41,12 @@ describe('boardUtils', () => {
     it('Identifies potential moves for a displaced fleet (no coast)',
       () => {
         const unit = {
-          unit_type: 'fleet', retreating_from: 'Sev', invaded_from: 'Rum'
+          unitType: 'fleet', retreatingFrom: 'Sev', invadedFrom: 'Rum'
         };
         const displaced = true;
         const unitsList = {
-          Sev: {territory: 'Sev', unit_type: 'army'},
-          BLA: {territory: 'BLA', unit_type: 'fleet'}
+          Sev: {territory: 'Sev', unitType: 'army'},
+          BLA: {territory: 'BLA', unitType: 'fleet'}
         }
         expect(boardUtils.findPotentialMoves({ unit, displaced, unitsList })
           .potentialMoves).toEqual(new Set(['Arm']));
@@ -55,13 +55,13 @@ describe('boardUtils', () => {
     it('Identifies potential moves for a displaced fleet (with coast)',
       () => {
         const unit = {
-          coast: 'SC', unit_type: 'fleet', retreating_from: 'Stp',
-          invaded_from: 'Fin'
+          coast: 'SC', unitType: 'fleet', retreatingFrom: 'Stp',
+          invadedFrom: 'Fin'
         };
         const displaced = true;
         const unitsList = {
-          Stp: {territory: 'Stp', unit_type: 'army'},
-          Lvn: {territory: 'Lvn', unit_type: 'army'}
+          Stp: {territory: 'Stp', unitType: 'army'},
+          Lvn: {territory: 'Lvn', unitType: 'army'}
         }
         expect(boardUtils.findPotentialMoves({ unit, displaced, unitsList })
           .potentialMoves).toEqual(new Set(['BOT']));
@@ -69,13 +69,13 @@ describe('boardUtils', () => {
     );
 
     it('Removes coast data from potential moves for fleets', () => {
-      const unit = {territory: 'MAO', unit_type: 'fleet'};
+      const unit = {territory: 'MAO', unitType: 'fleet'};
       expect(boardUtils.findPotentialMoves({ unit }).potentialMoves)
         .toContain('Spa');
     });
 
     it('Returns the coast options in a separate object', () => {
-      const unit = {territory: 'MAO', unit_type: 'fleet'};
+      const unit = {territory: 'MAO', unitType: 'fleet'};
       expect(boardUtils.findPotentialMoves({ unit }).coastOptions).toEqual(
         { 'Spa': ['NC', 'SC'] }
       );
@@ -84,9 +84,9 @@ describe('boardUtils', () => {
 
   describe('findPotentialSupports', () => {
     it('Identifies neighbors that can be supported', () => {
-      const unit = {territory: 'Vie', unit_type: 'army'};
+      const unit = {territory: 'Vie', unitType: 'army'};
       const unitsList = {
-        Bud: {territory: 'Bud', unit_type: 'army'}
+        Bud: {territory: 'Bud', unitType: 'army'}
       };
       expect(boardUtils.findPotentialSupports({ unit, unitsList })).toEqual(
         new Set(['Bud'])
@@ -94,9 +94,9 @@ describe('boardUtils', () => {
     })
 
     it('Identifies second degree neighbors with common moves', () => {
-      const unit = {territory: 'Vie', unit_type: 'army'};
+      const unit = {territory: 'Vie', unitType: 'army'};
       const unitsList = {
-        War: {territory: 'War', unit_type: 'army'}
+        War: {territory: 'War', unitType: 'army'}
       };
       expect(boardUtils.findPotentialSupports({ unit, unitsList })).toEqual(
         new Set(['War'])
@@ -104,9 +104,9 @@ describe('boardUtils', () => {
     })
 
     it('Excludes second degree neighbors without common moves', () => {
-      const unit = {territory: 'Mun', unit_type: 'army'};
+      const unit = {territory: 'Mun', unitType: 'army'};
       const unitsList = {
-        Tri: {territory: 'Tri', unit_type: 'fleet'}
+        Tri: {territory: 'Tri', unitType: 'fleet'}
       };
       expect(boardUtils.findPotentialSupports({ unit, unitsList })).toEqual(
         new Set([])
@@ -114,11 +114,11 @@ describe('boardUtils', () => {
     })
 
     it('Identifies convoyed units that can be supported', () => {
-      const unit = {territory: 'Mar', unit_type: 'army'};
+      const unit = {territory: 'Mar', unitType: 'army'};
       const unitsList = {
-        Lon: {territory: 'Lon', unit_type: 'army'},
-        MAO: {territory: 'MAO', unit_type: 'fleet'},
-        ENG: {territory: 'ENG', unit_type: 'fleet'}
+        Lon: {territory: 'Lon', unitType: 'army'},
+        MAO: {territory: 'MAO', unitType: 'fleet'},
+        ENG: {territory: 'ENG', unitType: 'fleet'}
       }
       expect(boardUtils.findPotentialSupports({ unit, unitsList }))
         .toContain('Lon');
@@ -127,8 +127,8 @@ describe('boardUtils', () => {
 
   describe('findPotentialSupportedMoves', () => {
     it('Identifies common moves between two units', () => {
-      const selectedUnit = {territory: 'Par', unit_type: 'army'};
-      const supportedUnit = {territory: 'Bel', unit_type: 'army'};
+      const selectedUnit = {territory: 'Par', unitType: 'army'};
+      const supportedUnit = {territory: 'Bel', unitType: 'army'};
       const unitsList = {
         Par: selectedUnit,
         Bel: supportedUnit
@@ -139,8 +139,8 @@ describe('boardUtils', () => {
     });
 
     it('Does not include the selected unit\'s territory', () => {
-      const selectedUnit = {territory: 'Par', unit_type: 'army'};
-      const supportedUnit = {territory: 'Bur', unit_type: 'army'};
+      const selectedUnit = {territory: 'Par', unitType: 'army'};
+      const supportedUnit = {territory: 'Bur', unitType: 'army'};
       const unitsList = {
         Par: selectedUnit,
         Bur: supportedUnit
@@ -151,13 +151,13 @@ describe('boardUtils', () => {
     })
 
     it('Includes territories to which the supported unit can convoy', () => {
-      const selectedUnit = {territory: 'Mar', unit_type: 'army'};
-      const supportedUnit = {territory: 'Lon', unit_type: 'army'};
+      const selectedUnit = {territory: 'Mar', unitType: 'army'};
+      const supportedUnit = {territory: 'Lon', unitType: 'army'};
       const unitsList = {
         Mar: selectedUnit,
         Lon: supportedUnit,
-        MAO: {territory: 'MAO', unit_type: 'fleet'},
-        ENG: {territory: 'ENG', unit_type: 'fleet'}
+        MAO: {territory: 'MAO', unitType: 'fleet'},
+        ENG: {territory: 'ENG', unitType: 'fleet'}
       };
       expect(boardUtils.findPotentialSupportedMoves(
         { selectedUnit, supportedUnit, unitsList }
@@ -167,20 +167,20 @@ describe('boardUtils', () => {
 
   describe('findPotentialConvoys', () => {
     it('Identifies neighboring fleets in water territories', () => {
-      const unit = {territory: 'Bre', unit_type: 'army'};
+      const unit = {territory: 'Bre', unitType: 'army'};
       const unitsList = {
         Bre: unit,
-        ENG: {territory: 'ENG', unit_type: 'fleet'}
+        ENG: {territory: 'ENG', unitType: 'fleet'}
       };
       expect(boardUtils.findPotentialConvoys({ unit, unitsList }))
         .toEqual(new Set(['ENG']));
     })
 
     it('Excludes neighboring fleets in coastal territories', () => {
-      const unit = {territory: 'Bre', unit_type: 'army'};
+      const unit = {territory: 'Bre', unitType: 'army'};
       const unitsList = {
         Bre: unit,
-        Pic: {territory: 'Pic', unit_type: 'fleet'}
+        Pic: {territory: 'Pic', unitType: 'fleet'}
       };
       expect(boardUtils.findPotentialConvoys({ unit, unitsList }))
         .toEqual(new Set([]));
@@ -190,16 +190,16 @@ describe('boardUtils', () => {
   describe('findPotentialConvoyPaths', () => {
     let WAL_army, IRI_fleet, ENG_fleet, convoyeurs, unitsList;
     beforeEach(() => {
-      WAL_army = {territory: 'Wal', unit_type: 'army'};
-      ENG_fleet = {territory: 'ENG', unit_type: 'fleet'}
-      IRI_fleet = {territory: 'IRI', unit_type: 'fleet'};
+      WAL_army = {territory: 'Wal', unitType: 'army'};
+      ENG_fleet = {territory: 'ENG', unitType: 'fleet'}
+      IRI_fleet = {territory: 'IRI', unitType: 'fleet'};
       convoyeurs = new Set([ENG_fleet, IRI_fleet]);
       unitsList = {
         Wal: WAL_army,
         ENG: ENG_fleet,
         IRI: IRI_fleet,
         MAO: {
-          territory: 'MAO', unit_type: 'fleet'
+          territory: 'MAO', unitType: 'fleet'
         }
       }
     });
@@ -233,9 +233,9 @@ describe('boardUtils', () => {
     let unitsList;
     beforeEach(() => {
       unitsList = {
-        Ank: { territory: 'Ank', unit_type: 'army' },
-        BLA: { territory: 'BLA', unit_type: 'fleet' },
-        Bul: { territory: 'Bul', unit_type: 'fleet', coast: 'SC'}
+        Ank: { territory: 'Ank', unitType: 'army' },
+        BLA: { territory: 'BLA', unitType: 'fleet' },
+        Bul: { territory: 'Bul', unitType: 'fleet', coast: 'SC'}
       }
     })
 
@@ -292,7 +292,7 @@ describe('boardUtils', () => {
     let unitsList;
     beforeEach(() => {
       unitsList = {
-        Lon: { territory: 'Lon', unit_type: 'army' }
+        Lon: { territory: 'Lon', unitType: 'army' }
       }
     })
 
@@ -329,8 +329,8 @@ describe('boardUtils', () => {
 
   describe('findCommonMoves', () => {
     it('Identifies the union between the potential moves of two units', () => {
-      const unit1 = { territory: 'Mar', unit_type: 'army' };
-      const unit2 = { territory: 'MAO', unit_type: 'fleet' };
+      const unit1 = { territory: 'Mar', unitType: 'army' };
+      const unit2 = { territory: 'MAO', unitType: 'fleet' };
       expect(boardUtils.findCommonMoves({ unit1, unit2 }))
         .toEqual(new Set(['Gas', 'Spa']))
     });

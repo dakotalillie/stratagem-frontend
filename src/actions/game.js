@@ -12,8 +12,10 @@ import {
   CLEAR_GAME_DETAIL_DATA
 } from './actionTypes';
 import { push } from 'react-router-redux';
-import { API_ROOT } from '../utils/constants';
 import { normalize, schema } from 'normalizr';
+
+import { API_ROOT } from '../utils/constants';
+import { camelCaseObjectProperties } from '../utils/stringUtils';
 import { DELETE_UNIT } from '../components/game/board/selectionTypes';
 import { logout } from './auth';
 
@@ -41,21 +43,22 @@ function requestGameData() {
   };
 }
 
-function receiveGameData(game_data) {
-  const normalized_data = normalizeGameData(game_data);
+function receiveGameData(gameData) {
+  const formattedData = camelCaseObjectProperties(gameData);
+  const normalizedData = normalizeGameData(formattedData);
   return {
     type: RECEIVE_GAME_DATA,
     payload: {
-      game_data: normalized_data.entities
+      gameData: normalizedData.entities
     }
   };
 }
 
-function gameDataError(error_message) {
+function gameDataError(errorMessage) {
   return {
     type: GAME_DATA_ERROR,
     payload: {
-      error_message
+      errorMessage
     }
   };
 }
@@ -69,11 +72,11 @@ function requestOrdersSubmission(userId) {
   };
 }
 
-function ordersSubmissionError(error_message, userId) {
+function ordersSubmissionError(errorMessage, userId) {
   return {
     type: ORDERS_SUBMISSION_ERROR,
     payload: {
-      error_message,
+      errorMessage,
       userId
     }
   };
@@ -85,29 +88,29 @@ function requestGameCreation() {
   };
 }
 
-function gameCreationError(error_message) {
+function gameCreationError(errorMessage) {
   return {
     type: GAME_CREATION_ERROR,
     payload: {
-      error_message
+      errorMessage
     }
   };
 }
 
-export function createUnit(unit_data) {
+export function createUnit(unitData) {
   return {
     type: CREATE_UNIT,
     payload: {
-      unit_data
+      unitData
     }
   };
 }
 
-export function deleteUnit(unit_data) {
+export function deleteUnit(unitData) {
   return {
     type: DELETE_UNIT,
     payload: {
-      unit_data
+      unitData
     }
   };
 }
@@ -145,10 +148,10 @@ export function createSandbox() {
   };
 }
 
-export function fetchGameData(game_id) {
+export function fetchGameData(gameId) {
   return dispatch => {
     dispatch(requestGameData());
-    return fetch(`${API_ROOT}/games/${game_id}/`, {
+    return fetch(`${API_ROOT}/games/${gameId}/`, {
       headers: {
         Authorization: `JWT ${localStorage.getItem('token')}`
       }
@@ -170,16 +173,16 @@ export function fetchGameData(game_id) {
   };
 }
 
-export function submitOrders({ game_id, userId, orders, convoy_routes }) {
+export function submitOrders({ gameId, userId, orders, convoyRoutes }) {
   return dispatch => {
     dispatch(requestOrdersSubmission(userId));
-    return fetch(`${API_ROOT}/games/${game_id}/orders`, {
+    return fetch(`${API_ROOT}/games/${gameId}/orders`, {
       method: 'POST',
       headers: {
         Authorization: `JWT ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ orders, convoy_routes })
+      body: JSON.stringify({ orders, convoyRoutes })
     })
       .then(res => {
         if (!res.ok) {
@@ -199,7 +202,7 @@ export function submitOrders({ game_id, userId, orders, convoy_routes }) {
 
 // Helpers
 
-function normalizeGameData(game_data) {
+function normalizeGameData(gameData) {
   const units = new schema.Entity(
     'units',
     {},
@@ -207,8 +210,8 @@ function normalizeGameData(game_data) {
       idAttribute: 'territory'
     }
   );
-  const retreating_units = new schema.Entity(
-    'retreating_units',
+  const retreatingUnits = new schema.Entity(
+    'retreatingUnits',
     {},
     {
       idAttribute: 'retreating_from'
@@ -225,7 +228,7 @@ function normalizeGameData(game_data) {
     'countries',
     {
       units: [units],
-      retreating_units: [retreating_units],
+      retreatingUnits: [retreatingUnits],
       territories: [territories]
     },
     {
@@ -236,5 +239,5 @@ function normalizeGameData(game_data) {
     countries: [countries]
   });
 
-  return normalize(game_data, game);
+  return normalize(gameData, game);
 }

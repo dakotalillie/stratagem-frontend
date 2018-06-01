@@ -14,15 +14,15 @@ const orders = (state = {}, action) => {
       return {};
     case CREATE_ORDER:
       newState = { ...state };
-      newState[action.payload.unit_id] = action.payload;
+      newState[action.payload.unitId] = action.payload;
       return newState;
     case CREATE_UNIT:
       newState = { ...state };
-      newState[action.payload.unit_data.territory] = action.payload.unit_data;
+      newState[action.payload.unitData.territory] = action.payload.unitData;
       return newState;
     case DELETE_UNIT:
       newState = { ...state };
-      newState[action.payload.unit_data.territory] = action.payload.unit_data;
+      newState[action.payload.unitData.territory] = action.payload.unitData;
       return newState;
     case CLEAR_GAME_DETAIL_DATA:
     case LOGOUT:

@@ -7,12 +7,12 @@ export function findPotentialMoves({ unit, displaced, unitsList }) {
   let potentialMoves;
   let coastOptions = {};
   if (!displaced) {
-    if (unit.unit_type === 'army') {
+    if (unit.unitType === 'army') {
       potentialMoves = findNeighbors({
         sourceTerr: unit.territory,
         neighborType: 'land'
       });
-    } else if (unit.unit_type === 'fleet') {
+    } else if (unit.unitType === 'fleet') {
       potentialMoves = findNeighbors({
         sourceTerr: unit.territory,
         coast: unit.coast,
@@ -21,16 +21,16 @@ export function findPotentialMoves({ unit, displaced, unitsList }) {
       });
     }
   } else {
-    if (unit.unit_type === 'army') {
+    if (unit.unitType === 'army') {
       potentialMoves = findNeighbors({
-        sourceTerr: unit.retreating_from,
+        sourceTerr: unit.retreatingFrom,
         neighborType: 'land',
         occupied: false,
         unitsList
       });
-    } else if (unit.unit_type === 'fleet') {
+    } else if (unit.unitType === 'fleet') {
       potentialMoves = findNeighbors({
-        sourceTerr: unit.retreating_from,
+        sourceTerr: unit.retreatingFrom,
         coast: unit.coast,
         neighborType: 'sea',
         occupied: false,
@@ -63,8 +63,8 @@ export function findPotentialMoves({ unit, displaced, unitsList }) {
 
   // Units can't retreat to territories they were invaded from.
   if (displaced) {
-    potentialMoves.delete(unit.invaded_from);
-    delete coastOptions[unit.invaded_from];
+    potentialMoves.delete(unit.invadedFrom);
+    delete coastOptions[unit.invadedFrom];
   }
 
   return { potentialMoves, coastOptions };
@@ -114,7 +114,7 @@ export function findPotentialSupports({ unit, unitsList }) {
   const LANDING_ZONES = findNeighbors({ 
     sourceTerr: unit.territory,
     coast: unit.coast,
-    neighborType: unit.unit_type === 'army' ? 'land' : 'sea',
+    neighborType: unit.unitType === 'army' ? 'land' : 'sea',
     terrType: 'coastal'
   });
   // Then, find occupied water territories next to those landing zones.
@@ -182,7 +182,7 @@ export function findPotentialSupportedMoves({
     unit2: supportedUnit
   });
   const POTENTIAL_CONVOY_SUPPORTS = new Set([]);
-  if (supportedUnit.unit_type === 'army') {
+  if (supportedUnit.unitType === 'army') {
     const SELECTED_UNIT_POTENTIAL_MOVES = findPotentialMoves({
       unit: selectedUnit
     }).potentialMoves;
@@ -335,7 +335,7 @@ export function terrMatchesCriteria({
 }) {
   if (occupied === true && unitsList[terr] === undefined) return false;
   if (occupied === false && unitsList[terr] !== undefined) return false;
-  if (occupiedType && unitsList[terr].unit_type !== occupiedType) return false;
+  if (occupiedType && unitsList[terr].unitType !== occupiedType) return false;
   if (terrType && territoriesData[terr].type !== terrType) return false;
   return true;
 }
@@ -383,7 +383,7 @@ export function mapUnits(units) {
   return Object.keys(units).map(terr => {
     const UNIT = units[terr];
     const COORDS = territoriesData[terr].coordinates;
-    if (UNIT.unit_type === 'army') {
+    if (UNIT.unitType === 'army') {
       return (
         <Army
           key={terr}
@@ -392,7 +392,7 @@ export function mapUnits(units) {
           y={COORDS.main.y}
         />
       );
-    } else if (UNIT.unit_type === 'fleet') {
+    } else if (UNIT.unitType === 'fleet') {
       const COAST = UNIT.coast === '' ? 'main' : UNIT.coast;
       return (
         <Fleet
@@ -411,7 +411,7 @@ export function mapRetreatingUnits(units) {
   return Object.keys(units).map(terr => {
     const UNIT = units[terr];
     const COORDS = territoriesData[terr].coordinates;
-    if (UNIT.unit_type === 'army') {
+    if (UNIT.unitType === 'army') {
       return (
         <Army
           key={terr}
@@ -420,7 +420,7 @@ export function mapRetreatingUnits(units) {
           y={COORDS.main.y - 50}
         />
       );
-    } else if (UNIT.unit_type === 'fleet') {
+    } else if (UNIT.unitType === 'fleet') {
       const COAST = UNIT.coast === '' ? 'main' : UNIT.coast;
       return (
         <Fleet

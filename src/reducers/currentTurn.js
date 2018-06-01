@@ -7,8 +7,8 @@ import {
 const currentTurn = (state = {}, action) => {
   switch (action.type) {
     case RECEIVE_GAME_DATA:
-      const GAME_ID = Object.keys(action.payload.game_data.game)[0];
-      return action.payload.game_data.game[GAME_ID].current_turn;
+      const GAME_ID = Object.keys(action.payload.gameData.game)[0];
+      return action.payload.gameData.game[GAME_ID].currentTurn;
     case CLEAR_GAME_DETAIL_DATA:
     case LOGOUT:
       return {};

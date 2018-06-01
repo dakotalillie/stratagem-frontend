@@ -75,7 +75,7 @@ export default function discernSelectionType({
     } else if (
       state.mode === 'convoy' &&
       clickedUnit !== undefined &&
-      clickedUnit.unit_type === 'army' &&
+      clickedUnit.unitType === 'army' &&
       state.selectedUnit === null
     ) {
       return SELECT_CONVOYED_UNIT;
@@ -105,7 +105,7 @@ export default function discernSelectionType({
       return MOVE_DISPLACED_UNIT;
     } else if (
       state.selectedUnit !== null &&
-      state.selectedUnit.retreating_from === clickedTerr
+      state.selectedUnit.retreatingFrom === clickedTerr
     ) {
       return DELETE_DISPLACED_UNIT;
     }

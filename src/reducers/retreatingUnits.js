@@ -8,14 +8,14 @@ import {
 const retreatingUnits = (state = {}, action) => {
   switch (action.type) {
     case RECEIVE_GAME_DATA:
-      if (action.payload.game_data.retreating_units !== undefined) {
-        return action.payload.game_data.retreating_units;
+      if (action.payload.gameData.retreatingUnits !== undefined) {
+        return action.payload.gameData.retreatingUnits;
       }
       return {};
     case DELETE_UNIT:
       let newState = { ...state };
-      if (action.payload.unit_data.displaced) {
-        delete newState[action.payload.unit_data.territory];
+      if (action.payload.unitData.displaced) {
+        delete newState[action.payload.unitData.territory];
       }
       return newState;
     case CLEAR_GAME_DETAIL_DATA:

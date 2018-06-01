@@ -10,20 +10,20 @@ describe('selectionTypes', () => {
 
         it('Recognizes selecting a unit', () => {
           state.selectedUnit = null;
-          const clickedUnit = { territory: 'Par', unit_type: 'army' }
+          const clickedUnit = { territory: 'Par', unitType: 'army' }
           expect(discernSelectionType({ state, clickedUnit, phase }))
             .toEqual(selectionTypes.SELECT_UNIT);
         });
   
         it('Recognizes holding a unit', () => {
-          state.selectedUnit = { territory: 'Par', unit_type: 'army' }
+          state.selectedUnit = { territory: 'Par', unitType: 'army' }
           const clickedTerr = 'Par';
           expect(discernSelectionType({ state, clickedTerr, phase }))
             .toEqual(selectionTypes.HOLD_UNIT);
         });
   
         it('Recognizes moving a unit', () => {
-          state.selectedUnit = { territory: 'Par', unit_type: 'army' };
+          state.selectedUnit = { territory: 'Par', unitType: 'army' };
           state.potentialMoves = new Set(['Bur']);
           const clickedTerr = 'Bur';
           expect(discernSelectionType({ state, clickedTerr, phase }))
@@ -36,7 +36,7 @@ describe('selectionTypes', () => {
 
         it('Recognizes selecting a supporting unit', () => {
           state.selectedUnit = null;
-          const clickedUnit = { territory: 'Par', unit_type: 'army' };
+          const clickedUnit = { territory: 'Par', unitType: 'army' };
           expect(discernSelectionType({ state, clickedUnit, phase }))
             .toEqual(selectionTypes.SELECT_SUPPORTING_UNIT);
         });
@@ -50,8 +50,8 @@ describe('selectionTypes', () => {
         });
   
         it('Recognizes holding a supported unit', () => {
-          state.selectedUnit = { territory: 'Par', unit_type: 'army' };
-          state.supportedUnit = { territory: 'Bur', unit_type: 'army' };
+          state.selectedUnit = { territory: 'Par', unitType: 'army' };
+          state.supportedUnit = { territory: 'Bur', unitType: 'army' };
           state.potentialMoves = new Set([]);
           const clickedTerr = 'Bur';
           expect(discernSelectionType({ state, clickedTerr, phase }))
@@ -64,7 +64,7 @@ describe('selectionTypes', () => {
 
         it('Recognizes selecting a convoyed unit', () => {
           state.selectedUnit = null;
-          const clickedUnit = { territory: 'Lon', unit_type: 'army' };
+          const clickedUnit = { territory: 'Lon', unitType: 'army' };
 
           expect(discernSelectionType({ state, clickedUnit, phase }))
             .toEqual(selectionTypes.SELECT_CONVOYED_UNIT);
@@ -103,7 +103,7 @@ describe('selectionTypes', () => {
 
       it('Recognizes moving a displaced unit', () => {
         const state = {
-          selectedUnit: { retreating_from: 'Mun', unit_type: 'army' },
+          selectedUnit: { retreatingFrom: 'Mun', unitType: 'army' },
           displacedUnits: ['Mun'],
           potentialMoves: new Set(['Ruh'])
         };
@@ -114,7 +114,7 @@ describe('selectionTypes', () => {
 
       it('Recognizes deleting a displaced unit', () => {
         const state = {
-          selectedUnit: { retreating_from: 'Mun', unit_type: 'army' },
+          selectedUnit: { retreatingFrom: 'Mun', unitType: 'army' },
           displacedUnits: ['Mun'],
           potentialMoves: new Set(['Ruh']),
         };

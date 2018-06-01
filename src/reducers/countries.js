@@ -14,35 +14,35 @@ const countries = (state = {}, action) => {
   let index;
   switch (action.type) {
     case RECEIVE_GAME_DATA:
-      newState = action.payload.game_data.countries;
+      newState = action.payload.gameData.countries;
       for (let country of Object.values(newState)) {
         country.ready = false;
       }
       return newState;
     case CREATE_ORDER:
       newState = { ...state };
-      const retreating_units =
-        newState[action.payload.country].retreating_units;
-      if (retreating_units) {
-        index = retreating_units.indexOf(action.payload.origin);
-        retreating_units.splice(index, 1);
+      const retreatingUnits =
+        newState[action.payload.country].retreatingUnits;
+      if (retreatingUnits) {
+        index = retreatingUnits.indexOf(action.payload.origin);
+        retreatingUnits.splice(index, 1);
       }
       return newState;
     case CREATE_UNIT:
       newState = { ...state };
-      newState[action.payload.unit_data.country].units.push(
-        action.payload.unit_data.territory
+      newState[action.payload.unitData.country].units.push(
+        action.payload.unitData.territory
       );
       return newState;
     case DELETE_UNIT:
       newState = { ...state };
       let units;
-      if (!action.payload.unit_data.displaced) {
-        units = newState[action.payload.unit_data.country].units;
+      if (!action.payload.unitData.displaced) {
+        units = newState[action.payload.unitData.country].units;
       } else {
-        units = newState[action.payload.unit_data.country].retreating_units;
+        units = newState[action.payload.unitData.country].retreatingUnits;
       }
-      index = units.indexOf(action.payload.unit_data.territory);
+      index = units.indexOf(action.payload.unitData.territory);
       if (index > -1) {
         units.splice(index, 1);
       }
