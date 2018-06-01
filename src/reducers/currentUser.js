@@ -13,11 +13,11 @@ const currentUser = (state = { loading: true }, action) => {
     case REQUEST_CURRENT_USER:
       return { loading: true };
     case RECEIVE_CURRENT_USER:
-      let { id, first_name, last_name, email } = action.payload.user;
+      let { id, firstName, lastName, email } = action.payload.user;
       if (action.payload.token) {
         localStorage.setItem('token', action.payload.token);
       }
-      return { loading: false, id, first_name, last_name, email };
+      return { loading: false, id, firstName, lastName, email };
     case AUTHENTICATION_ERROR:
       return { loading: false, error: action.payload.error };
     case LOGOUT:

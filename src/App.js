@@ -27,7 +27,7 @@ class App extends Component {
         <Route exact path="/login" component={withAuth(Login, true)} />
         <Route exact path="/signup" component={withAuth(Signup, true)} />
         <Route exact path="/games" component={withAuth(GamesList)} />
-        <Route path="/games/:game_id" component={withAuth(Game)} />
+        <Route path="/games/:gameId" component={withAuth(Game)} />
       </div>
     );
   }

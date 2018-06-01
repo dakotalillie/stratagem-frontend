@@ -2,14 +2,14 @@ import { RECEIVE_CURRENT_USER, LOGOUT } from '../actions/actionTypes';
 
 function games(state = {}, action) {
   switch (action.type) {
-    case RECEIVE_CURRENT_USER:
-      let user_data;
+    case RECEIVE_CURRENT_USER:  
+      let userData;
       if (action.payload.user) {
-        user_data = action.payload.user;
+        userData = action.payload.user;
       } else {
-        user_data = action.payload;
+        userData = action.payload;
       }
-      return user_data.games.reduce((memo, game) => {
+      return userData.games.reduce((memo, game) => {
         memo[game.id] = game;
         return memo;
       }, {});

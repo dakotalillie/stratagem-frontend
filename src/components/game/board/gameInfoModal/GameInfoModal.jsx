@@ -28,7 +28,6 @@ class GameInfoModal extends React.Component {
     const tabs = ['Game', 'Orders', 'Log'];
     const { active } = this.state;
     const { isOpen, toggle, orders } = this.props;
-    console.log(orders);
     return (
       <Modal
         isOpen={isOpen}

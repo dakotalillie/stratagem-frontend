@@ -69,11 +69,12 @@ function requestOrdersSubmission(userId) {
   };
 }
 
-function ordersSubmissionError(error_message) {
+function ordersSubmissionError(error_message, userId) {
   return {
     type: ORDERS_SUBMISSION_ERROR,
     payload: {
-      error_message
+      error_message,
+      userId
     }
   };
 }
@@ -191,7 +192,7 @@ export function submitOrders({ game_id, userId, orders, convoy_routes }) {
         dispatch(receiveGameData(json));
       })
       .catch(error => {
-        dispatch(ordersSubmissionError(error.message));
+        dispatch(ordersSubmissionError(error.message, userId));
       });
   };
 }

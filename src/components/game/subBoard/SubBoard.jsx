@@ -1,12 +1,23 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Button, Col, Container, Row } from 'reactstrap';
 import Spinner from 'react-spinkit';
 
+import CustomPropTypes from '../../../utils/customPropTypes';
+import { submitOrders } from '../../../actions';
 import IconsRow from './iconsRow/IconsRow';
 import './subBoard.css';
 
-export default function SubBoard({ handleSubmitOrders, loading, countries }) {
+function SubBoard(
+  { orders, convoy_routes, loading, countries, userId,
+    gameId }
+) {
+
+  function handleSubmitOrders() {
+    this.props.submitOrders({ gameId, userId, orders, convoy_routes });
+  }
+
   return (
     <div className="sub-board">
       <Container>
@@ -31,7 +42,23 @@ export default function SubBoard({ handleSubmitOrders, loading, countries }) {
 }
 
 SubBoard.propTypes = {
-  handleSubmitOrders: PropTypes.func.isRequired,
-  loading: PropTypes.bool,
+  orders: PropTypes.objectOf(CustomPropTypes.order).isRequired,
+  convoy_routes: PropTypes.objectOf(PropTypes.object).isRequired,
+  loading: PropTypes.bool.isRequired,
   countries: PropTypes.object.isRequired,
+  userId: PropTypes.string.isRequired,
+  gameId: PropTypes.string.isRequired,
+  submitOrders: PropTypes.func.isRequired,
 }
+
+function connectStateToProps(state) {
+  return {
+    orders: state.orders,
+    convoy_routes: state.convoyRoutes,
+    loading: state.gameDataStatus.loading,
+    countries: state.countries,
+    userId: state.currentUser ? state.currentUser.id : null,
+  }
+}
+
+export default connect(connectStateToProps, { submitOrders })(SubBoard);

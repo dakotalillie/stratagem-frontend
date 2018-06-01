@@ -1,12 +1,11 @@
 import { push } from 'react-router-redux';
+
 import {
-  NO_TOKEN,
-  REQUEST_CURRENT_USER,
-  RECEIVE_CURRENT_USER,
-  AUTHENTICATION_ERROR,
+  NO_TOKEN, REQUEST_CURRENT_USER, RECEIVE_CURRENT_USER, AUTHENTICATION_ERROR,
   LOGOUT
 } from './actionTypes';
 import { API_ROOT } from '../utils/constants';
+import { camelCaseObjectProperties } from '../utils/stringUtils';
 
 export function noToken() {
   return {
@@ -23,20 +22,21 @@ export function requestCurrentUser() {
 function receiveCurrentUser(data) {
   /* TODO: right now you have three different ways of receiving user
   data. This needs to be standardized */
+  const formattedData = camelCaseObjectProperties(data);
   const payload = {};
-  if (data.token) {
-    payload.token = data.token;
+  if (formattedData.token) {
+    payload.token = formattedData.token;
   }
-  if (data.user) {
-    payload.user = data.user;
+  if (formattedData.user) {
+    payload.user = formattedData.user;
   } else {
     payload.user = {};
-    payload.user.id = data.id;
-    payload.user.first_name = data.first_name;
-    payload.user.last_name = data.last_name;
-    payload.user.username = data.username;
-    payload.user.email = data.email;
-    payload.user.games = data.games;
+    payload.user.id = formattedData.id;
+    payload.user.firstName = formattedData.firstName;
+    payload.user.lastName = formattedData.lastName;
+    payload.user.username = formattedData.username;
+    payload.user.email = formattedData.email;
+    payload.user.games = formattedData.games;
   }
   return {
     type: RECEIVE_CURRENT_USER,

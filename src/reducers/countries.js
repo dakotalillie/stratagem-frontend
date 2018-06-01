@@ -53,6 +53,14 @@ const countries = (state = {}, action) => {
         country.ready = country.user === action.payload.userId
       }
       return newState;
+    case ORDERS_SUBMISSION_ERROR:
+      newState = { ...state }
+      for (let country of Object.values(newState)) {
+        if (country.user === action.payload.userId) {
+          country.ready = false;
+        }
+      }
+      return newState;
     case CLEAR_GAME_DETAIL_DATA:
     case LOGOUT:
       return {};

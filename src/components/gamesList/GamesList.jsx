@@ -13,12 +13,12 @@ class GamesList extends React.Component {
   };
 
   render() {
-    const sorted_games = Object.keys(this.props.games).sort((a, b) => {
-      const a_created_at = this.props.games[a].current_turn.created_at;
-      const b_created_at = this.props.games[b].current_turn.created_at;
-      return new Date(b_created_at) - new Date(a_created_at);
+    const sortedGames = Object.keys(this.props.games).sort((a, b) => {
+      const aCreatedAt = this.props.games[a].currentTurn.createdAt;
+      const bCreatedAt = this.props.games[b].currentTurn.createdAt;
+      return new Date(bCreatedAt) - new Date(aCreatedAt);
     });
-    const games_list = sorted_games.map(gameId => {
+    const games_list = sortedGames.map(gameId => {
       const game = this.props.games[gameId];
       return (
         <tr key={gameId}>
@@ -27,11 +27,11 @@ class GamesList extends React.Component {
           </td>
           <td>all</td>
           <td>
-            {game.current_turn.phase}, {game.current_turn.season}{' '}
-            {game.current_turn.year}
+            {game.currentTurn.phase}, {game.currentTurn.season}{' '}
+            {game.currentTurn.year}
           </td>
           <td>
-            <Moment fromNow>{game.current_turn.created_at}</Moment>
+            <Moment fromNow>{game.currentTurn.createdAt}</Moment>
           </td>
         </tr>
       );
@@ -76,14 +76,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, { createSandbox })(GamesList);
-
-// helpers
-
-// function title(str) {
-//   if (str !== undefined) {
-//     const strArr = str.split('');
-//     strArr[0] = strArr[0].toUpperCase();
-//     return strArr.join('');
-//   }
-//   return '';
-// }
