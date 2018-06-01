@@ -20,7 +20,7 @@ const convoyRoutes = (state = {}, action) => {
       }
       // Giving a new order to any of the fleets in the route will also
       // cancel the route.
-      for (let convoyedArmyId of Object.values(newState)) {
+      for (let convoyedArmyId of Object.keys(newState)) {
         let found = false;
         for (let convoyeur of newState[convoyedArmyId].route) {
           if (convoyeur.id === action.payload.unitId) {

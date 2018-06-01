@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Fleet = props => {
+import { COUNTRY_NAMES } from '../../../../utils/constants';
+
+export default function Fleet ({ owner, x, y }) {
   return (
     <g
-      className={`fleet ${props.owner}`}
-      transform={`matrix(1.063691,0,0,1.5402909,${props.x},${props.y - 60})`}
+      className={`fleet ${owner}`}
+      transform={`matrix(1.063691,0,0,1.5402909,${x},${y - 60})`}
     >
       <path d="m 15.293,60.772 h 2.936 l 0.145,0.448 c 0,0 0.13,0.206 0.304,0.206 h 3.576 c 0,0 0.834,-0.021 0.834,-0.606 0,0 -0.153,-1.17 -1.351,-1.088 l -1.676,0.116 c 0,0 -0.289,0.086 -0.896,0.346 -0.07,0.031 -0.137,0.06 -0.201,0.088 h -3.67 c -0.136,0 -0.246,0.109 -0.246,0.245 0,0.136 0.109,0.245 0.245,0.245 z" />
       <path d="m 24.821,59.335 v 0.658 h 7.998 V 59.53 c 0,-0.845 -0.954,-0.737 -0.954,-0.737 h -6.112 c -1.04,0 -0.932,0.542 -0.932,0.542 z" />
@@ -25,10 +27,8 @@ const Fleet = props => {
   );
 };
 
-export default Fleet;
-
 Fleet.propTypes = {
-  owner: PropTypes.string.isRequired,
+  owner: PropTypes.oneOf(COUNTRY_NAMES).isRequired,
   x: PropTypes.number.isRequired,
   y: PropTypes.number.isRequired
 };

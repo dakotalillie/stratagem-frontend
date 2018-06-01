@@ -5,12 +5,12 @@ import { Button, ButtonGroup, Col, Container, Row } from 'reactstrap';
 import FaListUl from 'react-icons/lib/fa/list-ul'
 import FaCommentsO from 'react-icons/lib/fa/comments-o'
 
-import { title } from '../boardUtils';
+import { capitalize } from '../../../../utils/stringUtils';
 import './boardHeader.css';
 
-const BoardHeader = (
-  { mode, setMode, phase, season, year, toggleGameInfoModal }
-) => {
+export function BoardHeader(
+  { phase, season, year, mode, setMode, toggleGameInfoModal }
+) {
   return (
     <div className="board-header">
       <Container>
@@ -24,15 +24,16 @@ const BoardHeader = (
             <FaCommentsO className="chat-icon" color="#6C757C" />
           </Col>
           <Col md="4" className="col-middle">
-            <h4 className="phase">{title(phase)} Phase</h4>
+            <h4 className="phase">{phase ? capitalize(phase) : ''} Phase</h4>
             <h5 className="date">
-              {title(season)} {year}
+              {season ? capitalize(season) : ''} {year}
             </h5>
           </Col>
           <Col md="4" className="col-right">
             <ButtonGroup>
               <Button
                 outline
+                id="set-normal-mode-button"
                 active={mode === 'normal'}
                 onClick={() => setMode('normal')}
               >
@@ -40,6 +41,7 @@ const BoardHeader = (
               </Button>
               <Button
                 outline
+                id="set-support-mode-button"
                 active={mode === 'support'}
                 onClick={() => setMode('support')}
               >
@@ -47,6 +49,7 @@ const BoardHeader = (
               </Button>
               <Button
                 outline
+                id="set-convoy-mode-button"
                 active={mode === 'convoy'}
                 onClick={() => setMode('convoy')}
               >
@@ -60,6 +63,15 @@ const BoardHeader = (
   );
 };
 
+BoardHeader.propTypes = {
+  phase: PropTypes.oneOf(['diplomatic', 'retreat', 'reinforcement']),
+  season: PropTypes.oneOf(['spring', 'fall']),
+  year: PropTypes.number,
+  mode: PropTypes.oneOf(['normal', 'convoy', 'support']).isRequired,
+  setMode: PropTypes.func.isRequired,
+  toggleGameInfoModal: PropTypes.func.isRequired,
+};
+
 function mapStateToProps(state) {
   return {
     phase: state.currentTurn.phase,
@@ -69,11 +81,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, null)(BoardHeader);
-
-BoardHeader.propTypes = {
-  mode: PropTypes.string.isRequired,
-  setMode: PropTypes.func.isRequired,
-  phase: PropTypes.oneOf(['diplomatic', 'retreat', 'reinforcement']),
-  season: PropTypes.oneOf(['spring', 'fall']),
-  year: PropTypes.number
-};
