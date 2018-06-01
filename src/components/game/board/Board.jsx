@@ -51,18 +51,18 @@ class Board extends React.Component {
       };
     } else if (nextProps.currentTurn.phase === 'retreat') {
       let displacedUnits = [];
-      for (let country_name of Object.keys(nextProps.countries)) {
-        const COUNTRY = nextProps.countries[country_name];
+      for (let countryName of Object.keys(nextProps.countries)) {
+        const COUNTRY = nextProps.countries[countryName];
         if (COUNTRY.user === nextProps.currentUser.id) {
-          displacedUnits = displacedUnits.concat(COUNTRY.retreating_units);
+          displacedUnits = displacedUnits.concat(COUNTRY.retreatingUnits);
         }
       }
       return { displacedUnits };
     } else if (nextProps.currentTurn.phase === 'reinforcement') {
       const potentialAdditions = [];
       const potentialDeletions = [];
-      for (let country_name of Object.keys(nextProps.countries)) {
-        const COUNTRY = nextProps.countries[country_name];
+      for (let countryName of Object.keys(nextProps.countries)) {
+        const COUNTRY = nextProps.countries[countryName];
         if (COUNTRY.user === nextProps.currentUser.id) {
           // calculate difference between # of units and # of territories with
           // supply centers
@@ -72,22 +72,22 @@ class Board extends React.Component {
               supplyCenterCount++;
             }
           }
-          let number_of_units = COUNTRY.units.length;
-          if (supplyCenterCount > number_of_units) {
+          let numberOfUnits = COUNTRY.units.length;
+          if (supplyCenterCount > numberOfUnits) {
             // For each of country's home supply centers, check both if it is
             // occupied and that it still belongs to the player. If valid, add
             // it to potentialAdditions.
-            for (let terr of countriesData[country_name].homeSupplyCenters) {
+            for (let terr of countriesData[countryName].homeSupplyCenters) {
               const OCCUPIED = nextProps.units[terr] !== undefined;
-              const OWNED = nextProps.territories[terr].owner === country_name;
+              const OWNED = nextProps.territories[terr].owner === countryName;
               if (!OCCUPIED && OWNED) {
                 potentialAdditions.push(terr);
               }
             }
-          } else if (supplyCenterCount < number_of_units) {
+          } else if (supplyCenterCount < numberOfUnits) {
             // Add all of the country's units to potentialDeletions
-            for (let unit_loc of COUNTRY.units) {
-              potentialDeletions.push(unit_loc);
+            for (let unitLoc of COUNTRY.units) {
+              potentialDeletions.push(unitLoc);
             }
           }
         }
@@ -272,10 +272,10 @@ class Board extends React.Component {
     this.resetState();
   };
 
-  selectUnitType = (unit_type, coast) => {
+  selectUnitType = (unitType, coast) => {
     this.props.createUnit({
       ...this.state.tmpMoveStorage,
-      unit_type,
+      unitType,
       coast
     });
     this.resetState();
@@ -292,7 +292,7 @@ class Board extends React.Component {
     if (
       this.state.selectedUnit !== null &&
       (abbreviation === this.state.selectedUnit.territory ||
-        abbreviation === this.state.selectedUnit.retreating_from)
+        abbreviation === this.state.selectedUnit.retreatingFrom)
     ) {
       result += ' selected';
     }
@@ -320,7 +320,7 @@ class Board extends React.Component {
       if (
         !this.state.selectedUnit ||
         (this.state.selectedUnit &&
-          this.state.selectedUnit.retreating_from !== abbreviation)
+          this.state.selectedUnit.retreatingFrom !== abbreviation)
       ) {
         result += ' displaced';
       }

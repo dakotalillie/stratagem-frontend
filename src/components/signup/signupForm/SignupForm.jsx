@@ -1,9 +1,11 @@
 import React from 'react';
-import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
 import PropTypes from 'prop-types';
+import { Button, Form, FormGroup, Input, Label } from 'reactstrap';
+
+import CustomPropTypes from '../../../utils/customPropTypes';
 import './signupForm.css';
 
-function signupForm(props) {
+export default function signupForm(props) {
   return (
     <div className="signup-form">
       <Form onSubmit={props.handleSubmit}>
@@ -30,25 +32,25 @@ function signupForm(props) {
           />
         </FormGroup>
         <FormGroup>
-          <Label for="first_name">First Name</Label>
+          <Label for="first-name">First Name</Label>
           <Input
             type="text"
-            name="first_name"
-            id="first_name"
+            name="firstName"
+            id="first-name"
             placeholder="Jane"
-            value={props.first_name.value}
-            onChange={e => props.handleChange(e, 'first_name')}
+            value={props.firstNname.value}
+            onChange={e => props.handleChange(e, 'firstName')}
           />
         </FormGroup>
         <FormGroup>
-          <Label for="last_name">Last Name</Label>
+          <Label for="last-name">Last Name</Label>
           <Input
             type="text"
-            name="last_name"
-            id="last_name"
+            name="lastName"
+            id="last-name"
             placeholder="Doe"
-            value={props.last_name.value}
-            onChange={e => props.handleChange(e, 'last_name')}
+            value={props.lastName.value}
+            onChange={e => props.handleChange(e, 'lastName')}
           />
         </FormGroup>
         <FormGroup>
@@ -63,14 +65,14 @@ function signupForm(props) {
           />
         </FormGroup>
         <FormGroup>
-          <Label for="confirm_password">Confirm Password</Label>
+          <Label for="confirm-password">Confirm Password</Label>
           <Input
             type="password"
-            name="confirm_password"
-            id="confirm_password"
+            name="confirmPassword"
+            id="confirm-password"
             placeholder="pass123"
-            value={props.confirm_password.value}
-            onChange={e => props.handleChange(e, 'confirm_password')}
+            value={props.confirmPassword.value}
+            onChange={e => props.handleChange(e, 'confirmPassword')}
           />
         </FormGroup>
         <Button type="submit">Submit</Button>
@@ -80,38 +82,12 @@ function signupForm(props) {
 }
 
 signupForm.propTypes = {
-  username: PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    validation: PropTypes.string,
-    error: PropTypes.string.isRequired
-  }).isRequired,
-  email: PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    validation: PropTypes.string,
-    error: PropTypes.string.isRequired
-  }).isRequired,
-  first_name: PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    validation: PropTypes.string,
-    error: PropTypes.string.isRequired
-  }).isRequired,
-  last_name: PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    validation: PropTypes.string,
-    error: PropTypes.string.isRequired
-  }).isRequired,
-  password: PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    validation: PropTypes.string,
-    error: PropTypes.string.isRequired
-  }).isRequired,
-  confirm_password: PropTypes.shape({
-    value: PropTypes.string.isRequired,
-    validation: PropTypes.string,
-    error: PropTypes.string.isRequired
-  }).isRequired,
+  username: CustomPropTypes.formField.isRequired,
+  email: CustomPropTypes.formField.isRequired,
+  firstName: CustomPropTypes.formField.isRequired,
+  lastName: CustomPropTypes.formField.isRequired,
+  password: CustomPropTypes.formField.isRequired,
+  confirmPassword: CustomPropTypes.formField.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleSubmit: PropTypes.func.isRequired
 };
-
-export default signupForm;

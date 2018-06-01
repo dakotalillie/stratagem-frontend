@@ -17,11 +17,11 @@ const BoardHeader = (
         <Row>
           <Col md="4" className="col-left">
             <FaListUl
-              className="list_icon"
+              className="list-icon"
               color="#6C757C"
               onClick={toggleGameInfoModal}
             />
-            <FaCommentsO className="chat_icon" color="#6C757C" />
+            <FaCommentsO className="chat-icon" color="#6C757C" />
           </Col>
           <Col md="4" className="col-middle">
             <h4 className="phase">{title(phase)} Phase</h4>

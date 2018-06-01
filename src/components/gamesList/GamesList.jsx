@@ -18,7 +18,7 @@ class GamesList extends React.Component {
       const bCreatedAt = this.props.games[b].currentTurn.createdAt;
       return new Date(bCreatedAt) - new Date(aCreatedAt);
     });
-    const games_list = sortedGames.map(gameId => {
+    const gamesList = sortedGames.map(gameId => {
       const game = this.props.games[gameId];
       return (
         <tr key={gameId}>
@@ -59,7 +59,7 @@ class GamesList extends React.Component {
                   <th>Last Played</th>
                 </tr>
               </thead>
-              <tbody>{games_list}</tbody>
+              <tbody>{gamesList}</tbody>
             </Table>
           </Row>
         </Container>

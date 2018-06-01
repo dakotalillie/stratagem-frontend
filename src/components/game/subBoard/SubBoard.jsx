@@ -10,12 +10,12 @@ import IconsRow from './iconsRow/IconsRow';
 import './subBoard.css';
 
 function SubBoard(
-  { orders, convoy_routes, loading, countries, userId,
+  { orders, convoyRoutes, loading, countries, userId,
     gameId }
 ) {
 
   function handleSubmitOrders() {
-    this.props.submitOrders({ gameId, userId, orders, convoy_routes });
+    this.props.submitOrders({ gameId, userId, orders, convoyRoutes });
   }
 
   return (
@@ -43,7 +43,7 @@ function SubBoard(
 
 SubBoard.propTypes = {
   orders: PropTypes.objectOf(CustomPropTypes.order).isRequired,
-  convoy_routes: PropTypes.objectOf(PropTypes.object).isRequired,
+  convoyRoutes: PropTypes.objectOf(PropTypes.object).isRequired,
   loading: PropTypes.bool.isRequired,
   countries: PropTypes.object.isRequired,
   userId: PropTypes.string.isRequired,
@@ -54,7 +54,7 @@ SubBoard.propTypes = {
 function connectStateToProps(state) {
   return {
     orders: state.orders,
-    convoy_routes: state.convoyRoutes,
+    convoyRoutes: state.convoyRoutes,
     loading: state.gameDataStatus.loading,
     countries: state.countries,
     userId: state.currentUser ? state.currentUser.id : null,

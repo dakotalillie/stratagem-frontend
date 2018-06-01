@@ -1,4 +1,5 @@
 export function camelCaseObjectProperties(obj) {
+  if (obj === null) return;
   const newObj = {};
 
   for (let param of Object.keys(obj)) {

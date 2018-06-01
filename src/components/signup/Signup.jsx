@@ -17,12 +17,12 @@ class Signup extends React.Component {
       validation: null,
       error: ''
     },
-    first_name: {
+    firstName: {
       value: '',
       validation: null,
       error: ''
     },
-    last_name: {
+    lastName: {
       value: '',
       validation: null,
       error: ''
@@ -32,7 +32,7 @@ class Signup extends React.Component {
       validation: null,
       error: ''
     },
-    confirm_password: {
+    confirmPassword: {
       value: '',
       validation: null,
       error: ''
@@ -51,8 +51,8 @@ class Signup extends React.Component {
     const params = {
       username: this.state.username.value,
       email: this.state.email.value,
-      first_name: this.state.first_name.value,
-      last_name: this.state.last_name.value,
+      firstName: this.state.firstName.value,
+      lastName: this.state.lastName.value,
       password: this.state.password.value
     };
     this.props.signup(params);
@@ -66,10 +66,10 @@ class Signup extends React.Component {
           <SignupForm
             username={this.state.username}
             email={this.state.email}
-            first_name={this.state.first_name}
-            last_name={this.state.last_name}
+            firstName={this.state.firstName}
+            lastName={this.state.lastName}
             password={this.state.password}
-            confirm_password={this.state.confirm_password}
+            confirmPassword={this.state.confirmPassword}
             handleChange={this.handleChange}
             handleSubmit={this.handleSubmit}
           />

@@ -6,46 +6,54 @@ const countries = [
   'Austria', 'England', 'France', 'Germany', 'Italy', 'Russia', 'Turkey'
 ]
 
-const match = PropTypes.shape({
+const CustomPropTypes = {}
+
+CustomPropTypes.match = PropTypes.shape({
   isExact: PropTypes.bool,
   params: PropTypes.shape({
-    game_id: PropTypes.string,
+    gameId: PropTypes.string,
   }),
   path: PropTypes.string,
   url: PropTypes.string,
 });
 
-const unit = PropTypes.shape({
+CustomPropTypes.unit = PropTypes.shape({
   id: PropTypes.string.isRequired,
-  unit_type: PropTypes.oneOf(['fleet', 'army']).isRequired,
+  unitType: PropTypes.oneOf(['fleet', 'army']).isRequired,
   coast: PropTypes.oneOf(['NC', 'EC', 'SC']),
   territory: PropTypes.oneOf(territories).isRequired,
   country: PropTypes.oneOf(countries).isRequired,
-  retreating_from: PropTypes.oneOf(territories),
-  invaded_from: PropTypes.oneOf(territories)
+  retreatingFrom: PropTypes.oneOf(territories),
+  invadedFrom: PropTypes.oneOf(territories)
 });
 
-const order = PropTypes.shape({
-  unit_id: PropTypes.string.isRequired,
-  unit_type: PropTypes.oneOf(['fleet', 'army']).isRequired,
+CustomPropTypes.order = PropTypes.shape({
+  unitId: PropTypes.string.isRequired,
+  unitType: PropTypes.oneOf(['fleet', 'army']).isRequired,
   country: PropTypes.oneOf(countries).isRequired,
   origin: PropTypes.oneOf(territories).isRequired,
   destination: PropTypes.oneOf(territories).isRequired,
   order_type: PropTypes.oneOf(['hold', 'move', 'support', 'convoy']).isRequired,
   coast: PropTypes.oneOf(['NC', 'EC', 'SC']),
-  aux_unit_id: PropTypes.string,
-  aux_unit_type: PropTypes.oneOf(['fleet', 'army']),
-  aux_country: PropTypes.oneOf(countries),
-  aux_origin: PropTypes.oneOf(territories),
-  aux_destination: PropTypes.oneOf(territories),
-  aux_order_type: PropTypes.oneOf(['hold', 'move']),
+  auxUnitId: PropTypes.string,
+  auxUnitType: PropTypes.oneOf(['fleet', 'army']),
+  auxCountry: PropTypes.oneOf(countries),
+  auxOrigin: PropTypes.oneOf(territories),
+  auxDestination: PropTypes.oneOf(territories),
+  auxOrderType: PropTypes.oneOf(['hold', 'move']),
 });
 
-const convoyRoute = PropTypes.shape({
-  unit_id: PropTypes.string.isRequired,
+CustomPropTypes.convoyRoute = PropTypes.shape({
+  unitId: PropTypes.string.isRequired,
   origin: PropTypes.oneOf(territories).isRequired,
   destination: PropTypes.oneOf(territories).isRequired,
-  route: PropTypes.arrayOf(unit).isRequired
+  route: PropTypes.arrayOf(CustomPropTypes.unit).isRequired
 });
 
-export default { match, order, convoyRoute, unit }
+CustomPropTypes.formField = PropTypes.shape({
+  value: PropTypes.string.isRequired,
+  validation: PropTypes.string,
+  error: PropTypes.string.isRequired
+});
+
+export default CustomPropTypes;

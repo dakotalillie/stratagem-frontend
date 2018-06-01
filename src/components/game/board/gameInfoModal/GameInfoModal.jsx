@@ -50,12 +50,12 @@ class GameInfoModal extends React.Component {
         </ModalHeader>  
         <ModalBody>
           {Object.values(orders).map(order => (
-            <div key={order.unit_id} className="order-row">
+            <div key={order.unitId} className="order-row">
               <CountryIcon country={order.country} size={25} />
               <span>{stringifyOrderData(order)}</span>
-              {order.aux_unit_id && (
+              {order.auxUnitId && (
                 <React.Fragment>
-                  <CountryIcon country={order.aux_country} size={25} marginLeft />
+                  <CountryIcon country={order.auxCountry} size={25} marginLeft />
                   <span>{stringifyOrderData(order, true)}</span>
                 </React.Fragment>
               )}
@@ -81,17 +81,17 @@ export default connect(mapStateToProps, null)(GameInfoModal);
 function stringifyOrderData(order, aux = false) {
   let items = [];
   if (!aux) {
-    order.unit_type === 'army' ? items.push('A') : items.push('F');
+    order.unitType === 'army' ? items.push('A') : items.push('F');
     items.push(order.origin);
-    order.order_type === 'move'
+    order.orderType === 'move'
       ? items.push(`move to ${order.destination}`)
-      : items.push(order.order_type);
+      : items.push(order.orderType);
   } else if (aux) {
-    order.aux_unit_type === 'army' ? items.push('A') : items.push('F');
-    items.push(order.aux_unit_origin);
-    order.aux_order_type === 'move'
-      ? items.push(`move to ${order.aux_destination}`)
-      : items.push(order.aux_order_type);
+    order.auxUnitType === 'army' ? items.push('A') : items.push('F');
+    items.push(order.auxUnitOrigin);
+    order.auxOrderType === 'move'
+      ? items.push(`move to ${order.auxDestination}`)
+      : items.push(order.auxOrderType);
   }
   return items.join(" ");
 }
