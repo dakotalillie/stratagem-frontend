@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
+
 import {
   createOrder,
   createConvoyRoute,
@@ -13,6 +14,8 @@ import BoardMap from './boardMap/BoardMap';
 import BoardFooter from './boardFooter/BoardFooter';
 import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
 import CreateUnitModal from './createUnitModal/CreateUnitModal';
+import GameInfoModal from './gameInfoModal/GameInfoModal';
+
 import { mapUnits, mapRetreatingUnits } from './boardUtils';
 import discernSelectionType, * as selectionTypes from './selectionTypes';
 import * as selectionActions from './selectionActions';
@@ -32,6 +35,7 @@ class Board extends React.Component {
     tmpMoveStorage: {},
     chooseCoastModal: false,
     addUnitModal: false,
+    gameInfoModal: true,
     potentialAdditions: [],
     potentialDeletions: [],
     displacedUnits: [],
@@ -327,18 +331,21 @@ class Board extends React.Component {
         <Container>
           <BoardHeader mode={this.state.mode} setMode={this.setMode} />
           <div className="board-map">
-            {this.state.chooseCoastModal ? (
+            {this.state.chooseCoastModal && (
               <ChooseCoastModal
                 coasts={COASTS_FOR_MODAL}
                 selectCoast={this.selectCoast}
               />
-            ) : null}
-            {this.state.createUnitModal ? (
+            )}
+            {this.state.createUnitModal && (
               <CreateUnitModal
                 selectUnitType={this.selectUnitType}
                 multiCoast={this.state.tmpMoveStorage.territory === 'Stp'}
               />
-            ) : null}
+            )}
+            {this.state.gameInfoModal && (
+              <GameInfoModal />
+            )}
             <BoardMap
               chooseCoastModal={this.state.chooseCoastModal}
               determineTerrClass={this.determineTerrClass}

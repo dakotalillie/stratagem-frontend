@@ -1,0 +1,26 @@
+.game-info-modal {
+  .modal-header {
+    padding: 0;
+    .modal-title {
+      width: 100%;
+    }
+    ul {
+      display: flex;
+      padding-left: 0;
+      flex-direction: row;
+      justify-content: space-around;
+      margin-bottom: 0;
+      li {
+        cursor: pointer;
+        display: inline-block;
+        list-style: none;
+        padding: 10px 0;
+        text-align: center;
+        width: 100%;
+        &.active {
+          background-color: #eee;
+        }
+      }
+    }
+  }
+}

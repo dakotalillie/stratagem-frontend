@@ -14,8 +14,8 @@ const BoardHeader = ({ mode, setMode, phase, season, year }) => {
       <Container>
         <Row>
           <Col md="4" className="col-left">
-            <FaListUl className="list_icon" />
-            <FaCommentsO className="chat_icon" />
+            <FaListUl className="list_icon" color="#6C757C" />
+            <FaCommentsO className="chat_icon" color="#6C757C" />
           </Col>
           <Col md="4" className="col-middle">
             <h4 className="phase">{title(phase)} Phase</h4>
