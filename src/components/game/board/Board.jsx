@@ -29,7 +29,7 @@ class Board extends React.Component {
     currentUser: CustomPropTypes.currentUser.isRequired,
     currentTurn: CustomPropTypes.currentTurn,
     countries: CustomPropTypes.countries.isRequired,
-    territories: CustomPropTypes.territories.isRequired,
+    territories: PropTypes.objectOf(CustomPropTypes.territory).isRequired,
     units: PropTypes.objectOf(CustomPropTypes.unit).isRequired,
     retreatingUnits: PropTypes.objectOf(CustomPropTypes.unit).isRequired,
     createOrder: PropTypes.func.isRequired,
@@ -39,22 +39,29 @@ class Board extends React.Component {
     toggleGameInfoModal: PropTypes.func.isRequired,
   };
 
-  state = {
-    hovered: null,
-    selectedUnit: null,
-    supportedUnit: null,
-    convoyeurs: new Set(),
-    potentialMoves: new Set(),
-    coastOptions: {},
-    mode: 'normal',
-    tmpMoveStorage: {},
-    chooseCoastModal: false,
-    addUnitModal: false,
-    potentialAdditions: [],
-    potentialDeletions: [],
-    displacedUnits: [],
-    infoText: '',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      hovered: null,
+      selectedUnit: null,
+      supportedUnit: null,
+      convoyeurs: new Set(),
+      potentialMoves: new Set(),
+      coastOptions: {},
+      mode: 'normal',
+      tmpMoveStorage: {},
+      chooseCoastModal: false,
+      addUnitModal: false,
+      potentialAdditions: [],
+      potentialDeletions: [],
+      displacedUnits: [],
+      infoText: '',
+    };
+  }
+
+  componentDidMount() {
+    document.addEventListener('keydown', this.handleKeyDown);
+  }
 
   static getDerivedStateFromProps = nextProps => {
     const nextPhase = nextProps.currentTurn.phase;
@@ -72,6 +79,10 @@ class Board extends React.Component {
     return null;
   };
 
+  componentWillUnmount() {
+    document.removeEventListener('keydown', this.handleKeyDown);
+  }
+
   resetState = () => {
     this.setState({
       selectedUnit: null,
@@ -83,7 +94,7 @@ class Board extends React.Component {
       tmpMoveStorage: {},
       chooseCoastModal: false,
       createUnitModal: false,
-      infoText: 'Select a unit to give orders.'
+      infoText: ''
     });
   };
 
@@ -92,11 +103,11 @@ class Board extends React.Component {
     if (territory != null) {
       this.setState({ hovered: territory });
     }
-  };
+  }
 
   handleMouseLeave = e => {
     this.setState({ hovered: null });
-  };
+  }
 
   handleClick = e => {
     const clickedTerr = e.target.id;
@@ -111,6 +122,21 @@ class Board extends React.Component {
       phase: this.props.currentTurn.phase
     });
     dispatchSelectionAction.call(this, selectionType, clickedTerr, clickedUnit);
+  }
+
+  handleKeyDown = e => {
+    switch (e.key) {
+      case "Escape":
+        return this.resetState('normal');
+      case "s":
+        return this.setMode('support');
+      case "c":
+        return this.setMode('convoy');
+      case "l":
+        return this.props.toggleGameInfoModal();
+      default:
+        return;
+    }
   }
 
   setMode = mode => {
@@ -148,7 +174,7 @@ class Board extends React.Component {
       this.state.tmpMoveStorage.destination
     ];
     return (
-      <div className="board">
+      <div className="board" ref={this.rootNode}>
         <Container>
           <BoardHeader
             mode={this.state.mode}

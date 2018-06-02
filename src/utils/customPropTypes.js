@@ -35,7 +35,7 @@ CustomPropTypes.order = PropTypes.shape({
   country: PropTypes.oneOf(COUNTRY_NAMES).isRequired,
   origin: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
   destination: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
-  order_type: PropTypes.oneOf(['hold', 'move', 'support', 'convoy']).isRequired,
+  orderType: PropTypes.oneOf(['hold', 'move', 'support', 'convoy']).isRequired,
   coast: PropTypes.oneOf(['NC', 'EC', 'SC', '']).isRequired,
   auxUnitId: PropTypes.string,
   auxUnitType: PropTypes.oneOf(['fleet', 'army']),
@@ -59,20 +59,10 @@ CustomPropTypes.formField = PropTypes.shape({
 });
 
 CustomPropTypes.territory = PropTypes.shape({
-  abbreviation: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
-  coordinates: PropTypes.objectOf(PropTypes.shape({
-    x: PropTypes.number.isRequired,
-    y: PropTypes.number.isRequired,
-  })).isRequired,
-  landNeighbors: PropTypes.arrayOf(
-    PropTypes.oneOf(TERRITORY_ABBREVIATIONS)
-  ).isRequired,
+  id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  seaNeighbors: PropTypes.objectOf(
-    PropTypes.arrayOf(PropTypes.oneOf(TERRITORY_ABBREVIATIONS))
-  ),
-  supplyCenter: PropTypes.bool.isRequired,
-  type: PropTypes.oneOf(['water', 'coastal', 'inland']),
+  abbreviation: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
+  owner: PropTypes.oneOf(COUNTRY_NAMES).isRequired,
 });
 
 CustomPropTypes.currentUser = PropTypes.shape({
@@ -95,13 +85,6 @@ CustomPropTypes.countries = PropTypes.objectOf(PropTypes.shape({
   ).isRequired,
   retreatingUnits: PropTypes.arrayOf(CustomPropTypes.unit).isRequired,
   ready: PropTypes.bool.isRequired,
-}));
-
-CustomPropTypes.territories = PropTypes.objectOf(PropTypes.shape({
-  id: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  abbreviation: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
-  owner: PropTypes.oneOf(COUNTRY_NAMES).isRequired,
 }));
 
 CustomPropTypes.currentTurn = PropTypes.shape({

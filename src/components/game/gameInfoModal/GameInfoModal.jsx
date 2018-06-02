@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -27,10 +27,30 @@ class GameInfoModal extends React.Component {
     this.setState({ active: tab });
   }
 
+  renderOrdersPane = () => {
+    const { orders } = this.props;
+    return (
+      <Fragment>
+        {Object.values(orders).length ? Object.values(orders).map(order => (
+          <div key={order.unitId} className="order-row">
+            <CountryIcon country={order.country} size={25} />
+            <span>{stringifyOrderData(order)}</span>
+            {order.auxUnitId && (
+              <React.Fragment>
+                <CountryIcon country={order.auxCountry} size={25} marginLeft />
+                <span>{stringifyOrderData(order, true)}</span>
+              </React.Fragment>
+            )}
+          </div>
+        )) : <p className="placeholder-text">No orders to display</p>}
+      </Fragment>  
+    )
+  }
+
   render() {
     const tabs = ['game', 'orders', 'log'];
     const { active } = this.state;
-    const { isOpen, toggle, orders } = this.props;
+    const { isOpen, toggle } = this.props;
     return (
       <Modal
         isOpen={isOpen}
@@ -52,18 +72,7 @@ class GameInfoModal extends React.Component {
           </ul>
         </ModalHeader>  
         <ModalBody>
-          {Object.values(orders).map(order => (
-            <div key={order.unitId} className="order-row">
-              <CountryIcon country={order.country} size={25} />
-              <span>{stringifyOrderData(order)}</span>
-              {order.auxUnitId && (
-                <React.Fragment>
-                  <CountryIcon country={order.auxCountry} size={25} marginLeft />
-                  <span>{stringifyOrderData(order, true)}</span>
-                </React.Fragment>
-              )}
-            </div>
-          ))}
+          {active === 'orders' && this.renderOrdersPane()}
         </ModalBody>
         <ModalFooter>
           <Button color="secondary" onClick={toggle}>Close</Button>
