@@ -277,17 +277,18 @@ function addUnit(clickedTerr) {
       tmpMoveStorage: {
         orderType: 'create',
         country: this.props.territories[clickedTerr].owner,
-        territory: clickedTerr
+        origin: clickedTerr,
+        destination: clickedTerr,
       },
       createUnitModal: true
     });
-    return;
   } else {
     this.props.createUnit({
       orderType: 'create',
       unitType: 'army',
       country: this.props.territories[clickedTerr].owner,
-      territory: clickedTerr,
+      origin: clickedTerr,
+      destination: clickedTerr,
       coast: ''
     });
   }
@@ -299,7 +300,9 @@ function deleteUnit(clickedUnit) {
     unitId: clickedUnit.id,
     unitType: clickedUnit.unitType,
     country: clickedUnit.country,
-    territory: clickedUnit.territory
+    origin: clickedUnit.territory,
+    destination: clickedUnit.territory,
+    coast: clickedUnit.coast
   });
 }
 

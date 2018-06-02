@@ -13,12 +13,15 @@ const units = (state = {}, action) => {
       return action.payload.gameData.units;
     case CREATE_UNIT:
       newState = { ...state };
-      newState[action.payload.unitData.territory] = action.payload.unitData;
+      const { unitType, coast, origin, country } = action.payload.unitData
+      newState[origin] = {
+        id: null, unitType, coast, territory: origin, country
+      };
       return newState;
     case DELETE_UNIT:
       newState = { ...state };
       if (!action.payload.unitData.displaced) {
-        delete newState[action.payload.unitData.territory];
+        delete newState[action.payload.unitData.origin];
       }
       return newState;
     case CLEAR_GAME_DETAIL_DATA:

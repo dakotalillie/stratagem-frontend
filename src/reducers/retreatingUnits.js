@@ -7,7 +7,7 @@ import {
 
 const retreatingUnits = (state = {}, action) => {
   switch (action.type) {
-    case RECEIVE_GAME_DATA:
+    case RECEIVE_GAME_DATA:  
       if (action.payload.gameData.retreatingUnits !== undefined) {
         return action.payload.gameData.retreatingUnits;
       }

@@ -32,7 +32,7 @@ class GameInfoModal extends React.Component {
     return (
       <Fragment>
         {Object.values(orders).length ? Object.values(orders).map(order => (
-          <div key={order.unitId} className="order-row">
+          <div key={order.origin} className="order-row">
             <CountryIcon country={order.country} size={25} />
             <span>{stringifyOrderData(order)}</span>
             {order.auxUnitId && (

@@ -167,7 +167,6 @@ export function fetchGameData(gameId) {
         dispatch(receiveGameData(json));
       })
       .catch(error => {
-        debugger;
         dispatch(logout());
         dispatch(gameDataError(error.message));
       });
@@ -215,7 +214,7 @@ function normalizeGameData(gameData) {
     'retreatingUnits',
     {},
     {
-      idAttribute: 'retreating_from'
+      idAttribute: 'retreatingFrom'
     }
   );
   const territories = new schema.Entity(

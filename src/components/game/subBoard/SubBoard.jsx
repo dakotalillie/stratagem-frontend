@@ -11,11 +11,11 @@ import './subBoard.css';
 
 function SubBoard(
   { orders, convoyRoutes, loading, countries, userId,
-    gameId }
+    gameId, submitOrders }
 ) {
 
   function handleSubmitOrders() {
-    this.props.submitOrders({ gameId, userId, orders, convoyRoutes });
+    submitOrders({ gameId, userId, orders, convoyRoutes });
   }
 
   return (

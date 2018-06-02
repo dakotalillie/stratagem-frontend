@@ -42,7 +42,7 @@ const countries = (state = {}, action) => {
       } else {
         units = newState[action.payload.unitData.country].retreatingUnits;
       }
-      index = units.indexOf(action.payload.unitData.territory);
+      index = units.indexOf(action.payload.unitData.origin);
       if (index > -1) {
         units.splice(index, 1);
       }

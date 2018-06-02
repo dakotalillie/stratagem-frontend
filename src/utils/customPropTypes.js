@@ -7,6 +7,7 @@ const coastAbbreviations = [
   'Stp_SC', 'Stp_NC', 'Spa_NC', 'Spa_SC', 'Bul_EC', 'Bul_SC'
 ];
 const TERRITORY_ABBREVIATIONS = [...mainAbbreviations, ...coastAbbreviations];
+const ORDER_TYPES = ['hold', 'move', 'support', 'convoy', 'create', 'delete'];
 
 const CustomPropTypes = {}
 
@@ -20,22 +21,22 @@ CustomPropTypes.match = PropTypes.shape({
 });
 
 CustomPropTypes.unit = PropTypes.shape({
-  id: PropTypes.string.isRequired,
+  id: PropTypes.string,
   unitType: PropTypes.oneOf(['fleet', 'army']).isRequired,
   coast: PropTypes.oneOf(['NC', 'EC', 'SC', '']).isRequired,
-  territory: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
+  territory: PropTypes.oneOf(TERRITORY_ABBREVIATIONS),
   country: PropTypes.oneOf(COUNTRY_NAMES).isRequired,
   retreatingFrom: PropTypes.oneOf(TERRITORY_ABBREVIATIONS),
   invadedFrom: PropTypes.oneOf(TERRITORY_ABBREVIATIONS),
 });
 
 CustomPropTypes.order = PropTypes.shape({
-  unitId: PropTypes.string.isRequired,
+  unitId: PropTypes.string,
   unitType: PropTypes.oneOf(['fleet', 'army']).isRequired,
   country: PropTypes.oneOf(COUNTRY_NAMES).isRequired,
   origin: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
   destination: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
-  orderType: PropTypes.oneOf(['hold', 'move', 'support', 'convoy']).isRequired,
+  orderType: PropTypes.oneOf(ORDER_TYPES).isRequired,
   coast: PropTypes.oneOf(['NC', 'EC', 'SC', '']).isRequired,
   auxUnitId: PropTypes.string,
   auxUnitType: PropTypes.oneOf(['fleet', 'army']),
@@ -83,7 +84,9 @@ CustomPropTypes.countries = PropTypes.objectOf(PropTypes.shape({
   units: PropTypes.arrayOf(
     PropTypes.oneOf(TERRITORY_ABBREVIATIONS)
   ).isRequired,
-  retreatingUnits: PropTypes.arrayOf(CustomPropTypes.unit).isRequired,
+  retreatingUnits: PropTypes.arrayOf(
+    PropTypes.oneOf(TERRITORY_ABBREVIATIONS)
+  ).isRequired,
   ready: PropTypes.bool.isRequired,
 }));
 

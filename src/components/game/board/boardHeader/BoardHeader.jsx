@@ -34,6 +34,7 @@ export function BoardHeader(
               <Button
                 outline
                 id="set-normal-mode-button"
+                disabled={phase !== 'diplomatic'}
                 active={mode === 'normal'}
                 onClick={() => setMode('normal')}
               >
@@ -42,6 +43,7 @@ export function BoardHeader(
               <Button
                 outline
                 id="set-support-mode-button"
+                disabled={phase !== 'diplomatic'}
                 active={mode === 'support'}
                 onClick={() => setMode('support')}
               >
@@ -50,6 +52,7 @@ export function BoardHeader(
               <Button
                 outline
                 id="set-convoy-mode-button"
+                disabled={phase !== 'diplomatic'}
                 active={mode === 'convoy'}
                 onClick={() => setMode('convoy')}
               >
