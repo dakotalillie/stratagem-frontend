@@ -13,8 +13,10 @@ import {
   mapUnits, mapRetreatingUnits, getDisplacedUnitsForPlayer,
   findPotentialAdditionsAndDeletions
 } from './boardUtils';
-import discernSelectionType, * as selectionTypes from './selectionTypes';
-import * as selectionActions from './selectionActions';
+import discernSelectionType from './selectionTypes';
+import dispatchSelectionAction, {
+  retainSelectedUnitWhenChangingMode
+} from './selectionActions';
 import {
   createOrder, createConvoyRoute, createUnit, deleteUnit
 } from '../../../actions';
@@ -86,9 +88,9 @@ class Board extends React.Component {
   };
 
   handleMouseEnter = e => {
-    const TERRITORY = territoriesData[e.target.id];
-    if (TERRITORY != null) {
-      this.setState({ hovered: TERRITORY });
+    const territory = this.props.territories[e.target.id];
+    if (territory != null) {
+      this.setState({ hovered: territory });
     }
   };
 
@@ -97,136 +99,24 @@ class Board extends React.Component {
   };
 
   handleClick = e => {
-    const CLICKED_TERR = e.target.id;
-    const CLICKED_UNIT = this.props.retreatingUnits[CLICKED_TERR]
-      ? this.props.retreatingUnits[CLICKED_TERR]
-      : this.props.units[CLICKED_TERR];
-    const SELECTION_TYPE = discernSelectionType({
+    const clickedTerr = e.target.id;
+    const clickedUnit = this.props.retreatingUnits[clickedTerr]
+      ? this.props.retreatingUnits[clickedTerr]
+      : this.props.units[clickedTerr];
+    const selectionType = discernSelectionType({
       state: this.state,
       units: this.props.units,
-      clickedTerr: CLICKED_TERR,
-      clickedUnit: CLICKED_UNIT,
+      clickedTerr: clickedTerr,
+      clickedUnit: clickedUnit,
       phase: this.props.currentTurn.phase
     });
-
-    switch (SELECTION_TYPE) {
-      case selectionTypes.SELECT_UNIT:
-        selectionActions.selectUnit({
-          clickedUnit: CLICKED_UNIT,
-          context: this
-        });
-        break;
-      case selectionTypes.HOLD_UNIT:
-        selectionActions.holdUnit({ context: this });
-        break;
-      case selectionTypes.MOVE_UNIT:
-        selectionActions.moveUnit({ clickedTerr: CLICKED_TERR, context: this });
-        break;
-      case selectionTypes.SELECT_SUPPORTING_UNIT:
-        selectionActions.selectSupportingUnit({
-          clickedUnit: CLICKED_UNIT,
-          context: this
-        });
-        break;
-      case selectionTypes.SELECT_SUPPORTED_UNIT:
-        selectionActions.selectSupportedUnit({
-          clickedUnit: CLICKED_UNIT,
-          context: this
-        });
-        break;
-      case selectionTypes.HOLD_SUPPORTED_UNIT:
-        selectionActions.holdSupportedUnit({
-          context: this
-        });
-        break;
-      case selectionTypes.MOVE_SUPPORTED_UNIT:
-        selectionActions.moveSupportedUnit({
-          clickedTerr: CLICKED_TERR,
-          context: this
-        });
-        break;
-      case selectionTypes.SELECT_CONVOYED_UNIT:
-        selectionActions.selectConvoyedUnit({
-          clickedUnit: CLICKED_UNIT,
-          context: this
-        });
-        break;
-      case selectionTypes.SELECT_CONVOY_PATH:
-        selectionActions.selectConvoyPath({
-          clickedUnit: CLICKED_UNIT,
-          context: this
-        });
-        break;
-      case selectionTypes.SELECT_CONVOY_DESTINATION:
-        selectionActions.selectConvoyDestination({
-          clickedTerr: CLICKED_TERR,
-          context: this
-        });
-        break;
-      case selectionTypes.ADD_UNIT:
-        selectionActions.addUnit({
-          clickedTerr: CLICKED_TERR,
-          context: this
-        });
-        break;
-      case selectionTypes.DELETE_UNIT:
-        selectionActions.deleteUnit({
-          clickedUnit: CLICKED_UNIT,
-          context: this
-        });
-        break;
-      case selectionTypes.SELECT_DISPLACED_UNIT:
-        selectionActions.selectDisplacedUnit({
-          clickedUnit: CLICKED_UNIT,
-          context: this
-        });
-        break;
-      case selectionTypes.MOVE_DISPLACED_UNIT:
-        selectionActions.moveDisplacedUnit({
-          clickedTerr: CLICKED_TERR,
-          context: this
-        });
-        break;
-      case selectionTypes.DELETE_DISPLACED_UNIT:
-        selectionActions.deleteDisplacedUnit({
-          clickedUnit: CLICKED_UNIT,
-          context: this
-        });
-        break;
-      default:
-        this.resetState();
-    }
-  };
+    dispatchSelectionAction.call(this, selectionType, clickedTerr, clickedUnit);
+  }
 
   setMode = mode => {
-    const SELECTED_UNIT = this.state.selectedUnit;
-    if (mode !== this.state.mode && SELECTED_UNIT !== null) {
-      switch (mode) {
-        case 'normal':
-          selectionActions.selectUnit({
-            clickedUnit: SELECTED_UNIT,
-            context: this
-          });
-          break;
-        case 'support':
-          selectionActions.selectSupportingUnit({
-            clickedUnit: SELECTED_UNIT,
-            context: this
-          });
-          break;
-        case 'convoy':
-          if (SELECTED_UNIT.type === 'army') {
-            selectionActions.selectConvoyedUnit({
-              clickedUnit: SELECTED_UNIT,
-              context: this
-            });
-          } else {
-            this.resetState();
-          }
-          break;
-        default:
-          this.resetState();
-      }
+    const { selectedUnit } = this.state;
+    if (mode !== this.state.mode && selectedUnit !== null) {
+      retainSelectedUnitWhenChangingMode.call(this, mode, selectedUnit);
     }
     this.setState({ mode });
   };

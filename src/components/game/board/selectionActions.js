@@ -6,13 +6,88 @@ import {
   findPotentialSupportedMoves,
   findPotentialConvoyPaths
 } from './boardUtils';
+import * as selectionTypes from './selectionTypes';
 import territoriesData from '../../../utils/territories.json';
 
-export function selectUnit({ clickedUnit, context }) {
+export default function dispatchSelectionAction(
+  selectionType, clickedTerr, clickedUnit
+) {
+  switch (selectionType) {
+    case selectionTypes.SELECT_UNIT:
+      selectUnit.call(this, clickedUnit)
+      break;
+    case selectionTypes.HOLD_UNIT:
+      holdUnit.call(this);
+      break;
+    case selectionTypes.MOVE_UNIT:
+      moveUnit.call(this, clickedTerr);
+      break;
+    case selectionTypes.SELECT_SUPPORTING_UNIT:
+      selectSupportingUnit.call(this, clickedUnit)
+      break;
+    case selectionTypes.SELECT_SUPPORTED_UNIT:
+      selectSupportedUnit.call(this, clickedUnit)
+      break;
+    case selectionTypes.HOLD_SUPPORTED_UNIT:
+      holdSupportedUnit.call(this);
+      break;
+    case selectionTypes.MOVE_SUPPORTED_UNIT:
+      moveSupportedUnit.call(this, clickedTerr);
+      break;
+    case selectionTypes.SELECT_CONVOYED_UNIT:
+      selectConvoyedUnit.call(this, clickedUnit)
+      break;
+    case selectionTypes.SELECT_CONVOY_PATH:
+      selectConvoyPath.call(this, clickedUnit)
+      break;
+    case selectionTypes.SELECT_CONVOY_DESTINATION:
+      selectConvoyDestination.call(this, clickedTerr);
+      break;
+    case selectionTypes.ADD_UNIT:
+      addUnit.call(this, clickedTerr);;
+      break;
+    case selectionTypes.DELETE_UNIT:
+      deleteUnit.call(this, clickedUnit)
+      break;
+    case selectionTypes.SELECT_DISPLACED_UNIT:
+      selectDisplacedUnit.call(this, clickedUnit)
+      break;
+    case selectionTypes.MOVE_DISPLACED_UNIT:
+      moveDisplacedUnit.call(this, clickedTerr);
+      break;
+    case selectionTypes.DELETE_DISPLACED_UNIT:
+      deleteDisplacedUnit.call(this, clickedUnit)
+      break;
+    default:
+      this.resetState();
+  }
+}
+
+export function retainSelectedUnitWhenChangingMode(mode, selectedUnit) {
+  switch (mode) {
+    case 'normal':
+      selectUnit.call(this, selectedUnit);
+      break;
+    case 'support':
+      selectSupportingUnitselectUnit.call(this, selectedUnit);
+      break;
+    case 'convoy':
+      if (selectedUnit.type === 'army') {
+        selectConvoyedUnitselectUnit.call(this, selectedUnit);
+      } else {
+        this.resetState();
+      }
+      break;
+    default:
+      this.resetState();
+  }
+}
+
+function selectUnit(clickedUnit) {
   let { potentialMoves, coastOptions } = findPotentialMoves({
     unit: clickedUnit
   });
-  context.setState({
+  this.setState({
     selectedUnit: clickedUnit,
     potentialMoves,
     coastOptions,
@@ -20,40 +95,40 @@ export function selectUnit({ clickedUnit, context }) {
   });
 }
 
-export function holdUnit({ context }) {
-  context.props.createOrder({
-    unitId: context.state.selectedUnit.id,
-    unitType: context.state.selectedUnit.unitType,
-    country: context.state.selectedUnit.country,
-    origin: context.state.selectedUnit.territory,
-    destination: context.state.selectedUnit.territory,
+function holdUnit() {
+  this.props.createOrder({
+    unitId: this.state.selectedUnit.id,
+    unitType: this.state.selectedUnit.unitType,
+    country: this.state.selectedUnit.country,
+    origin: this.state.selectedUnit.territory,
+    destination: this.state.selectedUnit.territory,
     orderType: 'hold',
-    coast: context.state.selectedUnit.coast
+    coast: this.state.selectedUnit.coast
   });
-  context.resetState();
+  this.resetState();
 }
 
-export function moveUnit({ clickedTerr, context }) {
+function moveUnit(clickedTerr) {
   let coast = determineCoast({
-    coastOps: context.state.coastOptions[clickedTerr]
+    coastOps: this.state.coastOptions[clickedTerr]
   });
   if (coast !== -1) {
-    context.props.createOrder({
-      unitId: context.state.selectedUnit.id,
-      unitType: context.state.selectedUnit.unitType,
-      country: context.state.selectedUnit.country,
-      origin: context.state.selectedUnit.territory,
+    this.props.createOrder({
+      unitId: this.state.selectedUnit.id,
+      unitType: this.state.selectedUnit.unitType,
+      country: this.state.selectedUnit.country,
+      origin: this.state.selectedUnit.territory,
       destination: clickedTerr,
       orderType: 'move',
       coast
     });
   } else {
     // Save data into temporary storage and raise modal
-    context.setState({
+    this.setState({
       tmpMoveStorage: {
-        unitId: context.state.selectedUnit.id,
-        country: context.state.selectedUnit.country,
-        origin: context.state.selectedUnit.territory,
+        unitId: this.state.selectedUnit.id,
+        country: this.state.selectedUnit.country,
+        origin: this.state.selectedUnit.territory,
         destination: clickedTerr,
         orderType: 'move'
       },
@@ -61,117 +136,117 @@ export function moveUnit({ clickedTerr, context }) {
     });
     return;
   }
-  context.resetState();
+  this.resetState();
 }
 
-export function selectSupportingUnit({ clickedUnit, context }) {
+function selectSupportingUnit(clickedUnit) {
   const POTENTIAL_SUPPORTS = findPotentialSupports({
     unit: clickedUnit,
-    unitsList: context.props.units
+    unitsList: this.props.units
   });
-  context.setState({
+  this.setState({
     selectedUnit: clickedUnit,
     potentialMoves: POTENTIAL_SUPPORTS,
     infoText: 'Select which unit to give support to.'
   });
 }
 
-export function selectSupportedUnit({ clickedUnit, context }) {
+function selectSupportedUnit(clickedUnit) {
   // find moves they have in common
   const COMMON = findPotentialSupportedMoves({
-    selectedUnit: context.state.selectedUnit,
+    selectedUnit: this.state.selectedUnit,
     supportedUnit: clickedUnit,
-    unitsList: context.props.units
+    unitsList: this.props.units
   });
-  context.setState({
+  this.setState({
     supportedUnit: clickedUnit,
     potentialMoves: COMMON,
     infoText: 'Select where the supported unit will move.'
   });
 }
 
-export function holdSupportedUnit({ context }) {
-  context.props.createOrder({
-    unitId: context.state.selectedUnit.id,
-    unitType: context.state.selectedUnit.unitType,
-    country: context.state.selectedUnit.country,
-    origin: context.state.selectedUnit.territory,
-    destination: context.state.selectedUnit.territory,
+function holdSupportedUnit() {
+  this.props.createOrder({
+    unitId: this.state.selectedUnit.id,
+    unitType: this.state.selectedUnit.unitType,
+    country: this.state.selectedUnit.country,
+    origin: this.state.selectedUnit.territory,
+    destination: this.state.selectedUnit.territory,
     orderType: 'support',
-    coast: context.state.selectedUnit.coast,
-    auxUnitId: context.state.supportedUnit.id,
-    auxUnitType: context.state.supportedUnit.unitType,
-    auxCountry: context.state.supportedUnit.country,
-    auxOrigin: context.state.supportedUnit.territory,
-    auxDestination: context.state.supportedUnit.territory,
+    coast: this.state.selectedUnit.coast,
+    auxUnitId: this.state.supportedUnit.id,
+    auxUnitType: this.state.supportedUnit.unitType,
+    auxCountry: this.state.supportedUnit.country,
+    auxOrigin: this.state.supportedUnit.territory,
+    auxDestination: this.state.supportedUnit.territory,
     auxOrderType: 'hold'
   });
-  context.resetState();
+  this.resetState();
 }
 
-export function moveSupportedUnit({ clickedTerr, context }) {
-  context.props.createOrder({
-    unitId: context.state.selectedUnit.id,
-    unitType: context.state.selectedUnit.unitType,
-    country: context.state.selectedUnit.country,
-    origin: context.state.selectedUnit.territory,
-    destination: context.state.selectedUnit.territory,
+function moveSupportedUnit(clickedTerr) {
+  this.props.createOrder({
+    unitId: this.state.selectedUnit.id,
+    unitType: this.state.selectedUnit.unitType,
+    country: this.state.selectedUnit.country,
+    origin: this.state.selectedUnit.territory,
+    destination: this.state.selectedUnit.territory,
     orderType: 'support',
-    coast: context.state.selectedUnit.coast,
-    auxUnitId: context.state.supportedUnit.id,
-    auxUnitType: context.state.supportedUnit.unitType,
-    auxCountry: context.state.supportedUnit.country,
-    auxOrigin: context.state.supportedUnit.territory,
+    coast: this.state.selectedUnit.coast,
+    auxUnitId: this.state.supportedUnit.id,
+    auxUnitType: this.state.supportedUnit.unitType,
+    auxCountry: this.state.supportedUnit.country,
+    auxOrigin: this.state.supportedUnit.territory,
     auxDestination: clickedTerr,
     auxOrderType: 'move'
   });
-  context.resetState();
+  this.resetState();
 }
 
-export function selectConvoyedUnit({ clickedUnit, context }) {
+function selectConvoyedUnit(clickedUnit) {
   const POTENTIAL_CONVOYS = findPotentialConvoys({
     unit: clickedUnit,
-    unitsList: context.props.units
+    unitsList: this.props.units
   });
   if (POTENTIAL_CONVOYS.size > 0) {
-    context.setState({
+    this.setState({
       selectedUnit: clickedUnit,
       potentialMoves: POTENTIAL_CONVOYS,
       infoText: 'Select which fleet will begin the convoy.'
     });
   } else {
-    context.resetState();
+    this.resetState();
   }
 }
 
-export function selectConvoyPath({ clickedUnit, context }) {
+function selectConvoyPath(clickedUnit) {
   const POTENTIAL_PATHS = findPotentialConvoyPaths({
     unit: clickedUnit,
-    unitsList: context.props.units,
-    selectedUnit: context.state.selectedUnit,
-    convoyeurs: context.state.convoyeurs
+    unitsList: this.props.units,
+    selectedUnit: this.state.selectedUnit,
+    convoyeurs: this.state.convoyeurs
   });
-  context.setState({
+  this.setState({
     potentialMoves: POTENTIAL_PATHS,
-    convoyeurs: new Set([...context.state.convoyeurs, clickedUnit]),
+    convoyeurs: new Set([...this.state.convoyeurs, clickedUnit]),
     infoText:
       'Select another fleet to continue the convoy or a valid coastal territory for the destination.'
   });
 }
 
-export function selectConvoyDestination({ clickedTerr, context }) {
-  context.props.createOrder({
-    unitId: context.state.selectedUnit.id,
-    unitType: context.state.selectedUnit.unitType,
-    country: context.state.selectedUnit.country,
-    origin: context.state.selectedUnit.territory,
+function selectConvoyDestination(clickedTerr) {
+  this.props.createOrder({
+    unitId: this.state.selectedUnit.id,
+    unitType: this.state.selectedUnit.unitType,
+    country: this.state.selectedUnit.country,
+    origin: this.state.selectedUnit.territory,
     destination: clickedTerr,
     orderType: 'move',
     coast: '',
     viaConvoy: true
   });
-  for (let convoyer of context.state.convoyeurs) {
-    context.props.createOrder({
+  for (let convoyer of this.state.convoyeurs) {
+    this.props.createOrder({
       unitId: convoyer.id,
       unitType: convoyer.unitType,
       country: convoyer.country,
@@ -179,47 +254,47 @@ export function selectConvoyDestination({ clickedTerr, context }) {
       destination: convoyer.territory,
       orderType: 'convoy',
       coast: '',
-      auxUnitId: context.state.selectedUnit.id,
-      auxUnitType: context.state.selectedUnit.unitType,
-      auxCountry: context.state.selectedUnit.country,
-      auxOrigin: context.state.selectedUnit.territory,
+      auxUnitId: this.state.selectedUnit.id,
+      auxUnitType: this.state.selectedUnit.unitType,
+      auxCountry: this.state.selectedUnit.country,
+      auxOrigin: this.state.selectedUnit.territory,
       auxDestination: clickedTerr,
       auxOrderType: 'move'
     });
   }
-  context.props.createConvoyRoute({
-    unitId: context.state.selectedUnit.id,
-    origin: context.state.selectedUnit.territory,
+  this.props.createConvoyRoute({
+    unitId: this.state.selectedUnit.id,
+    origin: this.state.selectedUnit.territory,
     destination: clickedTerr,
-    route: [...context.state.convoyeurs]
+    route: [...this.state.convoyeurs]
   });
-  context.resetState();
+  this.resetState();
 }
 
-export function addUnit({ clickedTerr, context }) {
+function addUnit(clickedTerr) {
   if (territoriesData[clickedTerr].type === 'coastal') {
-    context.setState({
+    this.setState({
       tmpMoveStorage: {
         orderType: 'create',
-        country: context.props.territories[clickedTerr].owner,
+        country: this.props.territories[clickedTerr].owner,
         territory: clickedTerr
       },
       createUnitModal: true
     });
     return;
   } else {
-    context.props.createUnit({
+    this.props.createUnit({
       orderType: 'create',
       unitType: 'army',
-      country: context.props.territories[clickedTerr].owner,
+      country: this.props.territories[clickedTerr].owner,
       territory: clickedTerr,
       coast: ''
     });
   }
 }
 
-export function deleteUnit({ clickedUnit, context }) {
-  context.props.deleteUnit({
+function deleteUnit(clickedUnit) {
+  this.props.deleteUnit({
     orderType: 'delete',
     unitId: clickedUnit.id,
     unitType: clickedUnit.unitType,
@@ -228,17 +303,17 @@ export function deleteUnit({ clickedUnit, context }) {
   });
 }
 
-export function selectDisplacedUnit({ clickedUnit, context }) {
+function selectDisplacedUnit(clickedUnit) {
   let { potentialMoves, coastOptions } = findPotentialMoves({
     unit: clickedUnit,
     displaced: true,
-    unitsList: context.props.units
+    unitsList: this.props.units
   });
   // Remove invadedFrom from potential moves
   const invadedFrom =
-    context.props.retreatingUnits[clickedUnit.retreatingFrom].invadedFrom;
+    this.props.retreatingUnits[clickedUnit.retreatingFrom].invadedFrom;
   potentialMoves.delete(invadedFrom);
-  context.setState({
+  this.setState({
     selectedUnit: clickedUnit,
     potentialMoves,
     coastOptions,
@@ -246,39 +321,39 @@ export function selectDisplacedUnit({ clickedUnit, context }) {
   });
 }
 
-export function moveDisplacedUnit({ clickedTerr, context }) {
+function moveDisplacedUnit(clickedTerr) {
   let coast = determineCoast({
-    coastOps: context.state.coastOptions[clickedTerr]
+    coastOps: this.state.coastOptions[clickedTerr]
   });
   if (coast !== -1) {
-    context.props.createOrder({
-      unitId: context.state.selectedUnit.id,
-      unitType: context.state.selectedUnit.unitType,
-      origin: context.state.selectedUnit.retreatingFrom,
+    this.props.createOrder({
+      unitId: this.state.selectedUnit.id,
+      unitType: this.state.selectedUnit.unitType,
+      origin: this.state.selectedUnit.retreatingFrom,
       destination: clickedTerr,
-      country: context.state.selectedUnit.country,
+      country: this.state.selectedUnit.country,
       orderType: 'move',
       coast
     });
   } else {
     // Save data into temporary storage and raise modal
-    context.setState({
+    this.setState({
       tmpMoveStorage: {
-        unitId: context.state.selectedUnit.id,
-        origin: context.state.selectedUnit.retreatingFrom,
+        unitId: this.state.selectedUnit.id,
+        origin: this.state.selectedUnit.retreatingFrom,
         destination: clickedTerr,
-        country: context.state.selectedUnit.country,
+        country: this.state.selectedUnit.country,
         orderType: 'move'
       },
       chooseCoastModal: true
     });
     return;
   }
-  context.resetState();
+  this.resetState();
 }
 
-export function deleteDisplacedUnit({ clickedUnit, context }) {
-  context.props.deleteUnit({
+function deleteDisplacedUnit(clickedUnit) {
+  this.props.deleteUnit({
     orderType: 'delete',
     unitId: clickedUnit.id,
     unitType: clickedUnit.unitType,
@@ -286,5 +361,5 @@ export function deleteDisplacedUnit({ clickedUnit, context }) {
     territory: clickedUnit.retreatingFrom,
     displaced: true
   });
-  context.resetState();
+  this.resetState();
 }
