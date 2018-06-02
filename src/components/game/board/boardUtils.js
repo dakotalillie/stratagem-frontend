@@ -490,3 +490,53 @@ export function findAvailableHomeSupplyCenters(country) {
 export function findOwnedCountries(countries, userId) {
   return _.filter(_.values(countries), { user: userId });
 }
+
+export function buildClassNameFromAttributes(terrAbbr) {
+  const { territories } = this.props;
+  const { selectedUnit, supportedUnit, potentialMoves, convoyeurs,
+          potentialAdditions, potentialDeletions, displacedUnits } = this.state;
+  const attributes = [];
+  
+  // territories will be undefined if unowned.
+  if (territories[terrAbbr] !== undefined) {
+    const terrOwner = territories[terrAbbr].owner
+    attributes.push(countriesData[terrOwner].posessive);
+  }
+  if (
+    selectedUnit !== null &&
+    (terrAbbr === selectedUnit.territory ||
+     terrAbbr === selectedUnit.retreatingFrom)
+  ) {
+    attributes.push('selected')
+  }
+  if (
+    supportedUnit !== null &&
+    terrAbbr === supportedUnit.territory
+  ) {
+    attributes.push('supported');
+  }
+  if (potentialMoves.has(terrAbbr)) {
+    attributes.push('potential');
+  }
+  for (let convoyeur of convoyeurs) {
+    if (convoyeur.territory === terrAbbr) {
+      attributes.push('convoy');
+    }
+  }
+  if (potentialAdditions.includes(terrAbbr)) {
+    attributes.push('addition');
+  }
+  if (potentialDeletions.includes(terrAbbr)) {
+    attributes.push('deletion');
+  }
+  if (displacedUnits.includes(terrAbbr)) {
+    if (
+      !selectedUnit ||
+      (selectedUnit &&
+        selectedUnit.retreatingFrom !== terrAbbr)
+    ) {
+      attributes.push('displaced');
+    }
+  }
+  return attributes.join(' ');
+}

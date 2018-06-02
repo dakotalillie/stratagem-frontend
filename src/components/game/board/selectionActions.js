@@ -69,11 +69,11 @@ export function retainSelectedUnitWhenChangingMode(mode, selectedUnit) {
       selectUnit.call(this, selectedUnit);
       break;
     case 'support':
-      selectSupportingUnitselectUnit.call(this, selectedUnit);
+      selectSupportingUnit.call(this, selectedUnit);
       break;
     case 'convoy':
       if (selectedUnit.type === 'army') {
-        selectConvoyedUnitselectUnit.call(this, selectedUnit);
+        selectConvoyedUnit.call(this, selectedUnit);
       } else {
         this.resetState();
       }

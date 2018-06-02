@@ -11,7 +11,7 @@ import CreateUnitModal from './createUnitModal/CreateUnitModal';
 
 import {
   mapUnits, mapRetreatingUnits, getDisplacedUnitsForPlayer,
-  findPotentialAdditionsAndDeletions
+  findPotentialAdditionsAndDeletions, buildClassNameFromAttributes
 } from './boardUtils';
 import discernSelectionType from './selectionTypes';
 import dispatchSelectionAction, {
@@ -138,56 +138,13 @@ class Board extends React.Component {
     this.resetState();
   };
 
-  // Determines the className (and thus the coloring) of the territory <path>s
   determineTerrClass = abbreviation => {
-    let result = '';
-    // check if territory is owned
-    if (this.props.territories[abbreviation] !== undefined) {
-      result +=
-        countriesData[this.props.territories[abbreviation].owner].posessive;
-    }
-    if (
-      this.state.selectedUnit !== null &&
-      (abbreviation === this.state.selectedUnit.territory ||
-        abbreviation === this.state.selectedUnit.retreatingFrom)
-    ) {
-      result += ' selected';
-    }
-    if (
-      this.state.supportedUnit !== null &&
-      abbreviation === this.state.supportedUnit.territory
-    ) {
-      result += ' supported';
-    }
-    if (this.state.potentialMoves.has(abbreviation)) {
-      result += ' potential';
-    }
-    for (let convoyeur of this.state.convoyeurs) {
-      if (convoyeur.territory === abbreviation) {
-        result += ' convoy';
-      }
-    }
-    if (this.state.potentialAdditions.includes(abbreviation)) {
-      result += ' addition';
-    }
-    if (this.state.potentialDeletions.includes(abbreviation)) {
-      result += ' deletion';
-    }
-    if (this.state.displacedUnits.includes(abbreviation)) {
-      if (
-        !this.state.selectedUnit ||
-        (this.state.selectedUnit &&
-          this.state.selectedUnit.retreatingFrom !== abbreviation)
-      ) {
-        result += ' displaced';
-      }
-    }
-    return result;
+    return buildClassNameFromAttributes.call(this, abbreviation);
   };
 
   render() {
     const { toggleGameInfoModal } = this.props;
-    const COASTS_FOR_MODAL = this.state.coastOptions[
+    const coastsForModal = this.state.coastOptions[
       this.state.tmpMoveStorage.destination
     ];
     return (
@@ -201,7 +158,7 @@ class Board extends React.Component {
           <div className="board-map">
             {this.state.chooseCoastModal && (
               <ChooseCoastModal
-                coasts={COASTS_FOR_MODAL}
+                coasts={coastsForModal}
                 selectCoast={this.selectCoast}
               />
             )}
