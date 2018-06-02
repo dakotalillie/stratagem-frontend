@@ -1,7 +1,10 @@
 import React from 'react';
+import _ from 'lodash';
+
 import Army from './army/Army';
 import Fleet from './fleet/Fleet';
 import territoriesData from '../../../utils/territories.json';
+import countriesData from '../../../utils/countries.json';
 
 export function findPotentialMoves({ unit, displaced, unitsList }) {
   let potentialMoves;
@@ -433,4 +436,57 @@ export function mapRetreatingUnits(units) {
     }
     return null;
   });
+}
+
+export function getDisplacedUnitsForPlayer(nextProps) {
+  const { currentUser, countries } = nextProps;
+  let displacedUnits = [];
+  const ownedCountries = findOwnedCountries(countries, currentUser.id);
+  for (let country of ownedCountries) {
+    displacedUnits = displacedUnits.concat(country.retreatingUnits);
+  }
+  return { displacedUnits };
+}
+
+export function findPotentialAdditionsAndDeletions(nextProps) {
+  const { currentUser, countries } = nextProps;
+  let potentialAdditions = [];
+  let potentialDeletions = [];
+  const ownedCountries = findOwnedCountries(countries, currentUser.id);
+  for (let country of ownedCountries) {
+    const supplyCenterCount = calculateSupplyCenterCount(country);
+    let numberOfUnits = country.units.length;
+    if (supplyCenterCount > numberOfUnits) {
+      country.homeSupplyCenters = countriesData[country.name].homeSupplyCenters;
+      potentialAdditions = potentialAdditions.concat(
+        findAvailableHomeSupplyCenters(country)
+      );
+    } else if (supplyCenterCount < numberOfUnits) {
+      potentialDeletions = potentialDeletions.concat(country.units)
+    }
+  }
+  return { potentialAdditions, potentialDeletions, displacedUnits: [] };
+}
+
+export function calculateSupplyCenterCount(country) {
+  let supplyCenterCount = 0;
+  for (let terr of country.territories) {
+    if (territoriesData[terr].supplyCenter) {
+      supplyCenterCount++;
+    }
+  }
+  return supplyCenterCount;
+}
+
+export function findAvailableHomeSupplyCenters(country) {
+  return country.homeSupplyCenters.filter(terr => {
+    const occupied = country.units.includes(terr);
+    const owned = country.territories.includes(terr);
+    if (!occupied && owned) return true;
+    return false;
+  });
+}
+
+export function findOwnedCountries(countries, userId) {
+  return _.filter(_.values(countries), { user: userId });
 }

@@ -44,3 +44,21 @@ export function convertToCamelCase(string) {
 export function capitalize(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+export function stringifyOrderData(order, aux = false) {
+  let items = [];
+  if (!aux) {
+    order.unitType === 'army' ? items.push('A') : items.push('F');
+    items.push(order.origin);
+    order.orderType === 'move'
+      ? items.push(`move to ${order.destination}`)
+      : items.push(order.orderType);
+  } else if (aux) {
+    order.auxUnitType === 'army' ? items.push('A') : items.push('F');
+    items.push(order.auxUnitOrigin);
+    order.auxOrderType === 'move'
+      ? items.push(`move to ${order.auxDestination}`)
+      : items.push(order.auxOrderType);
+  }
+  return items.join(" ");
+}

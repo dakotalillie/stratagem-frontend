@@ -2,7 +2,11 @@ import PropTypes from 'prop-types';
 import territoryData from './territories.json';
 import { COUNTRY_NAMES } from './constants';
 
-const TERRITORY_ABBREVIATIONS = Object.keys(territoryData);
+const mainAbbreviations = Object.keys(territoryData);
+const coastAbbreviations = [
+  'Stp_SC', 'Stp_NC', 'Spa_NC', 'Spa_SC', 'Bul_EC', 'Bul_SC'
+];
+const TERRITORY_ABBREVIATIONS = [...mainAbbreviations, ...coastAbbreviations];
 
 const CustomPropTypes = {}
 
@@ -18,7 +22,7 @@ CustomPropTypes.match = PropTypes.shape({
 CustomPropTypes.unit = PropTypes.shape({
   id: PropTypes.string.isRequired,
   unitType: PropTypes.oneOf(['fleet', 'army']).isRequired,
-  coast: PropTypes.oneOf(['NC', 'EC', 'SC']),
+  coast: PropTypes.oneOf(['NC', 'EC', 'SC', '']).isRequired,
   territory: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
   country: PropTypes.oneOf(COUNTRY_NAMES).isRequired,
   retreatingFrom: PropTypes.oneOf(TERRITORY_ABBREVIATIONS),
@@ -32,7 +36,7 @@ CustomPropTypes.order = PropTypes.shape({
   origin: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
   destination: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
   order_type: PropTypes.oneOf(['hold', 'move', 'support', 'convoy']).isRequired,
-  coast: PropTypes.oneOf(['NC', 'EC', 'SC']),
+  coast: PropTypes.oneOf(['NC', 'EC', 'SC', '']).isRequired,
   auxUnitId: PropTypes.string,
   auxUnitType: PropTypes.oneOf(['fleet', 'army']),
   auxCountry: PropTypes.oneOf(COUNTRY_NAMES),
@@ -66,9 +70,45 @@ CustomPropTypes.territory = PropTypes.shape({
   name: PropTypes.string.isRequired,
   seaNeighbors: PropTypes.objectOf(
     PropTypes.arrayOf(PropTypes.oneOf(TERRITORY_ABBREVIATIONS))
-  ).isRequired,
+  ),
   supplyCenter: PropTypes.bool.isRequired,
   type: PropTypes.oneOf(['water', 'coastal', 'inland']),
 });
+
+CustomPropTypes.currentUser = PropTypes.shape({
+  loading: PropTypes.bool.isRequired,
+  id: PropTypes.string,
+  firstName: PropTypes.string,
+  lastName: PropTypes.string,
+  email: PropTypes.string,
+});
+
+CustomPropTypes.countries = PropTypes.objectOf(PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  user: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  territories: PropTypes.arrayOf(
+    PropTypes.oneOf(TERRITORY_ABBREVIATIONS)
+  ).isRequired,
+  units: PropTypes.arrayOf(
+    PropTypes.oneOf(TERRITORY_ABBREVIATIONS)
+  ).isRequired,
+  retreatingUnits: PropTypes.arrayOf(CustomPropTypes.unit).isRequired,
+  ready: PropTypes.bool.isRequired,
+}));
+
+CustomPropTypes.territories = PropTypes.objectOf(PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  abbreviation: PropTypes.oneOf(TERRITORY_ABBREVIATIONS).isRequired,
+  owner: PropTypes.oneOf(COUNTRY_NAMES).isRequired,
+}));
+
+CustomPropTypes.currentTurn = PropTypes.shape({
+  season: PropTypes.oneOf(['spring', 'fall']),
+  year: PropTypes.number,
+  phase: PropTypes.oneOf(['diplomatic', 'retreat', 'reinforcement']),
+  createdAt: PropTypes.string,
+})
 
 export default CustomPropTypes;

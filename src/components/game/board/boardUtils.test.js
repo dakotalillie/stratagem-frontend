@@ -1,10 +1,10 @@
-import * as boardUtils from './boardUtils';
+import * as bu from './boardUtils';
 
 describe('boardUtils', () => {
   describe('findPotentialMoves', () => {
     it('Identifies potential moves for a non-displaced army', () => {
       const unit = {territory: 'Swe', unitType: 'army'};
-      expect(boardUtils.findPotentialMoves({ unit }).potentialMoves).toEqual(
+      expect(bu.findPotentialMoves({ unit }).potentialMoves).toEqual(
         new Set(['Den', 'Fin', 'Nwy'])
       );
     });
@@ -12,7 +12,7 @@ describe('boardUtils', () => {
     it('Identifies potential moves for a non-displaced fleet (no coast)',
       () => {
         const unit = {territory: 'Sev', unitType: 'fleet'}
-        expect(boardUtils.findPotentialMoves({ unit }).potentialMoves).toEqual(
+        expect(bu.findPotentialMoves({ unit }).potentialMoves).toEqual(
           new Set(['Arm', 'BLA', 'Rum'])
         );
       });
@@ -20,7 +20,7 @@ describe('boardUtils', () => {
     it('Identifies potential moves for a non-displaced fleet (with coast)',
       () => {
         const unit = { coast: 'SC', territory: 'Stp', unitType: 'fleet' };
-        expect(boardUtils.findPotentialMoves({ unit }).potentialMoves).toEqual(
+        expect(bu.findPotentialMoves({ unit }).potentialMoves).toEqual(
           new Set(['BOT', 'Fin', 'Lvn'])
         );
       });
@@ -34,7 +34,7 @@ describe('boardUtils', () => {
         Swe: {territory: 'Swe', unitType: 'army'},
         Fin: {territory: 'Fin', unitType: 'fleet'}
       }
-      expect(boardUtils.findPotentialMoves({ unit, displaced, unitsList })
+      expect(bu.findPotentialMoves({ unit, displaced, unitsList })
         .potentialMoves).toEqual(new Set(['Nwy']));
     });
 
@@ -48,7 +48,7 @@ describe('boardUtils', () => {
           Sev: {territory: 'Sev', unitType: 'army'},
           BLA: {territory: 'BLA', unitType: 'fleet'}
         }
-        expect(boardUtils.findPotentialMoves({ unit, displaced, unitsList })
+        expect(bu.findPotentialMoves({ unit, displaced, unitsList })
           .potentialMoves).toEqual(new Set(['Arm']));
       });
     
@@ -63,20 +63,20 @@ describe('boardUtils', () => {
           Stp: {territory: 'Stp', unitType: 'army'},
           Lvn: {territory: 'Lvn', unitType: 'army'}
         }
-        expect(boardUtils.findPotentialMoves({ unit, displaced, unitsList })
+        expect(bu.findPotentialMoves({ unit, displaced, unitsList })
           .potentialMoves).toEqual(new Set(['BOT']));
       }
     );
 
     it('Removes coast data from potential moves for fleets', () => {
       const unit = {territory: 'MAO', unitType: 'fleet'};
-      expect(boardUtils.findPotentialMoves({ unit }).potentialMoves)
+      expect(bu.findPotentialMoves({ unit }).potentialMoves)
         .toContain('Spa');
     });
 
     it('Returns the coast options in a separate object', () => {
       const unit = {territory: 'MAO', unitType: 'fleet'};
-      expect(boardUtils.findPotentialMoves({ unit }).coastOptions).toEqual(
+      expect(bu.findPotentialMoves({ unit }).coastOptions).toEqual(
         { 'Spa': ['NC', 'SC'] }
       );
     });
@@ -88,7 +88,7 @@ describe('boardUtils', () => {
       const unitsList = {
         Bud: {territory: 'Bud', unitType: 'army'}
       };
-      expect(boardUtils.findPotentialSupports({ unit, unitsList })).toEqual(
+      expect(bu.findPotentialSupports({ unit, unitsList })).toEqual(
         new Set(['Bud'])
       );
     })
@@ -98,7 +98,7 @@ describe('boardUtils', () => {
       const unitsList = {
         War: {territory: 'War', unitType: 'army'}
       };
-      expect(boardUtils.findPotentialSupports({ unit, unitsList })).toEqual(
+      expect(bu.findPotentialSupports({ unit, unitsList })).toEqual(
         new Set(['War'])
       );
     })
@@ -108,8 +108,8 @@ describe('boardUtils', () => {
       const unitsList = {
         Tri: {territory: 'Tri', unitType: 'fleet'}
       };
-      expect(boardUtils.findPotentialSupports({ unit, unitsList })).toEqual(
-        new Set([])
+      expect(bu.findPotentialSupports({ unit, unitsList })).toEqual(
+        new Set()
       );
     })
 
@@ -120,7 +120,7 @@ describe('boardUtils', () => {
         MAO: {territory: 'MAO', unitType: 'fleet'},
         ENG: {territory: 'ENG', unitType: 'fleet'}
       }
-      expect(boardUtils.findPotentialSupports({ unit, unitsList }))
+      expect(bu.findPotentialSupports({ unit, unitsList }))
         .toContain('Lon');
     })
   })
@@ -133,7 +133,7 @@ describe('boardUtils', () => {
         Par: selectedUnit,
         Bel: supportedUnit
       }
-      expect(boardUtils.findPotentialSupportedMoves(
+      expect(bu.findPotentialSupportedMoves(
         { selectedUnit, supportedUnit, unitsList }
       )).toEqual(new Set(['Bur', 'Pic']));
     });
@@ -145,7 +145,7 @@ describe('boardUtils', () => {
         Par: selectedUnit,
         Bur: supportedUnit
       }
-      expect(boardUtils.findPotentialSupportedMoves(
+      expect(bu.findPotentialSupportedMoves(
         { selectedUnit, supportedUnit, unitsList }
       )).not.toContain('Par');
     })
@@ -159,7 +159,7 @@ describe('boardUtils', () => {
         MAO: {territory: 'MAO', unitType: 'fleet'},
         ENG: {territory: 'ENG', unitType: 'fleet'}
       };
-      expect(boardUtils.findPotentialSupportedMoves(
+      expect(bu.findPotentialSupportedMoves(
         { selectedUnit, supportedUnit, unitsList }
       )).toEqual(new Set(['Gas', 'Spa']))
     })
@@ -172,7 +172,7 @@ describe('boardUtils', () => {
         Bre: unit,
         ENG: {territory: 'ENG', unitType: 'fleet'}
       };
-      expect(boardUtils.findPotentialConvoys({ unit, unitsList }))
+      expect(bu.findPotentialConvoys({ unit, unitsList }))
         .toEqual(new Set(['ENG']));
     })
 
@@ -182,8 +182,7 @@ describe('boardUtils', () => {
         Bre: unit,
         Pic: {territory: 'Pic', unitType: 'fleet'}
       };
-      expect(boardUtils.findPotentialConvoys({ unit, unitsList }))
-        .toEqual(new Set([]));
+      expect(bu.findPotentialConvoys({ unit, unitsList })).toEqual(new Set());
     })
   });
 
@@ -205,25 +204,25 @@ describe('boardUtils', () => {
     });
 
     it('Includes neighboring fleets in water territories', () => {
-      expect(boardUtils.findPotentialConvoyPaths(
+      expect(bu.findPotentialConvoyPaths(
         { unit: IRI_fleet, unitsList, selectedUnit: WAL_army, convoyeurs }
       )).toContain('MAO');
     });
 
     it('Includes neighboring coastal territories', () => {
-      expect(boardUtils.findPotentialConvoyPaths(
+      expect(bu.findPotentialConvoyPaths(
         { unit: IRI_fleet, unitsList, selectedUnit: WAL_army, convoyeurs }
       )).toContain('Lvp');
     });
 
     it('Excludes fleets which are already part of the convoy route', () => {
-      expect(boardUtils.findPotentialConvoyPaths(
+      expect(bu.findPotentialConvoyPaths(
         { unit: IRI_fleet, unitsList, selectedUnit: WAL_army, convoyeurs }
       )).not.toContain('ENG');
     });
 
     it('Excludes the selected unit\'s territory', () => {
-      expect(boardUtils.findPotentialConvoyPaths(
+      expect(bu.findPotentialConvoyPaths(
         { unit: IRI_fleet, unitsList, selectedUnit: WAL_army, convoyeurs }
       )).not.toContain('Wal');
     });
@@ -240,48 +239,48 @@ describe('boardUtils', () => {
     })
 
     it('Can identify all neighbors', () => {
-      expect(boardUtils.findNeighbors({ sourceTerr: 'Lon' }))
+      expect(bu.findNeighbors({ sourceTerr: 'Lon' }))
         .toEqual(new Set(['Wal', 'Yor', 'ENG', 'NTH']))
     });
 
     it('Can identify land neighbors', () => {
-      expect(boardUtils.findNeighbors(
+      expect(bu.findNeighbors(
         { sourceTerr: 'Lon', neighborType: 'land' }
       )).toEqual(new Set(['Wal', 'Yor']))
     });
 
     it('Can identify sea neighbors (no coast)', () => {
-      expect(boardUtils.findNeighbors(
+      expect(bu.findNeighbors(
         { sourceTerr: 'Lon', neighborType: 'sea' }
       )).toEqual(new Set(['ENG', 'NTH', 'Wal', 'Yor']));
     });
 
     it('Can identify sea neighbors (with coast)', () => {
-      expect(boardUtils.findNeighbors(
+      expect(bu.findNeighbors(
         { sourceTerr: 'Spa', neighborType: 'sea', coast: 'NC' }
       )).toEqual(new Set(['Gas', 'MAO', 'Por']))
     });
 
     it('Can identify neighbors of a particular type', () => {
-      expect(boardUtils.findNeighbors(
+      expect(bu.findNeighbors(
         { sourceTerr: 'Bur', terrType: 'inland' }
       )).toEqual(new Set(['Mun', 'Ruh', 'Par']))
     });
 
     it('Can identify occupied neighbors', () => {
-      expect(boardUtils.findNeighbors(
+      expect(bu.findNeighbors(
         { sourceTerr: 'Con', unitsList, occupied: true }
       )).toEqual(new Set(['Ank', 'Bul', 'BLA']))
     });
 
     it('Can identify occupied neighbors of a particular type', () => {
-      expect(boardUtils.findNeighbors(
+      expect(bu.findNeighbors(
         { sourceTerr: 'Con', unitsList, occupied: true, occupiedType: 'fleet' }
       )).toEqual(new Set(['Bul', 'BLA']))
     });
 
     it('Can preserve coast data if specified', () => {
-      expect(boardUtils.findNeighbors(
+      expect(bu.findNeighbors(
         { sourceTerr: 'Con', keepCoastData: true }
       )).toEqual(new Set(['Ank', 'Bul', 'Smy', 'AEG', 'BLA', 'Bul_SC',
         'Bul_EC']));
@@ -297,25 +296,25 @@ describe('boardUtils', () => {
     })
 
     it('Can filter by occupied territory', () => {
-      expect(boardUtils.terrMatchesCriteria(
+      expect(bu.terrMatchesCriteria(
         { terr: 'Lon', unitsList, occupied: true }
       )).toBe(true);
     });
 
     it('Can filter by unoccupied territory', () => {
-      expect(boardUtils.terrMatchesCriteria(
+      expect(bu.terrMatchesCriteria(
         { terr: 'Lon', unitsList, occupied: false }
       )).toBe(false);
     });
 
     it('Can filter by occupying unit type', () => {
-      expect(boardUtils.terrMatchesCriteria(
+      expect(bu.terrMatchesCriteria(
         { terr: 'Lon', unitsList, occupied: true, occupiedType: 'fleet' }
       )).toBe(false);
     });
 
     it('Can filter by territory type', () => {
-      expect(boardUtils.terrMatchesCriteria(
+      expect(bu.terrMatchesCriteria(
         { terr: 'Lon', terrType: 'inland' }
       )).toBe(false);
     });
@@ -323,7 +322,7 @@ describe('boardUtils', () => {
 
   describe('splitTerrName', () => {
     it('Removes the coast suffix from the territory name', () => {
-      expect(boardUtils.splitTerrName({ terr: 'Spa_SC' })).toEqual('Spa');
+      expect(bu.splitTerrName({ terr: 'Spa_SC' })).toEqual('Spa');
     });
   });
 
@@ -331,8 +330,60 @@ describe('boardUtils', () => {
     it('Identifies the union between the potential moves of two units', () => {
       const unit1 = { territory: 'Mar', unitType: 'army' };
       const unit2 = { territory: 'MAO', unitType: 'fleet' };
-      expect(boardUtils.findCommonMoves({ unit1, unit2 }))
+      expect(bu.findCommonMoves({ unit1, unit2 }))
         .toEqual(new Set(['Gas', 'Spa']))
+    });
+  });
+
+  describe('getDisplacedUnitsForPlayer', () => {
+    it(`Returns an object containing an array of displaced units from
+        countries owned by the player`, () => {
+        const nextProps = {
+          currentUser: { id: '1', },
+          countries: {
+            Austria: { user: '1', retreatingUnits: ['Tri'] },
+            England: { user: '1', retreatingUnits: ['Lon'] },
+            France: { user: '2', retreatingUnits: ['Par'] },
+          },
+        };
+        expect(bu.getDisplacedUnitsForPlayer(nextProps)).toEqual(
+          { displacedUnits: ['Tri', 'Lon'] }
+        );
+      });
+  });
+
+  describe('findPotentialAdditionsAndDeletions', () => {
+    it(`Finds where units can be added and deleted`, () => {
+      const nextProps = {
+        currentUser: { id: '1', },
+        countries: {
+          Austria: {
+            name: 'Austria',
+            user: '1',
+            territories: ['Vie', 'Bud'],
+            units: ['Vie'],
+          },
+          England: {
+            name: 'England',
+            user: '1',
+            territories: ['Lon'],
+            units: ['Lon', 'ENG']
+          },
+          France: {
+            name: 'France',
+            user: '2',
+            territories: ['Par', 'Mar'],
+            units: ['Par']
+          },
+        },
+      };
+      expect(bu.findPotentialAdditionsAndDeletions(nextProps)).toEqual(
+        {
+          potentialAdditions: ['Bud'],
+          potentialDeletions: ['Lon', 'ENG'],
+          displacedUnits: [],
+        }
+      );
     });
   });
 })

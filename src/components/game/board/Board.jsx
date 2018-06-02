@@ -3,96 +3,69 @@ import PropTypes from 'prop-types';
 import { Container } from 'reactstrap';
 import { connect } from 'react-redux';
 
-import {
-  createOrder,
-  createConvoyRoute,
-  createUnit,
-  deleteUnit
-} from '../../../actions';
 import BoardHeader from './boardHeader/BoardHeader';
 import BoardMap from './boardMap/BoardMap';
 import BoardFooter from './boardFooter/BoardFooter';
 import ChooseCoastModal from './chooseCoastModal/ChooseCoastModal';
 import CreateUnitModal from './createUnitModal/CreateUnitModal';
-import GameInfoModal from './gameInfoModal/GameInfoModal';
 
-import { mapUnits, mapRetreatingUnits } from './boardUtils';
+import {
+  mapUnits, mapRetreatingUnits, getDisplacedUnitsForPlayer,
+  findPotentialAdditionsAndDeletions
+} from './boardUtils';
 import discernSelectionType, * as selectionTypes from './selectionTypes';
 import * as selectionActions from './selectionActions';
-import territoriesData from '../../../utils/territories.json';
-import countriesData from '../../../utils/countries.json';
+import {
+  createOrder, createConvoyRoute, createUnit, deleteUnit
+} from '../../../actions';
+import CustomPropTypes from '../../../utils/customPropTypes'
 import './board.css';
 
 class Board extends React.Component {
+
+  static propTypes = {
+    currentUser: CustomPropTypes.currentUser.isRequired,
+    currentTurn: CustomPropTypes.currentTurn,
+    countries: CustomPropTypes.countries.isRequired,
+    territories: CustomPropTypes.territories.isRequired,
+    units: PropTypes.objectOf(CustomPropTypes.unit).isRequired,
+    retreatingUnits: PropTypes.objectOf(CustomPropTypes.unit).isRequired,
+    createOrder: PropTypes.func.isRequired,
+    createConvoyRoute: PropTypes.func.isRequired,
+    createUnit: PropTypes.func.isRequired,
+    deleteUnit: PropTypes.func.isRequired,
+    toggleGameInfoModal: PropTypes.func.isRequired,
+  };
+
   state = {
     hovered: null,
     selectedUnit: null,
     supportedUnit: null,
-    convoyeurs: new Set([]),
-    potentialMoves: new Set([]),
+    convoyeurs: new Set(),
+    potentialMoves: new Set(),
     coastOptions: {},
     mode: 'normal',
     tmpMoveStorage: {},
     chooseCoastModal: false,
     addUnitModal: false,
-    gameInfoModal: false,
     potentialAdditions: [],
     potentialDeletions: [],
     displacedUnits: [],
-    infoText: 'Select a unit to give orders.'
+    infoText: '',
   };
 
-  static getDerivedStateFromProps = (nextProps, prevState) => {
-    if (nextProps.currentTurn.phase === 'diplomatic') {
+  static getDerivedStateFromProps = nextProps => {
+    const nextPhase = nextProps.currentTurn.phase;
+    if (nextPhase === 'diplomatic') {
       return {
         potentialAdditions: [],
         potentialDeletions: [],
         displacedUnits: []
       };
-    } else if (nextProps.currentTurn.phase === 'retreat') {
-      let displacedUnits = [];
-      for (let countryName of Object.keys(nextProps.countries)) {
-        const COUNTRY = nextProps.countries[countryName];
-        if (COUNTRY.user === nextProps.currentUser.id) {
-          displacedUnits = displacedUnits.concat(COUNTRY.retreatingUnits);
-        }
-      }
-      return { displacedUnits };
-    } else if (nextProps.currentTurn.phase === 'reinforcement') {
-      const potentialAdditions = [];
-      const potentialDeletions = [];
-      for (let countryName of Object.keys(nextProps.countries)) {
-        const COUNTRY = nextProps.countries[countryName];
-        if (COUNTRY.user === nextProps.currentUser.id) {
-          // calculate difference between # of units and # of territories with
-          // supply centers
-          let supplyCenterCount = 0;
-          for (let terr of COUNTRY.territories) {
-            if (territoriesData[terr].supplyCenter) {
-              supplyCenterCount++;
-            }
-          }
-          let numberOfUnits = COUNTRY.units.length;
-          if (supplyCenterCount > numberOfUnits) {
-            // For each of country's home supply centers, check both if it is
-            // occupied and that it still belongs to the player. If valid, add
-            // it to potentialAdditions.
-            for (let terr of countriesData[countryName].homeSupplyCenters) {
-              const OCCUPIED = nextProps.units[terr] !== undefined;
-              const OWNED = nextProps.territories[terr].owner === countryName;
-              if (!OCCUPIED && OWNED) {
-                potentialAdditions.push(terr);
-              }
-            }
-          } else if (supplyCenterCount < numberOfUnits) {
-            // Add all of the country's units to potentialDeletions
-            for (let unitLoc of COUNTRY.units) {
-              potentialDeletions.push(unitLoc);
-            }
-          }
-        }
-      }
-      return { potentialAdditions, potentialDeletions, displacedUnits: [] };
+    } else if (nextPhase === 'retreat') {
+      return getDisplacedUnitsForPlayer(nextProps);
+    } else if (nextPhase === 'reinforcement') {
+      return findPotentialAdditionsAndDeletions(nextProps);
     }
     return null;
   };
@@ -111,12 +84,6 @@ class Board extends React.Component {
       infoText: 'Select a unit to give orders.'
     });
   };
-
-  toggleGameInfoModal = () => {
-    this.setState(prevState => ({
-      gameInfoModal: !prevState.gameInfoModal
-    }));
-  }
 
   handleMouseEnter = e => {
     const TERRITORY = territoriesData[e.target.id];
@@ -329,6 +296,7 @@ class Board extends React.Component {
   };
 
   render() {
+    const { toggleGameInfoModal } = this.props;
     const COASTS_FOR_MODAL = this.state.coastOptions[
       this.state.tmpMoveStorage.destination
     ];
@@ -338,7 +306,7 @@ class Board extends React.Component {
           <BoardHeader
             mode={this.state.mode}
             setMode={this.setMode}
-            toggleGameInfoModal={this.toggleGameInfoModal}
+            toggleGameInfoModal={toggleGameInfoModal}
           />
           <div className="board-map">
             {this.state.chooseCoastModal && (
@@ -353,10 +321,6 @@ class Board extends React.Component {
                 multiCoast={this.state.tmpMoveStorage.territory === 'Stp'}
               />
             )}
-            <GameInfoModal
-              isOpen={this.state.gameInfoModal}
-              toggle={this.toggleGameInfoModal}
-            />
             <BoardMap
               chooseCoastModal={this.state.chooseCoastModal}
               determineTerrClass={this.determineTerrClass}
@@ -378,25 +342,13 @@ class Board extends React.Component {
 
 const mapStateToProps = state => ({
   currentUser: state.currentUser,
+  currentTurn: state.currentTurn,
   countries: state.countries,
   territories: state.territories,
   units: state.units,
   retreatingUnits: state.retreatingUnits,
-  currentTurn: state.currentTurn
 });
 
 export default connect(mapStateToProps, {
-  createOrder,
-  createConvoyRoute,
-  createUnit,
-  deleteUnit
+  createOrder,createConvoyRoute, createUnit, deleteUnit
 })(Board);
-
-BoardMap.propTypes = {
-  currentUser: PropTypes.object,
-  countries: PropTypes.object,
-  territories: PropTypes.object,
-  units: PropTypes.object,
-  retreatingUnits: PropTypes.object,
-  currentTurn: PropTypes.object
-};

@@ -5,7 +5,10 @@ import {
 } from 'reactstrap';
 import { connect } from 'react-redux'
 
-import CountryIcon from '../../../shared/countryIcon/CountryIcon';
+import CountryIcon from '../../shared/countryIcon/CountryIcon';
+
+import CustomPropTypes from '../../../utils/customPropTypes';
+import { stringifyOrderData, capitalize } from '../../../utils/stringUtils';
 import './gameInfoModal.css';
 
 class GameInfoModal extends React.Component {
@@ -13,11 +16,11 @@ class GameInfoModal extends React.Component {
   static propTypes = {
     isOpen: PropTypes.bool.isRequired,
     toggle: PropTypes.func.isRequired,
-    orders: PropTypes.object
+    orders: PropTypes.objectOf(CustomPropTypes.order).isRequired,
   }
 
   state = {
-    active: 'Orders'
+    active: 'orders'
   }
 
   handleChangeTab = tab => {
@@ -25,7 +28,7 @@ class GameInfoModal extends React.Component {
   }
 
   render() {
-    const tabs = ['Game', 'Orders', 'Log'];
+    const tabs = ['game', 'orders', 'log'];
     const { active } = this.state;
     const { isOpen, toggle, orders } = this.props;
     return (
@@ -43,7 +46,7 @@ class GameInfoModal extends React.Component {
                 className={active === tab ? 'active' : ''}
                 onClick={() => this.handleChangeTab(tab)}
               >
-                {tab}
+                {capitalize(tab)}
               </li>
             ))}
           </ul>
@@ -77,21 +80,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, null)(GameInfoModal);
-
-function stringifyOrderData(order, aux = false) {
-  let items = [];
-  if (!aux) {
-    order.unitType === 'army' ? items.push('A') : items.push('F');
-    items.push(order.origin);
-    order.orderType === 'move'
-      ? items.push(`move to ${order.destination}`)
-      : items.push(order.orderType);
-  } else if (aux) {
-    order.auxUnitType === 'army' ? items.push('A') : items.push('F');
-    items.push(order.auxUnitOrigin);
-    order.auxOrderType === 'move'
-      ? items.push(`move to ${order.auxDestination}`)
-      : items.push(order.auxOrderType);
-  }
-  return items.join(" ");
-}
