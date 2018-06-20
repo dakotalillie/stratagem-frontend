@@ -38,7 +38,7 @@ export default function signupForm(props) {
             name="firstName"
             id="first-name"
             placeholder="Jane"
-            value={props.firstNname.value}
+            value={props.firstName.value}
             onChange={e => props.handleChange(e, 'firstName')}
           />
         </FormGroup>

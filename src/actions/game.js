@@ -43,7 +43,7 @@ function requestGameData() {
   };
 }
 
-function receiveGameData(gameData) {
+export function receiveGameData(gameData) {
   const formattedData = camelCaseObjectProperties(gameData);
   const normalizedData = normalizeGameData(formattedData);
   return {
@@ -63,7 +63,7 @@ function gameDataError(errorMessage) {
   };
 }
 
-function requestOrdersSubmission(userId) {
+export function requestOrdersSubmission(userId) {
   return {
     type: REQUEST_ORDERS_SUBMISSION,
     payload: {

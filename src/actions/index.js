@@ -3,11 +3,12 @@ export {
   createConvoyRoute,
   initializeGame,
   fetchGameData,
-  submitOrders,
+  requestOrdersSubmission,
   createSandbox,
   createUnit,
   deleteUnit,
   createDisplacedOrder,
-  clearGameDetailData
+  clearGameDetailData,
+  receiveGameData
 } from './game';
 export { login, noToken, fetchCurrentUser, signup, logout } from './auth';

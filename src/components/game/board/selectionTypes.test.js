@@ -6,17 +6,17 @@ describe('selectionTypes', () => {
       const phase = 'diplomatic';
 
       describe('normal mode', () => {
-        const state = { mode: 'normal' }
+        const state = { mode: 'normal' };
 
         it('Recognizes selecting a unit', () => {
           state.selectedUnit = null;
-          const clickedUnit = { territory: 'Par', unitType: 'army' }
+          const clickedUnit = { territory: 'Par', unitType: 'army' };
           expect(discernSelectionType({ state, clickedUnit, phase }))
             .toEqual(selectionTypes.SELECT_UNIT);
         });
   
         it('Recognizes holding a unit', () => {
-          state.selectedUnit = { territory: 'Par', unitType: 'army' }
+          state.selectedUnit = { territory: 'Par', unitType: 'army' };
           const clickedTerr = 'Par';
           expect(discernSelectionType({ state, clickedTerr, phase }))
             .toEqual(selectionTypes.HOLD_UNIT);
@@ -32,7 +32,7 @@ describe('selectionTypes', () => {
       });
       
       describe('support mode', () => {
-        const state = { mode: 'support' }
+        const state = { mode: 'support' };
 
         it('Recognizes selecting a supporting unit', () => {
           state.selectedUnit = null;
@@ -60,7 +60,7 @@ describe('selectionTypes', () => {
       });
       
       describe('convoy mode', () => {
-        const state = { mode: 'convoy' }
+        const state = { mode: 'convoy' };
 
         it('Recognizes selecting a convoyed unit', () => {
           state.selectedUnit = null;
@@ -96,7 +96,7 @@ describe('selectionTypes', () => {
           selectedUnit: null,
           displacedUnits: ['Mun'],
         };
-        const clickedTerr = 'Mun'
+        const clickedTerr = 'Mun';
         expect(discernSelectionType({ state, clickedTerr, phase }))
           .toEqual(selectionTypes.SELECT_DISPLACED_UNIT);
       });
@@ -121,7 +121,7 @@ describe('selectionTypes', () => {
         const clickedTerr = 'Mun';
         expect(discernSelectionType({ state, clickedTerr, phase }))
           .toEqual(selectionTypes.DELETE_DISPLACED_UNIT);
-      })
+      });
     });
 
     describe('reinforcement phase', () => {
@@ -140,6 +140,6 @@ describe('selectionTypes', () => {
         expect(discernSelectionType({ state, clickedTerr, phase }))
           .toEqual(selectionTypes.DELETE_UNIT);
       });
-    })
+    });
   });
 });
